@@ -1,28 +1,28 @@
 {
-  "total_count": 6,
+  "total_count": 7,
   "workflow_runs": [
     {
-      "id": 42610592594,
+      "id": 42612693238,
       "name": "vr-build",
-      "node_id": "WFR_kwLOVnp8fs8AAAAJ68oLUg",
+      "node_id": "WFR_kwLOVnp8fs8AAAAJ6-oY9g",
       "head_branch": "main",
-      "head_sha": "c30987fc8c6e4044a978003900688fdc1bb4db2e",
+      "head_sha": "1bb2aef25a5c90841f2ac6f885c9dcaca7af00a1",
       "path": ".github/workflows/vr-build.yml",
-      "display_title": "fix(vr): use existing Material icons in the VR settings page",
-      "run_number": 6,
+      "display_title": "fix(vr): cast decorView to ViewGroup when hosting the CardboardView",
+      "run_number": 7,
       "event": "push",
       "status": "in_progress",
       "conclusion": null,
       "workflow_id": 411643267,
-      "check_suite_id": 115408738400,
-      "check_suite_node_id": "CS_kwDOVnp8fs8AAAAa3uWYYA",
-      "url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42610592594",
-      "html_url": "https://github.com/XYkadicloud/Kazumi-VR/actions/runs/42610592594",
+      "check_suite_id": 115414283961,
+      "check_suite_node_id": "CS_kwDOVnp8fs8AAAAa3zo2uQ",
+      "url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42612693238",
+      "html_url": "https://github.com/XYkadicloud/Kazumi-VR/actions/runs/42612693238",
       "pull_requests": [
 
       ],
-      "created_at": "2026-11-09T11:38:04Z",
-      "updated_at": "2026-11-09T11:39:46Z",
+      "created_at": "2026-11-09T11:54:31Z",
+      "updated_at": "2026-11-09T11:54:34Z",
       "actor": {
         "login": "XYkadicloud",
         "id": 180416938,
@@ -48,7 +48,7 @@
       "referenced_workflows": [
 
       ],
-      "run_started_at": "2026-11-09T11:38:04Z",
+      "run_started_at": "2026-11-09T11:54:31Z",
       "triggering_actor": {
         "login": "XYkadicloud",
         "id": 180416938,
@@ -70,19 +70,19 @@
         "user_view_type": "public",
         "site_admin": false
       },
-      "jobs_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42610592594/jobs",
-      "logs_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42610592594/logs",
-      "check_suite_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/check-suites/115408738400",
-      "artifacts_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42610592594/artifacts",
-      "cancel_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42610592594/cancel",
-      "rerun_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42610592594/rerun",
+      "jobs_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42612693238/jobs",
+      "logs_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42612693238/logs",
+      "check_suite_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/check-suites/115414283961",
+      "artifacts_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42612693238/artifacts",
+      "cancel_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42612693238/cancel",
+      "rerun_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/runs/42612693238/rerun",
       "previous_attempt_url": null,
       "workflow_url": "https://api.github.com/repos/XYkadicloud/Kazumi-VR/actions/workflows/411643267",
       "head_commit": {
-        "id": "c30987fc8c6e4044a978003900688fdc1bb4db2e",
-        "tree_id": "a00928958111b58e5923de20085ee9211da85317",
-        "message": "fix(vr): use existing Material icons in the VR settings page\n\nflutter analyze failed with undefined_getter for Icons.mirror_rounded.\nSwap it for Icons.swap_horiz_rounded and use Icons.crop_rotate_rounded for\nthe passthrough rotation row so the page only references long-standing icons.",
-        "timestamp": "2026-11-09T11:37:51Z",
+        "id": "1bb2aef25a5c90841f2ac6f885c9dcaca7af00a1",
+        "tree_id": "a271cec250d5aad5305ef8e91d02f3c5e77b950a",
+        "message": "fix(vr): cast decorView to ViewGroup when hosting the CardboardView\n\nWindow.getDecorView() is statically typed as View, so addView/removeView did\nnot resolve and :app:compileDebugKotlin failed. The runtime DecorView is a\nFrameLayout, so an explicit ViewGroup cast is correct.",
+        "timestamp": "2026-11-09T11:54:20Z",
         "author": {
           "name": "Kazumi VR",
           "email": "vr@kazumi.local"

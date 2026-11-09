@@ -203,9 +203,24 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # A NO-SOURCE task would also "succeed"; prove the r7 tests were really compiled.
+          found="$( { find build android/app/build \
+            \( -name 'VrMenuModelTest.class' -o -name 'VrGamepadRouterTest.class' \
+               -o -name 'VrHeadPoseTest.class' \) 2>/dev/null || true; } | head -5 )"
+          echo "$found"
+          if [ -z "$found" ]; then
+            echo "FAIL: VR test classes were never compiled (src/test/kotlin ignored)" >&2
+            exit 1
+          fi
           python3 - <<'PY'
           import glob, sys, xml.etree.ElementTree as ET
-          files = sorted(glob.glob('android/app/build/test-results/testDebugUnitTest/TEST-*.xml'))
+          # Flutter's Gradle plugin redirects every subproject's buildDir to <repo>/build/<name>,
+          # so :app test results land in build/app/..., not android/app/build/... .
+          patterns = [
+              'build/app/test-results/testDebugUnitTest/TEST-*.xml',
+              'android/app/build/test-results/testDebugUnitTest/TEST-*.xml',
+          ]
+          files = sorted({p for pattern in patterns for p in glob.glob(pattern)})
           suites = tests = failures = errors = skipped = 0
           for path in files:
               root = ET.parse(path).getroot()
@@ -266,6 +281,8 @@ jobs:
         with:
           name: vr-unit-test-report
           path: |
+            build/app/reports/tests/testDebugUnitTest/
+            build/app/test-results/testDebugUnitTest/
             android/app/build/reports/tests/testDebugUnitTest/
             android/app/build/test-results/testDebugUnitTest/
           if-no-files-found: ignore
