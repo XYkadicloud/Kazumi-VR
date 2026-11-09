@@ -8,6 +8,7 @@ import 'package:material_new_shapes/material_new_shapes.dart';
 enum MyDestination {
   theme,
   player,
+  vr,
   danmaku,
   rules,
   history,
@@ -200,6 +201,7 @@ class _CompactSpaceLayout extends StatelessWidget {
             _entry('规则设置', Icons.extension_rounded, MyDestination.rules),
             _entry('外观设置', Icons.palette_rounded, MyDestination.theme),
             _entry('播放设置', Icons.play_circle_rounded, MyDestination.player),
+            _entry('VR 设置', Icons.view_in_ar_rounded, MyDestination.vr),
             _entry('弹幕设置', Icons.subtitles_rounded, MyDestination.danmaku),
           ],
         ),
@@ -501,6 +503,7 @@ class _PreferencesPanel extends StatelessWidget {
   static const _entries = [
     ('外观', Icons.palette_rounded, MyDestination.theme),
     ('播放', Icons.play_circle_rounded, MyDestination.player),
+    ('VR', Icons.view_in_ar_rounded, MyDestination.vr),
     ('弹幕', Icons.subtitles_rounded, MyDestination.danmaku),
   ];
 

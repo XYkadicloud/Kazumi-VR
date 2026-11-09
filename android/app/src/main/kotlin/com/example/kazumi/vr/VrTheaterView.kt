@@ -110,6 +110,10 @@ class VrTheaterView(context: Context) : CardboardView(context) {
 
     fun start() {
         Log.d(TAG, "start: onResume()")
+        // The EGL surface survives a VR off/on cycle (the container is only GONE), so
+        // onSurfaceCreated() will not run again and the surface registry was cleared on exit.
+        // Ask the renderer to re-install the external-OES texture on its next GL frame.
+        theaterRenderer.requestVideoTextureRefresh()
         onResume()
     }
 

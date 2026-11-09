@@ -24,5 +24,7 @@ plugins {
 }
 
 include ":app"
-include ":cardboard-sdk"
-project(":cardboard-sdk").projectDir = file("${rootProject.projectDir}/../third_party/cardboard/sdk")
+// Cardboard SDK is consumed as a prebuilt AAR in app/libs (built by CI from
+// third_party/cardboard). It is deliberately NOT registered as a subproject:
+// that source tree uses AGP 9.x / Gradle 9.x and is incompatible with this
+// app's AGP 8.11.1 build.

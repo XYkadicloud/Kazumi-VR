@@ -1,161 +1,144 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show BuildContext, showDialog;
 import 'package:flutter/services.dart';
-import 'package:kazumi/pages/player/vr/vr_qr_dialog.dart';
-import 'package:kazumi/services/storage/storage.dart';
 
-/// Head-pose quaternion produced by Android's rotation-vector sensor.
-class VrPose {
-  const VrPose(this.x, this.y, this.z, this.w);
-
-  final double x;
-  final double y;
-  final double z;
-  final double w;
-
-  static const VrPose identity = VrPose(0.0, 0.0, 0.0, 1.0);
-}
-
-/// Flutter-side coordinator for VR mode.
+/// Flutter facade over the NATIVE Google Cardboard theatre.
 ///
-/// Rendering happens entirely in Flutter: both eyes sample the same media_kit
-/// [VideoController], so no EGL context sharing is needed. The native side is a
-/// thin bridge that only streams sensor poses and raw gamepad events.
+/// All rendering, head tracking, lens distortion, the in-VR GL menu and every
+/// gamepad action live in the Android side (`com.example.kazumi.vr.*`). In
+/// particular there is NO Flutter VR overlay: while VR is enabled a native
+/// CardboardView covers the whole window and all touch/key input is consumed
+/// by VrSession.
 ///
-/// The public method names are kept compatible with the settings page and the
-/// player panel, which were written before the renderer was moved to Flutter.
+/// Settings have exactly ONE authoritative store: native `VrSettingsStore`
+/// (SharedPreferences "opennow_vr_settings"). The 「内容与偏好 → VR 设置」 page
+/// reads it with `getSettings`, writes patches with `updateSettings`, and the
+/// in-headset GL menu writes to the same store. MainActivity pushes
+/// `onSettingsChanged` / `onVrStateChanged` back here so both surfaces always
+/// agree, including changes made with a gamepad while wearing the headset.
 class VRService {
   VRService._();
   static final VRService instance = VRService._();
 
   static const MethodChannel _channel = MethodChannel('com.predidit.kazumi/vr');
-  static const EventChannel _poseChannel =
-      EventChannel('com.predidit.kazumi/vr/pose');
-  static const EventChannel _inputChannel =
-      EventChannel('com.predidit.kazumi/vr/input');
 
   final ValueNotifier<bool> enabled = ValueNotifier<bool>(false);
-  final ValueNotifier<VrPose> pose = ValueNotifier<VrPose>(VrPose.identity);
   final ValueNotifier<Map<String, dynamic>> settings =
       ValueNotifier<Map<String, dynamic>>(<String, dynamic>{});
   final ValueNotifier<double> videoAspect = ValueNotifier<double>(16.0 / 9.0);
 
-  final StreamController<Map<String, dynamic>> _inputController =
-      StreamController<Map<String, dynamic>>.broadcast();
-
-  /// Raw gamepad events: {type, keyCode, action, axisX, axisY, hatX, hatY, ...}.
-  Stream<Map<String, dynamic>> get inputStream => _inputController.stream;
-
   bool _initialized = false;
-  StreamSubscription<dynamic>? _poseSub;
-  StreamSubscription<dynamic>? _inputSub;
-  VrPose _center = VrPose.identity;
 
-  VrPose get center => _center;
+  bool get _nativeAvailable =>
+      defaultTargetPlatform == TargetPlatform.android;
+
+  /// Mirrors `VrSettings.DEFAULT`. Used only as a fallback before the native
+  /// store answers (or on non-Android platforms), never as a second data source.
+  static const Map<String, dynamic> defaults = <String, dynamic>{
+    'screenScale': 1.0,
+    'screenDistanceMeters': 2.2,
+    'brightness': 1.0,
+    'curvature': 0.0,
+    'screenVerticalOffset': 0.0,
+    'viewerMode': 'CARDBOARD',
+    'headTrackingEnabled': true,
+    'headTrackingSensitivity': 1.0,
+    'gamepadDeadZone': 0.20,
+    'menuRepeatMs': 140,
+    'showStatus': true,
+    'showCenterAlignmentLine': false,
+    'horizontalMirror': false,
+    'verticalFlip': false,
+    'backgroundEnabled': false,
+    'backgroundImageUri': '',
+    'backgroundBrightness': 1.0,
+    'ipdScale': 1.0,
+    'screenFillMode': 'FILL',
+    'zoomScale': 1.35,
+    'passthroughEnabled': false,
+    'passthroughCameraFacing': 'BACK',
+    'passthroughOpacity': 1.0,
+    'passthroughWindowScale': 0.85,
+    'passthroughAspect': 'FOUR_THREE',
+    'passthroughMode': 'OVERLAY',
+    'passthroughResolution': 'P480',
+    'passthroughFrameRate': 'FPS_30',
+    'passthroughRotation': 'AUTO',
+    'passthroughMirror': false,
+    'passthroughHeadLocked': false,
+  };
 
   Future<void> initialize() async {
     if (_initialized) return;
     _initialized = true;
-    settings.value = _readSettings();
-    enabled.value = GStorage.getSetting<bool>(SettingsKeys.vrEnabled);
+    settings.value = Map<String, dynamic>.unmodifiable(defaults);
+    if (!_nativeAvailable) return;
+    _channel.setMethodCallHandler(_onNativeEvent);
+    await refreshFromNative();
+  }
+
+  /// Re-reads the native state (settings + on/off). Safe after hot restart.
+  Future<void> refreshFromNative() async {
+    if (!_nativeAvailable) return;
     try {
-      _poseSub = _poseChannel.receiveBroadcastStream().listen(
-            _onPose,
-            onError: (Object error) {},
-          );
-      _inputSub = _inputChannel.receiveBroadcastStream().listen(
-            _onInput,
-            onError: (Object error) {},
-          );
+      final dynamic raw = await _channel.invokeMethod<dynamic>('getSettings');
+      if (raw is Map) {
+        settings.value = _merge(raw);
+      }
+      final dynamic active =
+          await _channel.invokeMethod<bool>('isVrActive');
+      if (active is bool) enabled.value = active;
+    } on MissingPluginException {
+      // VR native bridge is Android-only.
+    } on PlatformException {
+      // Keep the fallback defaults; the settings page stays usable.
     } catch (_) {
-      // EventChannels are Android-only. On other platforms sensors are absent.
+      // Never let a channel failure break normal playback.
     }
   }
 
-  /// Cancels the native event subscriptions (teardown / hot restart).
-  /// Keeping these subscriptions in fields also prevents duplicate listeners
-  /// when [initialize] is called again after a dispose.
-  Future<void> dispose() async {
-    final poseSub = _poseSub;
-    final inputSub = _inputSub;
-    _poseSub = null;
-    _inputSub = null;
-    await poseSub?.cancel();
-    await inputSub?.cancel();
-    _initialized = false;
-  }
-
-  void _onPose(dynamic event) {
-    if (event is! List || event.length < 4) return;
-    pose.value = VrPose(
-      (event[0] as num).toDouble(),
-      (event[1] as num).toDouble(),
-      (event[2] as num).toDouble(),
-      (event[3] as num).toDouble(),
-    );
-  }
-
-  void _onInput(dynamic event) {
-    if (event is Map) {
-      _inputController.add(Map<String, dynamic>.from(event));
+  Future<dynamic> _onNativeEvent(MethodCall call) async {
+    switch (call.method) {
+      case 'onVrStateChanged':
+        final Object? args = call.arguments;
+        if (args is Map && args['enabled'] is bool) {
+          enabled.value = args['enabled'] as bool;
+        }
+        break;
+      case 'onSettingsChanged':
+        final Object? args = call.arguments;
+        if (args is Map) {
+          settings.value = _merge(args);
+        }
+        break;
     }
+    return null;
   }
 
-  Map<String, dynamic> _readSettings() {
-    return <String, dynamic>{
-      'screenScale': GStorage.getSetting<double>(SettingsKeys.vrScreenScale),
-      'screenDistanceMeters':
-          GStorage.getSetting<double>(SettingsKeys.vrScreenDistanceMeters),
-      'screenVerticalOffset':
-          GStorage.getSetting<double>(SettingsKeys.vrScreenVerticalOffset),
-      'curvature': GStorage.getSetting<double>(SettingsKeys.vrCurvature),
-      'viewerMode':
-          GStorage.getSetting<int>(SettingsKeys.vrViewerMode) == 0
-              ? 'CARDBOARD'
-              : 'MONO',
-      'headTrackingEnabled':
-          GStorage.getSetting<bool>(SettingsKeys.vrHeadTrackingEnabled),
-      'headTrackingSensitivity':
-          GStorage.getSetting<double>(SettingsKeys.vrHeadTrackingSensitivity),
-      'ipdScale': GStorage.getSetting<double>(SettingsKeys.vrIpdScale),
-      'screenFillMode':
-          GStorage.getSetting<int>(SettingsKeys.vrScreenFillMode) == 0
-              ? 'DISTORTED'
-              : 'FILL',
-      'zoomScale': GStorage.getSetting<double>(SettingsKeys.vrZoomScale),
-      'backgroundEnabled':
-          GStorage.getSetting<bool>(SettingsKeys.vrBackgroundEnabled),
-      'backgroundImageUri':
-          GStorage.getSetting<String>(SettingsKeys.vrBackgroundImageUri),
-      'backgroundBrightness':
-          GStorage.getSetting<double>(SettingsKeys.vrBackgroundBrightness),
-      'brightness': GStorage.getSetting<double>(SettingsKeys.vrBrightness),
-      'horizontalMirror':
-          GStorage.getSetting<bool>(SettingsKeys.vrHorizontalMirror),
-      'verticalFlip': GStorage.getSetting<bool>(SettingsKeys.vrVerticalFlip),
-      'showStatus': GStorage.getSetting<bool>(SettingsKeys.vrShowStatus),
-      'showCenterAlignmentLine':
-          GStorage.getSetting<bool>(SettingsKeys.vrShowCenterAlignmentLine),
-      'showDebugOverlay':
-          GStorage.getSetting<bool>(SettingsKeys.vrShowDebugOverlay),
-      'gamepadDeadZone':
-          GStorage.getSetting<double>(SettingsKeys.vrGamepadDeadZone),
-      'menuRepeatMs': GStorage.getSetting<int>(SettingsKeys.vrMenuRepeatMs),
-    };
-  }
+  Map<String, dynamic> _merge(Map<dynamic, dynamic> raw) =>
+      Map<String, dynamic>.unmodifiable(<String, dynamic>{
+        ...defaults,
+        ...Map<String, dynamic>.from(raw),
+      });
 
   Future<void> setVREnabled(bool value) async {
     await initialize();
-    await GStorage.putSetting<bool>(SettingsKeys.vrEnabled, value);
+    // Optimistic update so the player button reacts instantly; the native
+    // onVrStateChanged callback is the authoritative confirmation (it also
+    // fires when the user exits VR from inside the headset with BACK).
     enabled.value = value;
+    if (!_nativeAvailable) return;
     try {
-      await _channel.invokeMethod<void>('setVrActive', <String, dynamic>{
-        'active': value,
-      });
+      final dynamic result = await _channel.invokeMethod<bool>(
+        'setVrActive',
+        <String, dynamic>{'active': value},
+      );
+      if (result is bool) enabled.value = result;
+    } on MissingPluginException {
+      enabled.value = false;
+    } on PlatformException {
+      enabled.value = false;
     } catch (_) {
-      // Missing plugin on non-Android platforms; VR rendering still works.
+      enabled.value = false;
     }
   }
 
@@ -169,42 +152,65 @@ class VRService {
     return enabled.value;
   }
 
-  /// Retained for compatibility. The overlay now reads the VideoController
-  /// directly, so the aspect ratio is only kept as local state.
+  /// Sends the decoded frame size to the native renderer so the theatre quad
+  /// keeps the video's real aspect ratio instead of stretching it.
   Future<void> setVideoAspect(int width, int height) async {
     if (width <= 0 || height <= 0) return;
-    final aspect = width / height;
+    final double aspect = width / height;
     if (aspect.isNaN || aspect.isInfinite) return;
     videoAspect.value = aspect.clamp(0.25, 8.0).toDouble();
+    if (!_nativeAvailable) return;
+    try {
+      await _channel.invokeMethod<void>(
+        'setVideoAspect',
+        <String, dynamic>{'width': width, 'height': height},
+      );
+    } catch (_) {
+      // Non-fatal: the renderer keeps its last known aspect.
+    }
   }
 
   Future<void> recenter() async {
-    _center = pose.value;
+    await initialize();
+    if (!_nativeAvailable) return;
+    try {
+      await _channel.invokeMethod<void>('recenter');
+    } catch (_) {
+      // Ignore on unsupported platforms.
+    }
   }
 
-  /// Import Cardboard viewer parameters. See [VrQrImportDialog].
-  Future<void> scanQrCode(BuildContext context) async {
-    final raw = await showDialog<String>(
-      context: context,
-      builder: (BuildContext ctx) => const VrQrImportDialog(),
-    );
-    if (raw == null || raw.isEmpty) return;
-    final patch = VrQrParser.parse(raw);
-    if (patch.isNotEmpty) await updateSettings(patch);
+  /// Launches the official Cardboard SDK QR scanner, which persists the viewer
+  /// profile (lens distortion / FOV / IPD) used by the native renderer.
+  Future<void> scanQrCode() async {
+    await initialize();
+    if (!_nativeAvailable) return;
+    try {
+      await _channel.invokeMethod<void>('scanQrCode');
+    } catch (_) {
+      // Ignore on unsupported platforms.
+    }
   }
 
-  /// Apply a settings patch locally and mirror it into GStorage.
-  /// No native call is needed: the Flutter overlay listens to [settings].
+  /// Applies a partial patch to the SINGLE native settings store.
   Future<void> updateSettings(Map<String, dynamic> patch) async {
     await initialize();
-    final next = Map<String, dynamic>.from(settings.value)..addAll(patch);
-    settings.value = next;
-    for (final entry in patch.entries) {
-      try {
-        await _persist(entry.key, entry.value);
-      } catch (_) {
-        // Unknown key (e.g. viewerName) is display-only and need not persist.
-      }
+    settings.value = Map<String, dynamic>.unmodifiable(
+      <String, dynamic>{...settings.value, ...patch},
+    );
+    if (!_nativeAvailable) return;
+    try {
+      final dynamic raw = await _channel.invokeMethod<dynamic>(
+        'updateSettings',
+        <String, dynamic>{'settings': patch},
+      );
+      if (raw is Map) settings.value = _merge(raw);
+    } on MissingPluginException {
+      // Local optimistic value remains.
+    } on PlatformException {
+      // Local optimistic value remains.
+    } catch (_) {
+      // Local optimistic value remains.
     }
   }
 
@@ -213,94 +219,19 @@ class VRService {
     return Map<String, dynamic>.from(settings.value);
   }
 
-  /// Name kept for compatibility; settings now live in Flutter only.
-  Future<void> syncSettingsToNative() async {
-    await initialize();
-    settings.value = _readSettings();
-  }
+  /// Kept for API compatibility. There is no longer a separate Flutter copy
+  /// to push: re-reading the native store is all that is needed.
+  Future<void> syncSettingsToNative() => refreshFromNative();
 
-  Future<void> _persist(String key, dynamic v) async {
-    switch (key) {
-      case 'screenScale':
-        await GStorage.putSetting<double>(
-            SettingsKeys.vrScreenScale, _d(v));
-        break;
-      case 'screenDistanceMeters':
-        await GStorage.putSetting<double>(
-            SettingsKeys.vrScreenDistanceMeters, _d(v));
-        break;
-      case 'screenVerticalOffset':
-        await GStorage.putSetting<double>(
-            SettingsKeys.vrScreenVerticalOffset, _d(v));
-        break;
-      case 'curvature':
-        await GStorage.putSetting<double>(SettingsKeys.vrCurvature, _d(v));
-        break;
-      case 'viewerMode':
-        await GStorage.putSetting<int>(
-            SettingsKeys.vrViewerMode, v == 'MONO' ? 1 : 0);
-        break;
-      case 'headTrackingEnabled':
-        await GStorage.putSetting<bool>(
-            SettingsKeys.vrHeadTrackingEnabled, v as bool);
-        break;
-      case 'headTrackingSensitivity':
-        await GStorage.putSetting<double>(
-            SettingsKeys.vrHeadTrackingSensitivity, _d(v));
-        break;
-      case 'ipdScale':
-        await GStorage.putSetting<double>(SettingsKeys.vrIpdScale, _d(v));
-        break;
-      case 'screenFillMode':
-        await GStorage.putSetting<int>(
-            SettingsKeys.vrScreenFillMode, v == 'FILL' ? 1 : 0);
-        break;
-      case 'zoomScale':
-        await GStorage.putSetting<double>(SettingsKeys.vrZoomScale, _d(v));
-        break;
-      case 'backgroundEnabled':
-        await GStorage.putSetting<bool>(
-            SettingsKeys.vrBackgroundEnabled, v as bool);
-        break;
-      case 'backgroundImageUri':
-        await GStorage.putSetting<String>(
-            SettingsKeys.vrBackgroundImageUri, v as String);
-        break;
-      case 'backgroundBrightness':
-        await GStorage.putSetting<double>(
-            SettingsKeys.vrBackgroundBrightness, _d(v));
-        break;
-      case 'brightness':
-        await GStorage.putSetting<double>(SettingsKeys.vrBrightness, _d(v));
-        break;
-      case 'horizontalMirror':
-        await GStorage.putSetting<bool>(
-            SettingsKeys.vrHorizontalMirror, v as bool);
-        break;
-      case 'verticalFlip':
-        await GStorage.putSetting<bool>(SettingsKeys.vrVerticalFlip, v as bool);
-        break;
-      case 'showStatus':
-        await GStorage.putSetting<bool>(SettingsKeys.vrShowStatus, v as bool);
-        break;
-      case 'showCenterAlignmentLine':
-        await GStorage.putSetting<bool>(
-            SettingsKeys.vrShowCenterAlignmentLine, v as bool);
-        break;
-      case 'showDebugOverlay':
-        await GStorage.putSetting<bool>(
-            SettingsKeys.vrShowDebugOverlay, v as bool);
-        break;
-      case 'gamepadDeadZone':
-        await GStorage.putSetting<double>(
-            SettingsKeys.vrGamepadDeadZone, _d(v));
-        break;
-      case 'menuRepeatMs':
-        await GStorage.putSetting<int>(
-            SettingsKeys.vrMenuRepeatMs, (v as num).toInt());
-        break;
+  /// Cancels the native callback handler (teardown / hot restart).
+  Future<void> dispose() async {
+    if (_nativeAvailable) {
+      try {
+        _channel.setMethodCallHandler(null);
+      } catch (_) {
+        // Ignore.
+      }
     }
+    _initialized = false;
   }
-
-  static double _d(dynamic v) => (v as num).toDouble();
 }

@@ -38,7 +38,6 @@ import 'package:kazumi/services/player/audio_controller.dart';
 import 'package:kazumi/services/player/timed_shutdown_service.dart';
 import 'package:kazumi/utils/device.dart';
 import 'package:kazumi/services/platform/player_menu_service.dart';
-import 'package:kazumi/pages/player/vr/vr_overlay.dart';
 import 'package:kazumi/services/platform/vr_service.dart';
 
 class PlayerItem extends StatefulWidget {
@@ -336,6 +335,17 @@ class _PlayerItemState extends State<PlayerItem>
       }
       unawaited(_updateAndroidPIPActions());
     });
+  }
+
+  /// Pushes the decoded frame size to the native Cardboard renderer so the VR
+  /// theatre quad keeps the real aspect ratio instead of stretching. Cheap and
+  /// idempotent: only fires when the reaction observes a size change.
+  Future<void> _syncVrVideoAspect() async {
+    if (!Platform.isAndroid) return;
+    final int width = playerController.debug.playerWidth;
+    final int height = playerController.debug.playerHeight;
+    if (width <= 0 || height <= 0) return;
+    await VRService.instance.setVideoAspect(width, height);
   }
 
   Future<void> _syncPIPAspectWhenVideoSizeReady() async {
@@ -1277,7 +1287,12 @@ class _PlayerItemState extends State<PlayerItem>
           '${playerController.debug.playerWidth}:${playerController.debug.playerHeight}',
       (_) {
         unawaited(_syncPIPAspectWhenVideoSizeReady());
+        // The native theatre quad must use the DECODED frame aspect, otherwise a
+        // 21:9 episode is stretched onto the 16:9 mesh. fireImmediately covers the
+        // case where the first frame size is already known when this runs.
+        unawaited(_syncVrVideoAspect());
       },
+      fireImmediately: true,
     );
     if (Platform.isAndroid) {
       PipUtils.initPipHandler(
@@ -1649,23 +1664,10 @@ class _PlayerItemState extends State<PlayerItem>
                               },
                             ),
                     ),
-                    // VR theatre overlay. It is only built while VR is on,
-                    // so normal playback (video, danmaku, controls, gestures)
-                    // stays completely untouched when VR is disabled.
-                    Positioned.fill(
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: VRService.instance.enabled,
-                        builder:
-                            (BuildContext ctx, bool vrEnabled, Widget? child) {
-                          if (!vrEnabled || !Platform.isAndroid) {
-                            return const SizedBox.shrink();
-                          }
-                          return VrOverlay(
-                            playerController: playerController,
-                          );
-                        },
-                      ),
-                    ),
+                    // VR is rendered by the native CardboardView, which MainActivity
+                    // layers above the whole window. Flutter deliberately builds NO
+                    // VR overlay here: while the headset is on, all 2D UI is hidden
+                    // and every input event is owned by VrSession.
                   ]),
                 ),
               ),

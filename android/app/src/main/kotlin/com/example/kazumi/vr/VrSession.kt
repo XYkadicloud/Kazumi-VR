@@ -77,6 +77,21 @@ object VrSession {
      */
     @Volatile var requestCameraPermission: (() -> Unit)? = null
 
+    /**
+     * Set by MainActivity. Fired for EVERY VR on/off edge, including the ones initiated INSIDE
+     * the headset ("退出 VR" menu row / BACK key / L1+R1 entry). This is what keeps the native
+     * CardboardView overlay and Flutter's `VRService.enabled` in sync with the single source of
+     * truth. MainActivity marshals the callback onto the UI thread.
+     */
+    @Volatile var onEnabledChanged: ((Boolean) -> Unit)? = null
+
+    /**
+     * Set by MainActivity. Fired after every settings write — including the 34 menu rows the
+     * user changes with a gamepad while the phone is inside the Cardboard box. Flutter's
+     * 「内容与偏好 → VR 设置」 page listens and rebuilds, so there is no second settings store.
+     */
+    @Volatile var onSettingsChanged: ((VrSettings) -> Unit)? = null
+
     private var store: VrSettingsStore? = null
     private val router = VrGamepadRouter()
 
@@ -118,6 +133,7 @@ object VrSession {
             router.reset()
             VrVideoSurfaceRegistry.clear()
         }
+        onEnabledChanged?.invoke(value)
     }
 
     fun toggle() = setEnabled(!_enabled.value)
@@ -180,6 +196,7 @@ object VrSession {
         // MainActivity restores the switch to off and the renderer falls back to black. Fires only
         // on the OFF -> ON edge, so re-saving an already-on setting never re-prompts.
         if (!wasPassthroughEnabled && clean.passthroughEnabled) requestCameraPermission?.invoke()
+        onSettingsChanged?.invoke(clean)
     }
 
     /**

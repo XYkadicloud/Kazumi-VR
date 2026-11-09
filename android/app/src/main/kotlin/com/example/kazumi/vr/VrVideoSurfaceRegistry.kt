@@ -2,60 +2,36 @@ package com.example.kazumi.vr
 
 import android.graphics.SurfaceTexture
 import android.view.Surface
-import java.util.concurrent.atomic.AtomicBoolean
+import com.alexmercerind.media_kit_video.VrSurfaceRegistry
 
 /**
- * Bridge between the streaming decoder and the VR GL thread.
+ * VR GL thread ↔ libmpv video output bridge.
  *
- * When VR is active, the host app asks this registry for a [Surface] to feed video frames into.
- * The GL thread consumes those frames via [consumeFrameAvailable] → [SurfaceTexture.updateTexImage]
- * and renders them onto the theatre quad inside [VrTheaterRenderer].
+ * The actual state lives in the vendored media_kit_video plugin module: Flutter plugin modules
+ * cannot see app classes (and Kotlin `internal` is module-scoped), but the app CAN see plugin
+ * classes. Keeping ONE shared registry is what lets `VideoOutput` repoint `--wid` at the
+ * SurfaceTexture created here by VrTheaterRenderer.setupVideoTexture().
  *
- * Lifecycle rule: install()/clear() may be called from any thread, but updateTexImage() and
- * getTransformMatrix() MUST be called on the GL thread that created the SurfaceTexture.
+ * Lifecycle rule: install()/clear() may be called from any thread, but `updateTexImage()` and
+ * `getTransformMatrix()` MUST run on the GL thread that created the SurfaceTexture.
  */
 internal object VrVideoSurfaceRegistry {
-    @Volatile private var surfaceTexture: SurfaceTexture? = null
-    @Volatile private var surface: Surface? = null
-    @Volatile private var textureId: Int = 0
+    val isFrameAvailable: Boolean get() = VrSurfaceRegistry.isFrameAvailable()
 
-    private val frameAvailable = AtomicBoolean(false)
+    fun currentTexture(): SurfaceTexture? = VrSurfaceRegistry.currentTexture()
 
-    /** Returns true when a new decoder frame has arrived since the last consume. */
-    val isFrameAvailable: Boolean get() = frameAvailable.get()
+    fun currentTextureId(): Int = VrSurfaceRegistry.currentTextureId()
 
-    fun currentTexture(): SurfaceTexture? = surfaceTexture
+    fun currentSurface(): Surface? = VrSurfaceRegistry.currentSurface()
 
-    fun currentTextureId(): Int = textureId
+    fun markFrameAvailable() = VrSurfaceRegistry.markFrameAvailable()
 
-    /** Returns the raw Surface that the decoder should write to, or null if no texture is installed. */
-    fun currentSurface(): Surface? = surface
-
-    /** Called by the SurfaceTexture listener (decoder thread). */
-    fun markFrameAvailable() {
-        frameAvailable.set(true)
-    }
-
-    /** Returns true at most once per newly available frame. */
-    fun consumeFrameAvailable(): Boolean = frameAvailable.compareAndSet(true, false)
+    fun consumeFrameAvailable(): Boolean = VrSurfaceRegistry.consumeFrameAvailable()
 
     /** Called from VrTheaterRenderer.onSurfaceCreated (GL thread). */
-    fun install(id: Int, texture: SurfaceTexture, output: Surface) {
-        clear()
-        textureId = id
-        surfaceTexture = texture
-        surface = output
-    }
+    fun install(id: Int, texture: SurfaceTexture, output: Surface) =
+        VrSurfaceRegistry.install(id, texture, output)
 
-    /**
-     * Detaches the decoder target. Clearing here only drops references so the decoder immediately
-     * falls back to the normal 2D surface. VrTheaterRenderer owns the actual Surface /
-     * SurfaceTexture / GL texture release in releaseVideoTexture() / onRendererShutdown().
-     */
-    fun clear() {
-        surface = null
-        surfaceTexture = null
-        textureId = 0
-        frameAvailable.set(false)
-    }
+    /** VR off / GL surface gone: libmpv falls back to the normal 2D Flutter surface. */
+    fun clear() = VrSurfaceRegistry.clear()
 }

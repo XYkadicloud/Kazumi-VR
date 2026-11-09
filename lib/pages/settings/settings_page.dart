@@ -40,6 +40,12 @@ const List<_SettingsGroup> _settingsGroups = [
         path: '/settings/player',
       ),
       _SettingsCategory(
+        label: 'VR 设置',
+        description: 'Cardboard 纸盒、手柄与透视',
+        icon: Icons.view_in_ar_rounded,
+        path: '/settings/vr',
+      ),
+      _SettingsCategory(
         label: '弹幕设置',
         description: '弹幕来源与显示效果',
         icon: Icons.subtitles_rounded,

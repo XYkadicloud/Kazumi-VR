@@ -77,6 +77,11 @@
             </intent-filter>
         </receiver>
     </application>
+    <!-- Cardboard VR: QR viewer scanning + optional camera passthrough. Optional feature so
+         the app remains installable on devices without a camera (e.g. TV boxes). -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

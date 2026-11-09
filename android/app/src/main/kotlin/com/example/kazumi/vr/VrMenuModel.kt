@@ -169,6 +169,37 @@ object VrMenuModel {
     fun clampToPage(index: Int, page: VrMenuPage): Int =
         index.coerceIn(firstIndexOf(page), lastIndexOf(page))
 
+    /**
+     * Rows the fixed-size menu bitmap can show at once. The panel is 768x432 px; rows start at
+     * y=154 with a 27 px pitch, so 10 rows end at y=424 and stay inside the bitmap. The menu
+     * SCROLLS instead of growing, therefore adding settings in the future can never push rows off
+     * the bottom of the panel again (the 2026-11-09 "设置选项超出了整个设置页面" report).
+     */
+    const val VISIBLE_ROWS = 10
+
+    /**
+     * Pure, STATELESS scroll window for the active page, expressed as ROW indices relative to
+     * [itemsFor] (0-based). The window only moves down when the selected row passes its bottom
+     * edge, and never past the point where the final row is visible — exactly like a normal list.
+     *
+     * Stateless is deliberate: there is no scroll offset to persist across page switches, VR
+     * exit/re-enter or process death, and the selected row is ALWAYS drawn. It also means an
+     * arbitrarily long page (20, 50, 200 rows) still works without any layout change.
+     */
+    fun visibleWindowFor(
+        page: VrMenuPage,
+        selectedIndex: Int,
+        visibleRows: Int = VISIBLE_ROWS,
+    ): IntRange {
+        require(visibleRows > 0) { "visibleRows must be positive" }
+        val count = itemsFor(page).size
+        val rows = minOf(visibleRows, count)
+        val selectedRow = (selectedIndex - firstIndexOf(page)).coerceIn(0, count - 1)
+        val maxStart = (count - rows).coerceAtLeast(0)
+        val start = (selectedRow - (rows - 1)).coerceIn(0, maxStart)
+        return start until (start + rows)
+    }
+
     fun rawValue(settings: VrSettings, id: VrMenuItemId): Float = when (id) {
         VrMenuItemId.SCREEN_SCALE -> settings.screenScale
         VrMenuItemId.SCREEN_DISTANCE -> settings.screenDistanceMeters

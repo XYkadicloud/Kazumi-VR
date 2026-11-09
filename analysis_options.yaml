@@ -15,3 +15,7 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    # Vendored third-party sources are separate packages / native SDK trees.
+    # They carry their own analysis options and must not be linted as app code.
+    - vendor/**
+    - third_party/**

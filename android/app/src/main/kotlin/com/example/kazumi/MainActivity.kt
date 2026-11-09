@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.BroadcastReceiver
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.app.RemoteAction
@@ -30,8 +31,12 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import com.ryanheise.audioservice.AudioService
 import com.ryanheise.audioservice.AudioServiceActivity
+import com.example.kazumi.vr.VrKeys
 import com.example.kazumi.vr.VrSession
+import com.example.kazumi.vr.VrSettingsCodec
 import com.example.kazumi.vr.VrTheaterView
+import android.util.Log
+import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
@@ -86,46 +91,46 @@ class MainActivity: AudioServiceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerPipActionReceiverIfNeeded()
-
-        // Initialize VR session singleton
-        VrSession.attach(this)
-
-        // Wire up callbacks that VrSession needs to talk back to MainActivity
-        VrSession.onScanQr = { scanCardboardViewerQr() }
-        VrSession.onRecenter = { vrView?.recenter() }
-        VrSession.onVrMenuClosed = { /* input ownership already with game */ }
-        VrSession.requestCameraPermission = { requestCameraPermission() }
-
-        // Set up VR method channel for Flutter ↔ native communication
-        setupVrChannel()
-
-        // Create VR container (fullscreen overlay for CardboardView)
+        // The CardboardView is a plain Android View layered ABOVE the Flutter content view. VR
+        // therefore keeps the same Activity, FlutterEngine and media_kit Player; the decoder is
+        // never restarted and the 2D playback chain stays untouched.
         createVrContainer()
     }
 
-    private fun setupVrChannel() {
-        vrChannel = MethodChannel(flutterEngine?.dartExecutor?.binaryMessenger ?: return, VR_CHANNEL)
+    private fun setupVrChannel(engine: FlutterEngine) {
+        vrChannel = MethodChannel(engine.dartExecutor.binaryMessenger, VR_CHANNEL)
         vrChannel?.setMethodCallHandler { call, result ->
             when (call.method) {
                 "setVrActive" -> {
-                    val active = call.argument<Boolean>("active") ?: false
-                    setVrActive(active)
-                    result.success(null)
+                    // VrSession is the single source of truth. onEnabledChanged drives the
+                    // CardboardView overlay, so an exit from inside the headset also updates
+                    // Flutter's VRService.enabled.
+                    VrSession.setEnabled(call.argument<Boolean>("active") ?: false)
+                    result.success(VrSession.enabled.value)
                 }
-                "isVrActive" -> {
-                    result.success(vrEnabled)
-                }
+                "isVrActive" -> result.success(VrSession.enabled.value)
+                "getSettings" -> result.success(VrSettingsCodec.toMap(VrSession.settings.value))
                 "updateSettings" -> {
-                    val settings = call.argument<Map<String, Any>>("settings")
-                    if (settings != null) {
-                        val converted = convertSettingsMap(settings)
-                        VrSession.updateSettings(converted)
-                        vrView?.applySettings(converted)
-                    }
+                    val patch = call.argument<Map<String, Any?>>("settings") ?: emptyMap()
+                    VrSession.updateSettings(
+                        VrSettingsCodec.fromMap(VrSession.settings.value, patch),
+                    )
+                    vrView?.applySettings(VrSession.settings.value)
+                    result.success(VrSettingsCodec.toMap(VrSession.settings.value))
+                }
+                "setVideoAspect" -> {
+                    VrSession.setVideoAspect(
+                        call.argument<Int>("width") ?: 0,
+                        call.argument<Int>("height") ?: 0,
+                    )
                     result.success(null)
                 }
                 "recenter" -> {
                     VrSession.recenter()
+                    result.success(null)
+                }
+                "scanQrCode" -> {
+                    scanCardboardViewerQr()
                     result.success(null)
                 }
                 else -> result.notImplemented()
@@ -133,83 +138,91 @@ class MainActivity: AudioServiceActivity() {
         }
     }
 
-    private fun convertSettingsMap(map: Map<String, Any>): com.example.kazumi.vr.VrSettings {
-        // Convert Flutter settings map to VrSettings data class
-        // Using defaults for anything not present
-        val s = com.example.kazumi.vr.VrSettings.DEFAULT
-        return s.copy(
-            screenScale = (map["screenScale"] as? Double)?.toFloat() ?: s.screenScale,
-            screenDistanceMeters = (map["screenDistanceMeters"] as? Double)?.toFloat() ?: s.screenDistanceMeters,
-            brightness = (map["brightness"] as? Double)?.toFloat() ?: s.brightness,
-            curvature = (map["curvature"] as? Double)?.toFloat() ?: s.curvature,
-            viewerMode = try {
-                com.example.kazumi.vr.VrViewerMode.valueOf(map["viewerMode"] as? String ?: "CARDBOARD")
-            } catch (e: Exception) {
-                com.example.kazumi.vr.VrViewerMode.CARDBOARD
-            },
-            passthroughEnabled = map["passthroughEnabled"] as? Boolean ?: s.passthroughEnabled,
-        )
-    }
-
+    /** Idempotent: configureFlutterEngine runs BEFORE the onCreate body, so Dart can call
+     *  setVrActive() before onCreate had a chance to add the container. */
     private fun createVrContainer() {
+        if (vrContainer != null) return
         vrContainer = FrameLayout(this).apply {
             id = View.generateViewId()
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+                FrameLayout.LayoutParams.MATCH_PARENT,
             )
+            // Opaque black behind the Cardboard GL surface: no 2D UI may bleed through the
+            // headset. The GL SurfaceView itself is promoted with setZOrderOnTop(true).
+            setBackgroundColor(Color.BLACK)
+            isClickable = true
             visibility = View.GONE
         }
-        window.decorView.addView(vrContainer, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT
-        ))
+        window.decorView.addView(
+            vrContainer,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+            ),
+        )
     }
 
-    private fun setVrActive(enabled: Boolean) {
-        if (vrEnabled == enabled) return
-        vrEnabled = enabled
-        VrSession.setEnabled(enabled)
-
-        val container = vrContainer ?: return
-        val view = vrView
-
-        if (enabled) {
-            // Show VR view
-            if (view == null) {
-                vrView = VrTheaterView(this).also { v ->
-                    container.addView(v, FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT
-                    ))
+    /** Called from VrSession.onEnabledChanged; always marshalled onto the UI thread. */
+    private fun applyVrEnabled(enabled: Boolean) {
+        runOnUiThread {
+            vrEnabled = enabled
+            if (vrContainer == null) createVrContainer()
+            val container = vrContainer ?: return@runOnUiThread
+            if (enabled) {
+                if (vrView == null) {
+                    vrView = VrTheaterView(this).also { v ->
+                        container.addView(
+                            v,
+                            FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                            ),
+                        )
+                    }
                 }
+                container.visibility = View.VISIBLE
+                container.bringToFront()
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+                WindowCompat.getInsetsController(window, window.decorView).let { controller ->
+                    controller.systemBarsBehavior =
+                        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    controller.hide(WindowInsetsCompat.Type.systemBars())
+                }
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                // Cardboard's head pose assumes a landscape display. configChanges declares
+                // orientation, so this rotates in-place without recreating the Activity or the
+                // media_kit decoder.
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                vrView?.start()
+            } else {
+                vrView?.stop()
+                container.visibility = View.GONE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                applySystemBarsState()
             }
-            container.visibility = View.VISIBLE
-            // Hide system bars for immersive VR
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            WindowInsetsControllerCompat(window, container).let { controller ->
-                controller.hide(WindowInsetsCompat.Type.systemBars())
-                controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_HIDE
-            }
-            // Keep screen on
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            vrView?.start()
-            // Notify Flutter
-            vrChannel?.invokeMethod("onVrStateChanged", mapOf("enabled" to true))
-        } else {
-            vrView?.stop()
-            container.visibility = View.GONE
-            // Restore system bars
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            applySystemBarsState()
-            vrChannel?.invokeMethod("onVrStateChanged", mapOf("enabled" to false))
+            vrChannel?.invokeMethod("onVrStateChanged", mapOf("enabled" to enabled))
         }
     }
 
     private fun scanCardboardViewerQr() {
-        // Launch QR scanner activity (simplified - would need proper QR Activity setup)
-        // For now, just log; real implementation needs a QR scan Activity
-        android.util.Log.d("MainActivity", "QR scan requested - implement QR Activity here")
+        // The SDK's QR JNI (qr_code.cc) starts QrCodeCaptureActivity from the context_ that
+        // Initialize.initialize(context) installs. That call normally happens inside the
+        // CardboardViewApi constructor, which only exists once a VrTheaterView has been built.
+        // When the user scans from「内容与偏好 → VR 设置」before ever entering VR, context_ is
+        // still null and the static entry silently does nothing — so initialize explicitly.
+        try {
+            val view = vrView
+            if (view != null) {
+                view.scanViewerQrCode()
+            } else {
+                com.google.cardboard.sdk.Initialize.initialize(this)
+                com.google.cardboard.sdk.QrCode.scanQrCodeAndSaveDeviceParams()
+            }
+        } catch (t: Throwable) {
+            Log.w("MainActivity", "Cardboard QR scan unavailable", t)
+        }
     }
 
     private fun requestCameraPermission() {
@@ -238,7 +251,9 @@ class MainActivity: AudioServiceActivity() {
     }
 
     override fun onDestroy() {
-        setVrActive(false)
+        VrSession.onEnabledChanged = null
+        VrSession.onSettingsChanged = null
+        VrSession.setEnabled(false)
         vrView?.release()
         vrView = null
         vrContainer?.let {
@@ -262,11 +277,11 @@ class MainActivity: AudioServiceActivity() {
 
     override fun onResume() {
         super.onResume()
-        vrView?.start()
+        if (vrEnabled) vrView?.start()
     }
 
     override fun onPause() {
-        vrView?.stop()
+        if (vrEnabled) vrView?.stop()
         super.onPause()
     }
 
@@ -290,6 +305,25 @@ class MainActivity: AudioServiceActivity() {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        // configureFlutterEngine runs inside super.onCreate(), BEFORE our onCreate body, so
+        // the settings store, the VR container and all VrSession callbacks must be ready
+        // before Dart can call getSettings / setVrActive.
+        createVrContainer()
+        VrSession.attach(this)
+        VrSession.onScanQr = { scanCardboardViewerQr() }
+        VrSession.onRecenter = { vrView?.recenter() }
+        VrSession.onVrMenuClosed = { /* Flutter owns its own focus; nothing to hand back. */ }
+        VrSession.requestCameraPermission = { requestCameraPermission() }
+        VrSession.onEnabledChanged = { active -> applyVrEnabled(active) }
+        VrSession.onSettingsChanged = { settings ->
+            runOnUiThread {
+                vrView?.applySettings(settings)
+                vrChannel?.invokeMethod("onSettingsChanged", VrSettingsCodec.toMap(settings))
+            }
+        }
+        setupVrChannel(flutterEngine)
+
         downloadDirectoryHandler = DownloadDirectoryHandler(this)
         downloadDirectoryChannel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger, DownloadDirectoryHandler.CHANNEL
@@ -632,26 +666,47 @@ class MainActivity: AudioServiceActivity() {
 
     // ---- VR input forwarding ---------------------------------------------------------
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        // VR session owns input when enabled
-        if (VrSession.enabled.value && VrSession.onKeyEvent(event)) {
-            return true
-        }
+        // VrSession handles L1+R1 ENTRY while VR is off, and owns EVERY key once VR is on.
+        if (VrSession.onKeyEvent(event)) return true
+        // Nothing may reach the hidden 2D Flutter UI while the phone is inside the headset.
+        if (VrSession.enabled.value) return true
         return super.dispatchKeyEvent(event)
     }
 
     override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
         if (VrSession.enabled.value) {
-            // Handle triggers separately
-            val l2 = event.getAxisValue(com.example.kazumi.vr.VrKeys.AXIS_LTRIGGER)
-            val r2 = event.getAxisValue(com.example.kazumi.vr.VrKeys.AXIS_RTRIGGER)
+            val l2 = event.getAxisValue(VrKeys.AXIS_LTRIGGER)
+            val r2 = event.getAxisValue(VrKeys.AXIS_RTRIGGER)
             VrSession.onTriggerEvent(l2, r2)
-            // Also handle menu navigation
-            if (VrSession.menuOpen.value || VrSession.enabled.value) {
-                if (VrSession.onMotionEvent(event)) {
-                    return true
-                }
+            if (VrSession.onMotionEvent(event)) return true
+            // D-pad hat / stick events the menu did not consume must not drive the 2D UI.
+            if (event.isFromSource(InputDevice.SOURCE_JOYSTICK) ||
+                event.isFromSource(InputDevice.SOURCE_GAMEPAD) ||
+                event.isFromSource(InputDevice.SOURCE_DPAD)
+            ) {
+                return true
             }
         }
         return super.dispatchGenericMotionEvent(event)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        // Gamepad-only VR: a finger on the screen behind the cardboard box is never meaningful.
+        if (VrSession.enabled.value) return true
+        return super.dispatchTouchEvent(event)
+    }
+
+    /**
+     * Belt-and-braces exit path. dispatchKeyEvent() normally consumes BACK while VR is on, but a
+     * few OEM builds route the system back gesture straight here. Without this, BACK inside the
+     * headset could pop the Flutter route and leave the CardboardView covering a dead player.
+     */
+    @Suppress("DEPRECATION")
+    override fun onBackPressed() {
+        if (VrSession.enabled.value) {
+            VrSession.setEnabled(false)
+            return
+        }
+        super.onBackPressed()
     }
 }

@@ -118,6 +118,15 @@ dev_dependencies:
   flutter_native_splash: ^2.4.3
   msix: ^3.16.12
 
+# Kazumi VR: use the in-tree copy of media_kit_video. The upstream plugin always
+# renders into a Flutter Texture, but the native Cardboard theatre needs libmpv to
+# write directly into its own GL_TEXTURE_EXTERNAL_OES SurfaceTexture. The copy adds
+# VrSurfaceRegistry + an external-Surface injection point (VideoOutput.applyVrSurface).
+# Everything else is byte-identical to upstream commit 83b7ca6.
+dependency_overrides:
+  media_kit_video:
+    path: vendor/media_kit_video
+
 flutter_launcher_icons:
   android: true
   ios: true

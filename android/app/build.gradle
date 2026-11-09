@@ -40,6 +40,12 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        // r7 pure-JVM VR tests (VrHeadPoseTest, VrMatrix4Test, VrMenuModelTest, ...).
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 
     defaultConfig {
@@ -47,10 +53,16 @@ android {
         applicationId "com.predidit.kazumi"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        // The Cardboard SDK AAR declares minSdk 24 and ships ONLY arm64-v8a JNI libraries.
+        // Keep the highest minSdk required by Flutter or the SDK, and restrict the APK to the
+        // same ABI so no armv7/x86 APK can ever be produced without the VR native bridge.
+        minSdkVersion Math.max(flutter.minSdkVersion as int, 24)
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
     }
 
     buildTypes {
@@ -67,10 +79,20 @@ flutter {
 }
 
 dependencies {
-    // VR mode uses Cardboard SDK for true stereo rendering + distortion.
-    implementation project(':cardboard-sdk')
+    // Google Cardboard SDK v1.36.0 has NO Maven artifact. CI builds the AAR from
+    // third_party/cardboard and drops it into app/libs before compilation. An AAR
+    // consumed via files() carries no POM, so its runtime dependencies must be
+    // declared here explicitly (mirrors OpenNOW-VR r7 app-build.gradle.kts).
+    implementation files('libs/cardboard-sdk.aar')
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.protobuf:protobuf-javalite:3.19.4'
+    implementation 'org.jspecify:jspecify:1.0.0'
     // VrSession uses StateFlow / MutableStateFlow (kotlinx.coroutines.flow).
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    // r7 VR JVM unit tests (head pose / inverse view matrix / gamepad router / menu model).
+    testImplementation 'junit:junit:4.13.2'
 }
 
 // F-droid splits APKs by ABI, and requires different versionCode for each ABI.

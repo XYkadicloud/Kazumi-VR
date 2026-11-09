@@ -54,6 +54,7 @@ class _MyPageState extends State<MyPage> {
       context.pushNamed(switch (destination) {
         MyDestination.theme => '/settings/theme',
         MyDestination.player => '/settings/player',
+        MyDestination.vr => '/settings/vr',
         MyDestination.danmaku => '/settings/danmaku/',
         MyDestination.rules => '/settings/plugin/',
         MyDestination.history => '/settings/history/',

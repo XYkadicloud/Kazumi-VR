@@ -23,6 +23,7 @@ import 'package:kazumi/pages/settings/sync/webdav_server_page.dart';
 import 'package:kazumi/pages/settings/sync/webdav_sync_page.dart';
 import 'package:kazumi/pages/settings/theme_settings_page.dart';
 import 'package:kazumi/pages/settings/update_settings.dart';
+import 'package:kazumi/pages/settings/vr_settings_page.dart';
 import 'package:kazumi/request/config/api_endpoints.dart';
 import 'package:kazumi/services/sync/danmaku_shield_sync_service.dart';
 
@@ -63,6 +64,8 @@ final settingsModule = createModule(
           )
           ..route('/player',
               child: (context, state) => const PlayerSettingsPage())
+          ..route('/vr',
+              child: (context, state) => const VrSettingsPage())
           ..route(
             '/player/decoder',
             child: (context, state) => const DecoderSettings(),

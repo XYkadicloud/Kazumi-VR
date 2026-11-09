@@ -108,6 +108,17 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
     @Volatile private var panelDirty = true
     private var forcePanelUpload = true
 
+    /**
+     * Set from the UI thread by VrTheaterView.start(), consumed on the GL thread.
+     *
+     * The CardboardView is only hidden (View.GONE) when VR is switched off, so its EGL surface
+     * SURVIVES the off/on cycle and onSurfaceCreated() does NOT run again. VrSession.setEnabled(false)
+     * does clear the surface registry (libmpv must go back to the Flutter 2D surface), which means a
+     * second VR session would otherwise render a permanently black theatre. This flag re-creates the
+     * external-OES texture and re-publishes it to VrSurfaceRegistry on the next GL frame.
+     */
+    @Volatile private var videoTextureRefreshRequested = false
+
     private var panelBitmap: Bitmap? = null
     private var panelCanvas: Canvas? = null
     private var borderPaint: Paint? = null
@@ -245,8 +256,8 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
     private val ptFrameAvailable = AtomicBoolean(false)
     private val ptHasFrame = AtomicBoolean(false)
     private val ptUnavailable = AtomicBoolean(false)
-    /** AUTO rotation baseline (sensor installation angle) and front-lens default mirror. */
-    @Volatile private var ptAutoRotationDeg = 90
+    /** AUTO rotation baseline (0 = upright landscape preview) and front-lens default mirror. */
+    @Volatile private var ptAutoRotationDeg = 0
     @Volatile private var ptAutoMirror = false
     /** REAL preview buffer dimensions / effective frame rate, reported by the camera thread.
      *  The window quad is built from THESE numbers, never from a guessed ratio. */
@@ -347,6 +358,16 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
         if (passthroughChanged) ptConfigDirty = true
     }
 
+    /**
+     * Called from VrTheaterView.start() on the UI thread every time VR is (re-)enabled.
+     * The GL surface is reused across sessions, so onSurfaceCreated() cannot be relied upon to
+     * re-publish the external-OES Surface to VrSurfaceRegistry — this flag does it on the next
+     * GL frame instead.
+     */
+    fun requestVideoTextureRefresh() {
+        videoTextureRefreshRequested = true
+    }
+
     /** Called from VrSession when user triggers "重置中心点". Runs on GL thread via renderer callback. */
     fun recenter() {
         // Capture current head orientation as the new center. Copy so we own the data.
@@ -380,6 +401,9 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
 
         panelTextureId = createPanelResources()
         setupVideoTexture()
+        // A fresh EGL surface always re-installs the texture, so a pending refresh request from
+        // VrTheaterView.start() is already satisfied and must not fire again on the first frame.
+        videoTextureRefreshRequested = false
         setupPassthroughTexture()
         rebuildMesh()
         buildBackgroundMesh()
@@ -402,6 +426,15 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
         // Camera work (start/stop, buffer size, updateTexImage) MUST happen on this GL thread.
         // onNewFrame runs exactly once per frame BEFORE both onDrawEye() calls.
         syncPassthrough()
+        // Re-entering VR reuses the same EGL surface, so onSurfaceCreated() will not fire again.
+        // Only valid once the GL programs exist (logSurfaceCreated), otherwise onSurfaceCreated
+        // itself will install the texture.
+        if (videoTextureRefreshRequested && logSurfaceCreated) {
+            videoTextureRefreshRequested = false
+            Log.d(TAG, "onNewFrame: re-installing video texture after VR re-entry")
+            hasVideoFrame = false
+            setupVideoTexture()
+        }
         if (VrVideoSurfaceRegistry.consumeFrameAvailable()) {
             if (!logFirstFrameAvailable) {
                 logFirstFrameAvailable = true
@@ -1237,28 +1270,21 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
      * All layout numbers are expressed in the "equivalent z = -d1 plane" so they map directly onto
      * VrScreenGeometry's stream quad. The camera quad lives slightly further away (z = -d2), so
      * BOTH its size and its centre offset are multiplied by d2/d1 to preserve ANGULAR size. Nothing
-     * is stretched: the camera window keeps the REAL Camera2 preview ratio (after the effective
-     * rotation's aspect swap) and the stream quad keeps VrSession.videoAspect in every mode.
+     * is stretched: the camera window is a FIXED LANDSCAPE 4:3 / 16:9 rect chosen by the user, and
+     * the real Camera2 preview ratio only decides how much of the buffer is centre-cropped into it.
+     * The old "take the reciprocal for a 90° turn" rule is what produced the portrait 9:16 window.
      */
     private fun rebuildPassthroughQuad(s: VrSettings) {
         val effectiveRotation = effectivePassthroughRotation(s)
-        // Use the REAL preview dimensions reported by Camera2, NOT a guessed 4:3 / 16:9. This is
-        // the single change that removes the "直接拉伸" distortion.
-        val previewAspect = if (ptPreviewW > 0 && ptPreviewH > 0) {
-            ptPreviewW.toFloat() / ptPreviewH.toFloat()
-        } else if (s.passthroughAspect == VrPassthroughAspect.FOUR_THREE) {
-            PASSTHROUGH_ASPECT_4_3
-        } else {
-            PASSTHROUGH_ASPECT_16_9
-        }
-        // A 90/270 rotation swaps the effective width and height of the upright picture. Building
-        // the quad with the un-swapped ratio would squeeze it by aspect^2 — part of the reported
-        // "很大的不协调感 / 压扁" — so take the reciprocal for quarter turns.
-        val cameraAspect = (if (effectiveRotation == 90 || effectiveRotation == 270) {
-            1f / previewAspect
-        } else {
-            previewAspect
-        }).coerceIn(0.25f, 8f)
+        val fourThree = s.passthroughAspect == VrPassthroughAspect.FOUR_THREE
+        val windowFallback = VrPassthroughGeometry.windowAspect(fourThree)
+        // REAL preview dimensions reported by Camera2, normalised to landscape. Used ONLY to work
+        // out how much of the buffer to sample — the WINDOW shape never follows the buffer.
+        val previewAspect = VrPassthroughGeometry.previewAspect(ptPreviewW, ptPreviewH, windowFallback)
+        // ALWAYS landscape. Never derive the quad ratio from the rotation (see KDoc above).
+        val cameraAspect = windowFallback
+        val contentAspect = VrPassthroughGeometry.contentAspect(previewAspect, effectiveRotation)
+        val (cropU, cropV) = VrPassthroughGeometry.centreCrop(contentAspect, cameraAspect)
         val gameAspect = VrSession.videoAspect.coerceIn(0.25f, 8f)
         ptAppliedGameAspect = gameAspect
         val d1 = s.screenDistanceMeters.coerceAtLeast(0.1f)
@@ -1347,6 +1373,10 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
             }
             // Front lenses are mirrored by default; the user's extra mirror XORs with that.
             if (ptAutoMirror != s.passthroughMirror) su = 1f - su
+            // Keep every pixel's REAL aspect: centre-crop the excess instead of squeezing the
+            // quad. With AUTO (0°) and a matching tier this is a no-op on both axes.
+            su = VrPassthroughGeometry.cropUv(su, cropU)
+            sv = VrPassthroughGeometry.cropUv(sv, cropV)
             ptTexCoordBuffer.put(su)
             ptTexCoordBuffer.put(sv)
             i += 2
@@ -1457,18 +1487,20 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
             hint.textSize = 15f
             val rot = effectivePassthroughRotation(s)
             val mirror = ptAutoMirror != s.passthroughMirror
+            val windowLabel = if (s.passthroughAspect == VrPassthroughAspect.FOUR_THREE) "4:3" else "16:9"
             canvas.drawText(
                 String.format(
                     Locale.US,
-                    "透视 %dx%d · %d fps · 旋转 %d° · 镜像 %s · %s",
-                    ptPreviewW, ptPreviewH, ptPreviewFps, rot,
+                    "透视 %dx%d · %d fps · 旋转 %d° · 窗口 %s · 镜像 %s",
+                    ptPreviewW, ptPreviewH, ptPreviewFps, rot, windowLabel,
                     if (mirror) "开" else "关",
-                    if (ptHasFrame.get()) "画面正常" else "等待相机帧（黑底降级）",
                 ),
                 44f, 348f, hint,
             )
             canvas.drawText(
-                if (s.passthroughHeadLocked) "窗口：钉在眼前（与幕布会相对滑动）" else "窗口：跟随幕布（默认·无相对滑动）",
+                (if (s.passthroughHeadLocked) "窗口：钉在眼前（与幕布会相对滑动）"
+                 else "窗口：跟随幕布（默认·无相对滑动）") + " · " +
+                    (if (ptHasFrame.get()) "画面正常" else "等待相机帧（黑底降级）"),
                 44f, 370f, hint,
             )
         }
@@ -1544,7 +1576,19 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
         rect.set(24f, 106f, 744f, 107.5f)
         canvas.drawRoundRect(rect, 1f, 1f, stroke)
 
-        // ---- Banner: help text, or the "editing" state --------------------------------------
+        // ---- Scrolling window. The panel bitmap is FIXED at 768x432, so the menu scrolls
+        // instead of growing: any number of future settings stays reachable. ---------------------
+        val pageItems = VrMenuModel.itemsFor(page)
+        val total = pageItems.size
+        val selected = VrSession.selectedIndex.value
+        val firstIndex = VrMenuModel.firstIndexOf(page)
+        val window = VrMenuModel.visibleWindowFor(page, selected)
+        val rowsShown = window.last - window.first + 1
+        val rowTop0 = 154f
+        val rowH = MENU_ROW_HEIGHT
+        val needScroll = total > rowsShown
+
+        // ---- Banner: help text + row counter, or the "editing" state ------------------------
         val editing = VrSession.editMode.value
         card.color = if (editing) Color.argb(46, 77, 200, 255) else c[2]
         rect.set(24f, 114f, 744f, 146f)
@@ -1556,21 +1600,21 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
         val banner = if (editing) {
             "编辑中 · 左摇杆 ←→ 细调 / ↑↓ 快调 · A 完成 · B 返回"
         } else {
-            page.subtitle + "   ·   ↑↓/摇杆上下 选择   LB/RB 换页   A 编辑 / 开关"
+            page.subtitle + "  ·  ↑↓/摇杆 选择  LB/RB 换页  A 编辑/开关"
         }
         canvas.drawText(banner, 36f, 135f, hint)
+        if (needScroll) {
+            hint.color = c[4]
+            hint.textSize = 14f
+            val counter2 = "${window.first + 1}-${window.last + 1}/$total ↓到底自动下翻"
+            canvas.drawText(counter2, 736f - hint.measureText(counter2), 135f, hint)
+        }
 
-        // ---- Rows (active page only) --------------------------------------------------------
-        val pageItems = VrMenuModel.itemsFor(page)
-        val selected = VrSession.selectedIndex.value
-        val firstIndex = VrMenuModel.firstIndexOf(page)
-        val rowTop0 = 154f
-        // The "画面" page now has 10 rows; 27f keeps the last row's progress track above the
-        // 432px panel bottom (154 + 10*27 = 424).
-        val rowH = MENU_ROW_HEIGHT
-        pageItems.forEachIndexed { row, item ->
+        // ---- Rows (ONLY the visible window) -------------------------------------------------
+        for (row in window) {
+            val item = pageItems[row]
             val index = firstIndex + row
-            val top = rowTop0 + row * rowH
+            val top = rowTop0 + (row - window.first) * rowH
             val isSelected = index == selected
             card.color = if (isSelected) Color.argb(235, 30, 42, 66) else c[2]
             rect.set(24f, top, 744f, top + rowH - 4f)
@@ -1618,6 +1662,25 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
                 rect.set(40f, top + 25f, 40f + 260f * frac, top + 27f)
                 canvas.drawRoundRect(rect, 1f, 1f, progress)
             }
+        }
+
+        // ---- Scroll bar in the right gutter (744..768) ---------------------------------------
+        // A visible thumb + track makes it obvious there ARE rows below/above, and how far down
+        // the list currently is. Only drawn when the page actually overflows.
+        if (needScroll) {
+            val trackX = 752f
+            val trackTop = rowTop0
+            val trackBottom = rowTop0 + rowsShown * rowH - 6f
+            track.color = c[5]
+            rect.set(trackX, trackTop, trackX + 4f, trackBottom)
+            canvas.drawRoundRect(rect, 2f, 2f, track)
+            val maxStart = (total - rowsShown).coerceAtLeast(1)
+            val thumbH = (trackBottom - trackTop) * rowsShown.toFloat() / total.toFloat()
+            val thumbTop = trackTop + (trackBottom - trackTop - thumbH) *
+                window.first.toFloat() / maxStart.toFloat()
+            progress.color = c[4]
+            rect.set(trackX - 1f, thumbTop, trackX + 5f, thumbTop + thumbH)
+            canvas.drawRoundRect(rect, 3f, 3f, progress)
         }
     }
 
@@ -1953,11 +2016,9 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
 
     private companion object {
         // --- 摄像头透视 / Passthrough --------------------------------------------------------
-        // NO hardcoded preview size any more: VrPassthroughCamera picks the real
-        // StreamConfigurationMap size and reports it via onPreviewConfig(). These two ratios are
-        // only a FALLBACK for the first frame before the camera has opened.
-        const val PASSTHROUGH_ASPECT_4_3 = 4f / 3f
-        const val PASSTHROUGH_ASPECT_16_9 = 16f / 9f
+        // NO hardcoded preview size: VrPassthroughCamera picks the real StreamConfigurationMap
+        // size and reports it via onPreviewConfig(). Window ratios and centre-crop maths live in
+        // VrPassthroughGeometry (pure + unit-tested). Rotation NEVER changes the window shape.
         /**
          * Camera window depth behind the stream screen (metres). Was 0.8, which made the window
          * look like it was floating far behind the game and amplified the relative slide between
@@ -2005,9 +2066,9 @@ class VrTheaterRenderer(private val context: Context) : CardboardView.Renderer {
         const val PANEL_W = 768
         const val PANEL_H = 432
         const val MENU_ASPECT = 16f / 9f
-        // The largest second-level page has 10 rows. 27px rows keep the last baseline and its
-        // progress track inside the 432px-tall panel (154 + 10*27 = 424).
-        const val MENU_ROWS_PER_COLUMN = 10
+        // 10 rows * 27px starting at y=154 = 424, inside the 432px-tall panel bitmap.
+        // VrMenuModel.VISIBLE_ROWS is the SINGLE source of truth for how many rows fit; any page
+        // with more rows SCROLLS (see VrMenuModel.visibleWindowFor) instead of overflowing.
         const val MENU_ROW_HEIGHT = 27f
 
         /** [gradient start, gradient end, card, stroke, accent, track, primary text, muted text]. */

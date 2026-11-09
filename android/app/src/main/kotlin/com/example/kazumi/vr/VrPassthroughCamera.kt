@@ -45,8 +45,9 @@ import kotlin.math.abs
  *    picture was visibly stretched. Now THIS class picks the real size, applies it to the
  *    SurfaceTexture before session creation (so getTransformMatrix() carries no crop), and reports
  *    the REAL width/height/frame-rate/rotation through Listener.onPreviewConfig; the renderer
- *    builds the quad from those exact numbers and applies the effective rotation's aspect swap.
- *  - Resolution tiers (360P/480P/720P/1080P) and frame-rate tiers (30/60) are requested through
+ *    builds a LANDSCAPE, centre-cropped quad from those exact numbers (see VrPassthroughGeometry).
+ *    Rotation NEVER changes the window shape — that was the portrait 9:16 regression.
+ *  - Resolution tiers (360P/480P/720P/1080P) and frame-rate tiers (15/30/60) are requested through
  *    VrPassthroughResolution / VrPassthroughFrameRate. The frame rate is written into
  *    CONTROL_AE_TARGET_FPS_RANGE from CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES; a 30 fps-only phone
  *    silently falls back to 30 and the effective value is reported back for the status panel.
@@ -188,7 +189,7 @@ internal class VrPassthroughCamera(
                         val size = choosePreviewSize(chars, targetW, targetH)
                         val fpsRange = chooseFpsRange(chars, frameRate.fps)
                         val effectiveFps = fpsRange?.upper ?: frameRate.fps
-                        val autoRotationDeg = previewRotationDeg(id)
+                        val autoRotationDeg = autoRotationDeg()
                         // Native setter: no current GL context needed. Doing it BEFORE the capture
                         // session is created means the Camera2 producer and the GL texture agree on
                         // the exact buffer size, so getTransformMatrix() carries no crop/scale and
@@ -321,23 +322,28 @@ internal class VrPassthroughCamera(
             PackageManager.PERMISSION_GRANTED
 
     /**
-     * AUTO rotation baseline for the preview stream.
+     * AUTO rotation baseline for the preview stream: ZERO degrees.
      *
-     * The old implementation used `(SENSOR_ORIENTATION - displayRotation + 360) % 360`, which is
-     * the JPEG_ORIENTATION formula used when SAVING a photo. Camera2 does NOT rotate PREVIEW
-     * buffers for the display, and SurfaceTexture.getTransformMatrix() contains no rotation either
-     * (only a vertical flip / crop). In VR we force landscape, so with the usual sensor angle of
-     * 90 that formula evaluated to 0 and the live picture was left lying on its side by exactly
-     * 90° — the real-device "方向是错的" report. The correct preview baseline is the sensor
-     * installation angle itself. A manual 0/90/180/270 override in VrSettings (see
-     * VrPassthroughRotation) covers devices with unusual sensors or viewer mounting.
+     * Two consecutive real-device failures came from adding 90° that was never needed:
+     *  - v0.5.0 used `(SENSOR_ORIENTATION - displayRotation + 360) % 360`, the JPEG_ORIENTATION
+     *    formula for SAVING a photo. VR forces landscape but the reported display rotation is
+     *    often 0, so with the usual 90° sensor angle this evaluated to 90 and laid the live
+     *    picture on its side ("方向是错的").
+     *  - v0.6.0 "fixed" that by using the raw SENSOR_ORIENTATION (90) as the baseline. Same 90°
+     *    rotation, and the renderer additionally took the RECIPROCAL of the preview aspect for a
+     *    quarter turn, turning a normal 16:9 preview into a portrait 9:16 window
+     *    ("被强制拉伸成了竖屏的 9:16 比例").
+     *
+     * SENSOR_ORIENTATION describes how the sensor is mounted relative to the device's NATURAL
+     * (portrait) orientation; it is NOT a rotation still to be applied. With the phone in
+     * landscape — which VR forces — the Camera2 preview buffer is already upright, and
+     * SurfaceTexture.getTransformMatrix() only carries the standard vertical flip / crop. Adding
+     * 90° is exactly what turned the vertical window frame in the user's real photo into a
+     * horizontal bar. AUTO is therefore 0; the manual 0/90/180/270 override remains for unusual
+     * sensors or viewer mounting and only ever changes which pixels are sampled, never the shape
+     * of the window.
      */
-    private fun previewRotationDeg(cameraId: String): Int = try {
-        cameraManager?.getCameraCharacteristics(cameraId)
-            ?.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
-    } catch (e: Exception) {
-        90
-    }
+    private fun autoRotationDeg(): Int = 0
 
     /** Requested width for a resolution tier's short edge and the chosen aspect. */
     private fun requestedWidth(
@@ -352,8 +358,9 @@ internal class VrPassthroughCamera(
      * Picks the size the device ACTUALLY advertises instead of assuming 1280x960 / 1280x720.
      * Priority:
      *   1. ratio matches the requested aspect (3% tolerance) AND short edge is nearest the tier;
-     *   2. otherwise the nearest short edge overall — its REAL ratio is reported to the renderer,
-     *      which builds the window quad from it, so the picture is still never stretched.
+     *   2. otherwise the nearest short edge overall.
+     * Portrait entries are excluded (see below). The REAL size is reported to the renderer, which
+     * uses it to centre-crop the sampled UVs, so a mismatched ratio never stretches the picture.
      */
     private fun choosePreviewSize(chars: CameraCharacteristics?, targetW: Int, targetH: Int): Size {
         val sizes: Array<Size> = try {
@@ -363,11 +370,17 @@ internal class VrPassthroughCamera(
             emptyArray()
         }
         if (sizes.isEmpty()) return Size(targetW, targetH)
+        // Some vendors advertise PORTRAIT entries (e.g. 720x1280). Selecting one would make the
+        // renderer build a portrait window, which is the reported "竖屏 9:16" class of bug.
+        // Prefer landscape sizes; if a device advertises nothing else, use the full list but
+        // normalise the chosen size to landscape before reporting it.
+        val landscape = sizes.filter { it.width >= it.height }
+        val candidates: List<Size> = if (landscape.isNotEmpty()) landscape else sizes.toList()
         val targetAspect = targetW.toFloat() / targetH.toFloat()
 
         var bestMatch: Size? = null
         var bestMatchScore = Float.MAX_VALUE
-        for (s in sizes) {
+        for (s in candidates) {
             val ar = s.width.toFloat() / s.height.toFloat()
             if (abs(ar - targetAspect) > 0.03f) continue
             val score = abs(minOf(s.width, s.height) - targetH).toFloat() + abs(ar - targetAspect)
@@ -376,19 +389,23 @@ internal class VrPassthroughCamera(
                 bestMatch = s
             }
         }
-        if (bestMatch != null) return bestMatch
+        if (bestMatch != null) return normaliseLandscape(bestMatch)
 
-        var best = sizes[0]
+        var best = candidates[0]
         var bestDelta = Int.MAX_VALUE
-        for (s in sizes) {
+        for (s in candidates) {
             val delta = abs(minOf(s.width, s.height) - targetH)
             if (delta < bestDelta) {
                 bestDelta = delta
                 best = s
             }
         }
-        return best
+        return normaliseLandscape(best)
     }
+
+    /** Guarantees width >= height so onPreviewConfig() can never describe a portrait buffer. */
+    private fun normaliseLandscape(size: Size): Size =
+        if (size.width >= size.height) size else Size(size.height, size.width)
 
     /**
      * Highest AE fps range whose upper bound is within the requested tier (15 / 30 / 60). A 15 fps

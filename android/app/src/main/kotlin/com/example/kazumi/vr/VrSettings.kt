@@ -38,12 +38,15 @@ enum class VrScreenFillMode { DISTORTED, FILL }
 enum class VrPassthroughFacing { FRONT, BACK }
 
 /**
- * Aspect ratio of the head-locked passthrough WINDOW. The camera preview buffer and the window
- * quad always share the SAME ratio, so the picture is never stretched.
+ * Aspect ratio of the passthrough WINDOW. It is ALWAYS LANDSCAPE (4:3 or 16:9) and NEVER derived
+ * from the preview rotation — the 2026-11-09 "竖屏 9:16" regression came exactly from taking the
+ * reciprocal of the preview aspect for a 90° turn. The real Camera2 buffer ratio only decides how
+ * much of the buffer is centre-cropped into this window (VrPassthroughGeometry), so no pixels are
+ * ever stretched.
  *
  * FOUR_THREE is the default on purpose: the vast majority of phone camera sensors are natively
  * 4:3 (e.g. 4032x3024), and a 16:9 preview is just a cropped/centre-cut of that sensor. Using
- * 4:3 therefore shows MORE of the real surroundings (especially vertically) with no crop. The
+ * 4:3 therefore shows MORE of the real surroundings (especially vertically) with less crop. The
  * 16:9 option is kept for devices whose Camera2 pipeline only advertises 16:9 preview sizes.
  */
 enum class VrPassthroughAspect { FOUR_THREE, SIXTEEN_NINE }
@@ -88,13 +91,15 @@ enum class VrPassthroughResolution(val shortEdge: Int) { P360(360), P480(480), P
 enum class VrPassthroughFrameRate(val fps: Int) { FPS_15(15), FPS_30(30), FPS_60(60) }
 
 /**
- * Clockwise rotation applied to the camera preview so it reads upright in the VR window.
+ * Clockwise rotation applied to the SAMPLED PIXELS so the preview reads upright in the VR window.
+ * Rotation NEVER changes the window shape; the excess is centre-cropped, never stretched.
  *
- * AUTO uses the sensor-installation angle reported by the Camera2 Listener (see
- * VrPassthroughCamera.previewRotationDeg) — the preview buffer is NOT rotated by the display and
- * getTransformMatrix() contains no rotation, so the sensor angle is the correct baseline. Every
- * other value is a MANUAL override: sensor orientation and physical viewer mounting differ wildly
- * between phones, and the user explicitly asked to be able to "自己调一下" against a real photo.
+ * AUTO = 0°: VR forces landscape, and Camera2 already delivers an upright landscape preview
+ * buffer. SENSOR_ORIENTATION describes the sensor's mounting relative to the NATURAL portrait
+ * orientation and is NOT an extra rotation to apply — v0.5.0 (JPEG formula) and v0.6.0 (raw
+ * sensor angle) both wrongly added 90°, which is why the real photo's vertical window frame
+ * showed up as a horizontal bar. Every other value is a MANUAL override for unusual sensors or
+ * viewer mounting; the user explicitly asked to be able to "自己调一下" against a real photo.
  * The status panel shows the effective angle so the correct override is one A-press away.
  */
 enum class VrPassthroughRotation(val degrees: Int) { AUTO(-1), R0(0), R90(90), R180(180), R270(270) }

@@ -4,6 +4,11 @@
  * Copyright © 2021 & onwards, Hitesh Kumar Saini <saini123hitesh@gmail.com>.
  * All rights reserved.
  * Use of this source code is governed by MIT license that can be found in the LICENSE file.
+ *
+ * Kazumi VR change: the published `wid` is no longer permanently bound to the Flutter surface.
+ * When the native Cardboard theatre installs an external-OES SurfaceTexture, every live
+ * VideoOutput repoints libmpv's --wid at it and restores the Flutter surface on exit. See
+ * VrSurfaceRegistry.
  */
 package com.alexmercerind.media_kit_video;
 
@@ -21,11 +26,35 @@ import io.flutter.view.TextureRegistry;
 public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
     private static final String TAG = "VideoOutput";
     private static final HashSet<Long> deletedGlobalObjectRefs = new HashSet<>();
-    private static final Handler handler = new Handler(Looper.getMainLooper());
+    /** Lazy: loading this class in a pure-JVM unit test must not require an Android Looper. */
+    private static volatile Handler handler;
+
+    private static Handler mainHandler() {
+        Handler result = handler;
+        if (result == null) {
+            try {
+                Looper looper = Looper.getMainLooper();
+                if (looper != null) {
+                    result = new Handler(looper);
+                    handler = result;
+                }
+            } catch (Throwable ignored) {
+                // Mockable android.jar in JVM tests: delete the ref inline instead.
+            }
+        }
+        return result;
+    }
 
 
     private long id = 0;
+    /** Currently published JNI global ref (what libmpv's --wid points at). */
     private long wid = 0;
+    /** Global ref to the ordinary Flutter surface. Owned by this VideoOutput. */
+    private long defaultWid = 0;
+    /** Global ref to the VR SurfaceTexture's Surface. Owned by this VideoOutput. */
+    private long vrWid = 0;
+    private int vrGeneration = -1;
+    private boolean lastWantVr = false;
 
     private final TextureUpdateCallback textureUpdateCallback;
 
@@ -55,10 +84,14 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
             id = surfaceTextureEntry.id();
             createSurfaceTextureSurface();
         }
+        // VR may already be running when a new Player is created (e.g. switching episodes while
+        // inside the headset). Pick up the installed VR surface immediately.
+        VrSurfaceRegistry.register(this);
     }
 
     public void dispose() {
         synchronized (lock) {
+            VrSurfaceRegistry.unregister(this);
             if (enableSurfaceProducer) {
                 try {
                     surfaceProducer.getSurface().release();
@@ -108,7 +141,10 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
                     surfaceTextureHeight = height;
                     surfaceTextureNotified = true;
                     createSurfaceTextureSurface();
-                    textureUpdateCallback.onTextureUpdate(id, wid, surfaceTextureWidth, surfaceTextureHeight);
+                    applyVrSurface();
+                    // Always republish: even if the wid did not change, Dart needs the new
+                    // width/height (this is the real decoded frame size, used by the VR mesh).
+                    publish(wid);
                 } catch (Throwable e) {
                     Log.e(TAG, "setSurfaceSize", e);
                 }
@@ -121,8 +157,13 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
         synchronized (lock) {
             Log.i(TAG, "onSurfaceAvailable");
             id = surfaceProducer.id();
-            wid = newGlobalObjectRef(surfaceProducer.getSurface());
-            textureUpdateCallback.onTextureUpdate(id, wid, surfaceProducer.getWidth(), surfaceProducer.getHeight());
+            long ref = newGlobalObjectRef(surfaceProducer.getSurface());
+            if (defaultWid != 0 && defaultWid != ref) {
+                scheduleDelete(defaultWid);
+            }
+            defaultWid = ref;
+            applyVrSurface();
+            publish(wid);
         }
     }
 
@@ -130,10 +171,15 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
     public void onSurfaceCleanup() {
         synchronized (lock) {
             Log.i(TAG, "onSurfaceCleanup");
-            textureUpdateCallback.onTextureUpdate(id, 0, surfaceProducer.getWidth(), surfaceProducer.getHeight());
-            if (wid != 0) {
-                final long widReference = wid;
-                handler.postDelayed(() -> deleteGlobalObjectRef(widReference), 5000);
+            if (defaultWid != 0) {
+                scheduleDelete(defaultWid);
+                defaultWid = 0;
+            }
+            // If VR still owns a valid surface, keep feeding it instead of setting vo=null.
+            if (vrWid != 0 && VrSurfaceRegistry.currentSurface() != null) {
+                publish(vrWid);
+            } else {
+                publish(0);
             }
         }
     }
@@ -144,12 +190,17 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
             return;
         }
         surfaceTextureSurface = new Surface(surfaceTextureEntry.surfaceTexture());
-        wid = newGlobalObjectRef(surfaceTextureSurface);
+        long ref = newGlobalObjectRef(surfaceTextureSurface);
+        if (defaultWid != 0 && defaultWid != ref) {
+            scheduleDelete(defaultWid);
+        }
+        defaultWid = ref;
+        applyVrSurface();
     }
 
     private void onSurfaceTextureCleanup() {
         Log.i(TAG, "onSurfaceTextureCleanup");
-        textureUpdateCallback.onTextureUpdate(id, 0, surfaceTextureWidth, surfaceTextureHeight);
+        publish(0);
         if (surfaceTextureSurface != null) {
             try {
                 surfaceTextureSurface.release();
@@ -158,10 +209,98 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
             }
             surfaceTextureSurface = null;
         }
-        if (wid != 0) {
-            final long widReference = wid;
-            wid = 0;
-            handler.postDelayed(() -> deleteGlobalObjectRef(widReference), 5000);
+        if (defaultWid != 0) {
+            scheduleDelete(defaultWid);
+            defaultWid = 0;
+        }
+        if (vrWid != 0) {
+            scheduleDelete(vrWid);
+            vrWid = 0;
+        }
+        wid = 0;
+    }
+
+    /**
+     * Re-evaluates which Surface libmpv should render into. Called on VR install/clear, on
+     * VideoOutput construction and after the Flutter surface becomes available.
+     *
+     * <p>The VR Surface is owned by the Cardboard renderer; this class must never release it.
+     * Only the JNI global references created here are released, with a delay so mpv can finish
+     * any in-flight frame on the old surface.
+     */
+    void applyVrSurface() {
+        synchronized (lock) {
+            Surface vr = VrSurfaceRegistry.currentSurface();
+            final boolean wantVr = vr != null;
+            final int generation = VrSurfaceRegistry.generation();
+            if (wantVr) {
+                if (vrWid == 0 || vrGeneration != generation) {
+                    if (vrWid != 0) {
+                        scheduleDelete(vrWid);
+                    }
+                    vrWid = newGlobalObjectRef(vr);
+                    vrGeneration = generation;
+                }
+            } else if (vrWid != 0) {
+                scheduleDelete(vrWid);
+                vrWid = 0;
+                vrGeneration = generation;
+            }
+            long target = wantVr ? vrWid : defaultWid;
+            if (target == 0) {
+                // Flutter producer surface not created yet; onSurfaceAvailable() will retry.
+                return;
+            }
+            if (target == wid) {
+                if (wantVr != lastWantVr) {
+                    // Force a 0 -> wid edge even in the unlikely case the JNI runtime reused the
+                    // very same global-ref address, so Dart's wid listener always fires.
+                    publish(0);
+                    publish(target);
+                }
+            } else {
+                publish(target);
+            }
+            lastWantVr = wantVr;
+        }
+    }
+
+    private void publish(long value) {
+        wid = value;
+        textureUpdateCallback.onTextureUpdate(id, value, currentWidth(), currentHeight());
+    }
+
+    private int currentWidth() {
+        if (enableSurfaceProducer) {
+            try {
+                return surfaceProducer.getWidth();
+            } catch (Throwable e) {
+                return 1;
+            }
+        }
+        return surfaceTextureWidth;
+    }
+
+    private int currentHeight() {
+        if (enableSurfaceProducer) {
+            try {
+                return surfaceProducer.getHeight();
+            } catch (Throwable e) {
+                return 1;
+            }
+        }
+        return surfaceTextureHeight;
+    }
+
+    private static void scheduleDelete(final long ref) {
+        if (ref == 0) {
+            return;
+        }
+        Handler main = mainHandler();
+        if (main == null) {
+            deleteGlobalObjectRef(ref);
+        } else {
+            main.postDelayed(() -> deleteGlobalObjectRef(ref), 5000);
         }
     }
 
