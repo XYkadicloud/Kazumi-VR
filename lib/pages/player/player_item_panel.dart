@@ -30,7 +30,6 @@ import 'package:kazumi/pages/player/player_transport_bar.dart';
 import 'package:kazumi/pages/player/player_screenshot_controls.dart';
 import 'package:kazumi/pages/player/player_progress_bar.dart';
 import 'package:kazumi/services/platform/vr_service.dart';
-import 'package:kazumi/services/storage/settings_keys.dart';
 
 class PlayerItemPanel extends StatefulWidget {
   const PlayerItemPanel({

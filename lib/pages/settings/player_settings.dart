@@ -582,7 +582,7 @@ class _PlayerSettingsPageState extends State<PlayerSettingsPage> {
                 min: -1.0,
                 max: 1.0,
                 divisions: 40,
-                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrScreenVerticalOffset).toStringAsFixed(2)}',
+                valueLabel: GStorage.getSetting<double>(SettingsKeys.vrScreenVerticalOffset).toStringAsFixed(2),
                 onChanged: (value) async {
                   await GStorage.putSetting<double>(SettingsKeys.vrScreenVerticalOffset, value);
                   await VRService.instance.updateSettings({'screenVerticalOffset': value});
@@ -596,7 +596,7 @@ class _PlayerSettingsPageState extends State<PlayerSettingsPage> {
                 min: 0.0,
                 max: 2.0,
                 divisions: 40,
-                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrCurvature).toStringAsFixed(2)}',
+                valueLabel: GStorage.getSetting<double>(SettingsKeys.vrCurvature).toStringAsFixed(2),
                 onChanged: (value) async {
                   await GStorage.putSetting<double>(SettingsKeys.vrCurvature, value);
                   await VRService.instance.updateSettings({'curvature': value});
@@ -706,7 +706,7 @@ class _PlayerSettingsPageState extends State<PlayerSettingsPage> {
                 min: 0.0,
                 max: 1.0,
                 divisions: 20,
-                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrBackgroundBrightness).toStringAsFixed(2)}',
+                valueLabel: GStorage.getSetting<double>(SettingsKeys.vrBackgroundBrightness).toStringAsFixed(2),
                 onChanged: (value) async {
                   await GStorage.putSetting<double>(SettingsKeys.vrBackgroundBrightness, value);
                   await VRService.instance.updateSettings({'backgroundBrightness': value});
@@ -789,7 +789,7 @@ class _PlayerSettingsPageState extends State<PlayerSettingsPage> {
                 min: 0.0,
                 max: 0.5,
                 divisions: 50,
-                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrGamepadDeadZone).toStringAsFixed(2)}',
+                valueLabel: GStorage.getSetting<double>(SettingsKeys.vrGamepadDeadZone).toStringAsFixed(2),
                 onChanged: (value) async {
                   await GStorage.putSetting<double>(SettingsKeys.vrGamepadDeadZone, value);
                   await VRService.instance.updateSettings({'gamepadDeadZone': value});

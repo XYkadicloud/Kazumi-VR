@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show BuildContext, showDialog;
 import 'package:flutter/services.dart';
 import 'package:kazumi/pages/player/vr/vr_qr_dialog.dart';
-import 'package:kazumi/services/storage/settings_keys.dart';
 import 'package:kazumi/services/storage/storage.dart';
 
 /// Head-pose quaternion produced by Android's rotation-vector sensor.
@@ -73,6 +72,19 @@ class VRService {
     } catch (_) {
       // EventChannels are Android-only. On other platforms sensors are absent.
     }
+  }
+
+  /// Cancels the native event subscriptions (teardown / hot restart).
+  /// Keeping these subscriptions in fields also prevents duplicate listeners
+  /// when [initialize] is called again after a dispose.
+  Future<void> dispose() async {
+    final poseSub = _poseSub;
+    final inputSub = _inputSub;
+    _poseSub = null;
+    _inputSub = null;
+    await poseSub?.cancel();
+    await inputSub?.cancel();
+    _initialized = false;
   }
 
   void _onPose(dynamic event) {

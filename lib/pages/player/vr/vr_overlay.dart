@@ -415,7 +415,7 @@ class _VrOverlayState extends State<VrOverlay> {
               Positioned.fill(
                 child: ValueListenableBuilder<VrPose>(
                   valueListenable: VRService.instance.pose,
-                  builder: (BuildContext c, VrPose pose, Widget? __) =>
+                  builder: (BuildContext c, VrPose pose, Widget? _) =>
                       _buildPicture(c, s, vc, pose),
                 ),
               )
@@ -613,7 +613,7 @@ class _VrOverlayState extends State<VrOverlay> {
             }
             return ValueListenableBuilder<Rect?>(
               valueListenable: vc.rect,
-              builder: (BuildContext context, Rect? rect, Widget? __) {
+              builder: (BuildContext context, Rect? rect, Widget? _) {
                 final double aspect = (rect != null && rect.height > 1.0)
                     ? (rect.width / rect.height).clamp(0.25, 8.0).toDouble()
                     : 16.0 / 9.0;
