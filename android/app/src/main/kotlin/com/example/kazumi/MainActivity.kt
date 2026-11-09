@@ -29,6 +29,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import com.ryanheise.audioservice.AudioService
 import com.ryanheise.audioservice.AudioServiceActivity
+import com.example.kazumi.vr.VrNativeBridge
+import android.view.KeyEvent
+import android.view.MotionEvent
 
 class MainActivity: AudioServiceActivity() {
     private val CHANNEL = "com.predidit.kazumi/intent"
@@ -36,6 +39,7 @@ class MainActivity: AudioServiceActivity() {
     private val PIP_CHANNEL = "com.predidit.kazumi/pip"
     private var intentChannel: MethodChannel? = null
     private var pipChannel: MethodChannel? = null
+    private var vrBridge: VrNativeBridge? = null
     private var downloadDirectoryChannel: MethodChannel? = null
     private var downloadDirectoryHandler: DownloadDirectoryHandler? = null
 
@@ -76,6 +80,8 @@ class MainActivity: AudioServiceActivity() {
     }
 
     override fun onDestroy() {
+        vrBridge?.dispose()
+        vrBridge = null
         downloadDirectoryChannel?.setMethodCallHandler(null)
         downloadDirectoryChannel = null
         downloadDirectoryHandler?.dispose()
@@ -85,6 +91,16 @@ class MainActivity: AudioServiceActivity() {
         // own stopSelf() never destroys a service started for playback.
         stopService(Intent(this, AudioService::class.java))
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        vrBridge?.onHostResume()
+    }
+
+    override fun onPause() {
+        vrBridge?.onHostPause()
+        super.onPause()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -178,6 +194,10 @@ class MainActivity: AudioServiceActivity() {
                 result.notImplemented()
             }
         }
+
+        // Thin VR bridge: sensor pose + raw gamepad events (no Cardboard SDK / Compose / GL).
+        vrBridge = VrNativeBridge(this, flutterEngine)
+
     }
 
     private fun openWithMime(url: String, mimeType: String) {
@@ -455,5 +475,16 @@ class MainActivity: AudioServiceActivity() {
         } catch (e: Exception) {
             -1L
         }
+    }
+
+    // ---- VR input forwarding ---------------------------------------------------------
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (vrBridge?.onKeyEvent(event) == true) return true
+        return super.dispatchKeyEvent(event)
+    }
+
+    override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
+        if (vrBridge?.onGenericMotionEvent(event) == true) return true
+        return super.dispatchGenericMotionEvent(event)
     }
 }

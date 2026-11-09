@@ -29,6 +29,8 @@ import 'package:kazumi/utils/format.dart';
 import 'package:kazumi/pages/player/player_transport_bar.dart';
 import 'package:kazumi/pages/player/player_screenshot_controls.dart';
 import 'package:kazumi/pages/player/player_progress_bar.dart';
+import 'package:kazumi/services/platform/vr_service.dart';
+import 'package:kazumi/services/storage/settings_keys.dart';
 
 class PlayerItemPanel extends StatefulWidget {
   const PlayerItemPanel({
@@ -874,6 +876,25 @@ class _PlayerItemPanelState extends State<PlayerItemPanel> {
                     Icons.picture_in_picture,
                     color: Colors.white,
                   ),
+                ),
+              // VR Toggle Button (Material icon, reacts immediately)
+              if (Platform.isAndroid)
+                ValueListenableBuilder<bool>(
+                  valueListenable: VRService.instance.enabled,
+                  builder: (context, vrEnabled, _) {
+                    return IconButton(
+                      onPressed: () async {
+                        await VRService.instance.toggleVR();
+                      },
+                      tooltip: vrEnabled ? '退出 VR 模式' : '进入 VR 模式',
+                      icon: Icon(
+                        vrEnabled
+                            ? Icons.view_in_ar_rounded
+                            : Icons.view_in_ar_outlined,
+                        color: vrEnabled ? Colors.greenAccent : Colors.white,
+                      ),
+                    );
+                  },
                 ),
               if (compact) _buildDanmakuToggleButton(context),
               PlayerPanelHoldCollectButton(

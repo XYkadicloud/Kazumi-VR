@@ -38,6 +38,8 @@ import 'package:kazumi/services/player/audio_controller.dart';
 import 'package:kazumi/services/player/timed_shutdown_service.dart';
 import 'package:kazumi/utils/device.dart';
 import 'package:kazumi/services/platform/player_menu_service.dart';
+import 'package:kazumi/pages/player/vr/vr_overlay.dart';
+import 'package:kazumi/services/platform/vr_service.dart';
 
 class PlayerItem extends StatefulWidget {
   const PlayerItem({
@@ -1259,6 +1261,9 @@ class _PlayerItemState extends State<PlayerItem>
   void initState() {
     super.initState();
     playerController = widget.playerController;
+    if (Platform.isAndroid) {
+      unawaited(VRService.instance.initialize());
+    }
     _initKeyboardActions();
     _initPlayerMenu();
     _fullscreenListener = mobx.reaction<bool>(
@@ -1643,6 +1648,23 @@ class _PlayerItemState extends State<PlayerItem>
                                 _finishAdjustmentGesture();
                               },
                             ),
+                    ),
+                    // VR theatre overlay. It is only built while VR is on,
+                    // so normal playback (video, danmaku, controls, gestures)
+                    // stays completely untouched when VR is disabled.
+                    Positioned.fill(
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: VRService.instance.enabled,
+                        builder:
+                            (BuildContext ctx, bool vrEnabled, Widget? child) {
+                          if (!vrEnabled || !Platform.isAndroid) {
+                            return const SizedBox.shrink();
+                          }
+                          return VrOverlay(
+                            playerController: playerController,
+                          );
+                        },
+                      ),
                     ),
                   ]),
                 ),

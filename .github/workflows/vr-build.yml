@@ -1,0 +1,77 @@
+name: vr-build
+
+# Single source of truth for verification: everything is compiled on GitHub.
+# The local workstation intentionally has no Flutter SDK / Android SDK / JDK 17.
+on:
+  push:
+    branches: [ main, vr-dev ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-debug-apk:
+    name: analyze + build Android debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux native build tools
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build \
+            libgtk-3-dev libayatana-appindicator3-dev libasound2-dev
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2.16.0
+        id: flutter-action
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+
+      - name: Flutter pub get
+        shell: bash
+        run: flutter pub get
+
+      # Upstream CI workaround: the jni package emits a build-id section that
+      # breaks the NDK link step. Patch it only when the package is present.
+      - name: Patch jni CMakeLists build-id
+        shell: bash
+        run: |
+          for f in ${{ steps.flutter-action.outputs.PUB-CACHE-PATH }}/hosted/pub.dev/jni-*/src/CMakeLists.txt; do
+            if [ -f "$f" ]; then
+              sed -i -e 's/-Wl,/-Wl,--build-id=none,/' "$f"
+              echo "patched $f"
+            fi
+          done
+
+      - name: Flutter analyze
+        shell: bash
+        run: flutter analyze --no-fatal-infos --fatal-warnings
+
+      - name: Build Android debug APK
+        shell: bash
+        run: flutter build apk --debug --split-per-abi
+
+      - name: Collect APKs
+        shell: bash
+        run: |
+          mkdir -p out
+          cp -v build/app/outputs/flutter-apk/*.apk out/
+          ls -la out
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kazumi-vr-debug-apk
+          path: out/*.apk
+          if-no-files-found: error

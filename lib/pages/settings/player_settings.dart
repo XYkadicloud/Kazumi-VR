@@ -12,6 +12,7 @@ import 'package:kazumi/services/storage/storage.dart';
 import 'package:kazumi/services/player/pip_utils.dart';
 import 'package:kazumi/bean/settings/settings_list.dart';
 import 'package:kazumi/utils/device.dart';
+import 'package:kazumi/services/platform/vr_service.dart';
 
 class PlayerSettingsPage extends StatefulWidget {
   const PlayerSettingsPage({super.key});
@@ -523,6 +524,309 @@ class _PlayerSettingsPageState extends State<PlayerSettingsPage> {
                   for (final mode in PlayerAspectRatio.values) mode: mode.label,
                 },
                 onChanged: updateDefaultAspectRatioMode,
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: Text('VR 设置'),
+            tiles: [
+              SettingsTile.switchTile(
+                leading: Icons.view_in_ar_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? false;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrEnabled, enabled);
+                  if (enabled) {
+                    await VRService.instance.setVREnabled(true);
+                  } else {
+                    await VRService.instance.setVREnabled(false);
+                  }
+                  setState(() {});
+                },
+                title: Text('启用 VR 模式'),
+                description: Text('使用 Google Cardboard 模拟 VR 观看'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrEnabled),
+              ),
+              SettingsSliderTile(
+                leading: Icons.zoom_out_map_rounded,
+                title: Text('屏幕缩放'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrScreenScale),
+                min: 0.4,
+                max: 3.0,
+                divisions: 26,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrScreenScale).toStringAsFixed(2)}x',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrScreenScale, value);
+                  await VRService.instance.updateSettings({'screenScale': value});
+                  setState(() {});
+                },
+              ),
+              SettingsSliderTile(
+                leading: Icons.straighten_rounded,
+                title: Text('观看距离'),
+                description: Text('虚拟屏幕距离（米）'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrScreenDistanceMeters),
+                min: 0.5,
+                max: 5.0,
+                divisions: 45,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrScreenDistanceMeters).toStringAsFixed(2)} m',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrScreenDistanceMeters, value);
+                  await VRService.instance.updateSettings({'screenDistanceMeters': value});
+                  setState(() {});
+                },
+              ),
+              SettingsSliderTile(
+                leading: Icons.vertical_align_center_rounded,
+                title: Text('垂直偏移'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrScreenVerticalOffset),
+                min: -1.0,
+                max: 1.0,
+                divisions: 40,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrScreenVerticalOffset).toStringAsFixed(2)}',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrScreenVerticalOffset, value);
+                  await VRService.instance.updateSettings({'screenVerticalOffset': value});
+                  setState(() {});
+                },
+              ),
+              SettingsSliderTile(
+                leading: Icons.waves_rounded,
+                title: Text('屏幕曲率'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrCurvature),
+                min: 0.0,
+                max: 2.0,
+                divisions: 40,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrCurvature).toStringAsFixed(2)}',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrCurvature, value);
+                  await VRService.instance.updateSettings({'curvature': value});
+                  setState(() {});
+                },
+              ),
+              SettingsDropdownTile<int>(
+                leading: Icons.view_in_ar_rounded,
+                title: const Text('观看模式'),
+                description: const Text('Cardboard 立体模式或单眼平铺模式'),
+                value: GStorage.getSetting<int>(SettingsKeys.vrViewerMode),
+                options: const {
+                  0: 'Cardboard (立体)',
+                  1: '单眼平铺',
+                },
+                onChanged: (value) async {
+                  await GStorage.putSetting<int>(SettingsKeys.vrViewerMode, value);
+                  await VRService.instance.updateSettings({'viewerMode': value == 0 ? 'CARDBOARD' : 'MONO'});
+                  setState(() {});
+                },
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.screen_rotation_alt_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? true;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrHeadTrackingEnabled, enabled);
+                  await VRService.instance.updateSettings({'headTrackingEnabled': enabled});
+                  setState(() {});
+                },
+                title: Text('头部追踪'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrHeadTrackingEnabled),
+              ),
+              SettingsSliderTile(
+                leading: Icons.speed_rounded,
+                title: Text('追踪灵敏度'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrHeadTrackingSensitivity),
+                min: 0.25,
+                max: 3.0,
+                divisions: 27,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrHeadTrackingSensitivity).toStringAsFixed(2)}x',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrHeadTrackingSensitivity, value);
+                  await VRService.instance.updateSettings({'headTrackingSensitivity': value});
+                  setState(() {});
+                },
+              ),
+              SettingsSliderTile(
+                leading: Icons.remove_red_eye_rounded,
+                title: Text('瞳距缩放'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrIpdScale),
+                min: 0.5,
+                max: 1.5,
+                divisions: 20,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrIpdScale).toStringAsFixed(2)}x',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrIpdScale, value);
+                  await VRService.instance.updateSettings({'ipdScale': value});
+                  setState(() {});
+                },
+              ),
+              SettingsDropdownTile<int>(
+                leading: Icons.crop_free_rounded,
+                title: const Text('填充模式'),
+                description: const Text('原版畸变渲染或单纯放大'),
+                value: GStorage.getSetting<int>(SettingsKeys.vrScreenFillMode),
+                options: const {
+                  0: '原版畸变',
+                  1: '单纯放大',
+                },
+                onChanged: (value) async {
+                  await GStorage.putSetting<int>(SettingsKeys.vrScreenFillMode, value);
+                  await VRService.instance.updateSettings({'screenFillMode': value == 0 ? 'DISTORTED' : 'FILL'});
+                  setState(() {});
+                },
+              ),
+              SettingsSliderTile(
+                leading: Icons.zoom_in_rounded,
+                title: Text('全屏缩放'),
+                description: Text('仅在"单纯放大"模式下生效'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrZoomScale),
+                min: 1.0,
+                max: 2.0,
+                divisions: 20,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrZoomScale).toStringAsFixed(2)}x',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrZoomScale, value);
+                  await VRService.instance.updateSettings({'zoomScale': value});
+                  setState(() {});
+                },
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.landscape_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? false;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrBackgroundEnabled, enabled);
+                  await VRService.instance.updateSettings({'backgroundEnabled': enabled});
+                  setState(() {});
+                },
+                title: Text('360° 环境背景'),
+                description: Text('启用后显示纯色或自定义图片背景'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrBackgroundEnabled),
+              ),
+              SettingsSliderTile(
+                leading: Icons.brightness_6_rounded,
+                title: Text('背景亮度'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrBackgroundBrightness),
+                min: 0.0,
+                max: 1.0,
+                divisions: 20,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrBackgroundBrightness).toStringAsFixed(2)}',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrBackgroundBrightness, value);
+                  await VRService.instance.updateSettings({'backgroundBrightness': value});
+                  setState(() {});
+                },
+              ),
+              SettingsSliderTile(
+                leading: Icons.brightness_7_rounded,
+                title: Text('画面亮度'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrBrightness),
+                min: 0.25,
+                max: 2.0,
+                divisions: 35,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrBrightness).toStringAsFixed(2)}x',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrBrightness, value);
+                  await VRService.instance.updateSettings({'brightness': value});
+                  setState(() {});
+                },
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.flip_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? false;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrHorizontalMirror, enabled);
+                  await VRService.instance.updateSettings({'horizontalMirror': enabled});
+                  setState(() {});
+                },
+                title: Text('水平镜像'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrHorizontalMirror),
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.flip_camera_android_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? false;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrVerticalFlip, enabled);
+                  await VRService.instance.updateSettings({'verticalFlip': enabled});
+                  setState(() {});
+                },
+                title: Text('垂直翻转'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrVerticalFlip),
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.info_outline_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? true;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrShowStatus, enabled);
+                  await VRService.instance.updateSettings({'showStatus': enabled});
+                  setState(() {});
+                },
+                title: Text('显示状态栏'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrShowStatus),
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.center_focus_strong_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? true;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrShowCenterAlignmentLine, enabled);
+                  await VRService.instance.updateSettings({'showCenterAlignmentLine': enabled});
+                  setState(() {});
+                },
+                title: Text('显示中心辅助线'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrShowCenterAlignmentLine),
+              ),
+              SettingsTile.switchTile(
+                leading: Icons.bug_report_rounded,
+                onToggle: (value) async {
+                  final enabled = value ?? false;
+                  await GStorage.putSetting<bool>(SettingsKeys.vrShowDebugOverlay, enabled);
+                  await VRService.instance.updateSettings({'showDebugOverlay': enabled});
+                  setState(() {});
+                },
+                title: Text('调试覆盖层'),
+                initialValue: GStorage.getSetting<bool>(SettingsKeys.vrShowDebugOverlay),
+              ),
+              SettingsSliderTile(
+                leading: Icons.tune_rounded,
+                title: Text('摇杆死区'),
+                value: GStorage.getSetting<double>(SettingsKeys.vrGamepadDeadZone),
+                min: 0.0,
+                max: 0.5,
+                divisions: 50,
+                valueLabel: '${GStorage.getSetting<double>(SettingsKeys.vrGamepadDeadZone).toStringAsFixed(2)}',
+                onChanged: (value) async {
+                  await GStorage.putSetting<double>(SettingsKeys.vrGamepadDeadZone, value);
+                  await VRService.instance.updateSettings({'gamepadDeadZone': value});
+                  setState(() {});
+                },
+              ),
+              SettingsSliderTile(
+                leading: Icons.timer_rounded,
+                title: Text('菜单重复延迟'),
+                description: Text('长按手柄方向键/摇杆时的重复间隔 (ms)'),
+                value: GStorage.getSetting<int>(SettingsKeys.vrMenuRepeatMs).toDouble(),
+                min: 50,
+                max: 500,
+                divisions: 45,
+                valueLabel: '${GStorage.getSetting<int>(SettingsKeys.vrMenuRepeatMs)} ms',
+                onChanged: (value) async {
+                  final intVal = value.round();
+                  await GStorage.putSetting<int>(SettingsKeys.vrMenuRepeatMs, intVal);
+                  await VRService.instance.updateSettings({'menuRepeatMs': intVal});
+                  setState(() {});
+                },
+              ),
+              SettingsTile(
+                leading: Icons.refresh_rounded,
+                onPressed: (_) async {
+                  await VRService.instance.recenter();
+                },
+                title: Text('重置中心点'),
+                description: Text('将当前头部朝向设为正前方'),
+              ),
+              SettingsTile(
+                leading: Icons.qr_code_scanner_rounded,
+                onPressed: (ctx) async {
+                  await VRService.instance.scanQrCode(ctx);
+                },
+                title: Text('扫描 Cardboard 二维码'),
+                description: Text('导入官方 Cardboard 设备参数'),
               ),
             ],
           ),

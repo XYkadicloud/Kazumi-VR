@@ -66,7 +66,11 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    // VR mode is rendered in Flutter. The native side only uses Android
+    // framework APIs (SensorManager / KeyEvent / MotionEvent), so no extra
+    // Gradle dependencies are required here.
+}
 
 // F-droid splits APKs by ABI, and requires different versionCode for each ABI.
 // For flutter version X.Y.Z, version code is X0Y0ZA, where A is the ABI code.

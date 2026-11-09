@@ -581,6 +581,118 @@ class SettingsKeys {
     group: SettingGroup.player,
   );
 
+  // VR Settings
+  static const vrEnabled = SettingKey<bool>(
+    'vrEnabled',
+    false,
+    group: SettingGroup.player,
+  );
+  static const vrScreenScale = SettingKey<double>(
+    'vrScreenScale',
+    1.0,
+    group: SettingGroup.player,
+  );
+  static const vrScreenDistanceMeters = SettingKey<double>(
+    'vrScreenDistanceMeters',
+    2.0,
+    group: SettingGroup.player,
+  );
+  static const vrScreenVerticalOffset = SettingKey<double>(
+    'vrScreenVerticalOffset',
+    0.0,
+    group: SettingGroup.player,
+  );
+  static const vrCurvature = SettingKey<double>(
+    'vrCurvature',
+    0.0,
+    group: SettingGroup.player,
+  );
+  static const vrViewerMode = SettingKey<int>(
+    'vrViewerMode',
+    0, // 0 = CARDBOARD, 1 = MONO
+    group: SettingGroup.player,
+  );
+  static const vrHeadTrackingEnabled = SettingKey<bool>(
+    'vrHeadTrackingEnabled',
+    true,
+    group: SettingGroup.player,
+  );
+  static const vrHeadTrackingSensitivity = SettingKey<double>(
+    'vrHeadTrackingSensitivity',
+    1.0,
+    group: SettingGroup.player,
+  );
+  static const vrIpdScale = SettingKey<double>(
+    'vrIpdScale',
+    1.0,
+    group: SettingGroup.player,
+  );
+  static const vrScreenFillMode = SettingKey<int>(
+    'vrScreenFillMode',
+    0, // 0 = DISTORTED, 1 = FILL
+    group: SettingGroup.player,
+  );
+  static const vrZoomScale = SettingKey<double>(
+    'vrZoomScale',
+    1.2,
+    group: SettingGroup.player,
+  );
+  static const vrBackgroundEnabled = SettingKey<bool>(
+    'vrBackgroundEnabled',
+    false,
+    group: SettingGroup.player,
+  );
+  static const vrBackgroundImageUri = SettingKey<String>(
+    'vrBackgroundImageUri',
+    '',
+    group: SettingGroup.player,
+  );
+  static const vrBackgroundBrightness = SettingKey<double>(
+    'vrBackgroundBrightness',
+    0.5,
+    group: SettingGroup.player,
+  );
+  static const vrBrightness = SettingKey<double>(
+    'vrBrightness',
+    1.0,
+    group: SettingGroup.player,
+  );
+  static const vrHorizontalMirror = SettingKey<bool>(
+    'vrHorizontalMirror',
+    false,
+    group: SettingGroup.player,
+  );
+  static const vrVerticalFlip = SettingKey<bool>(
+    'vrVerticalFlip',
+    false,
+    group: SettingGroup.player,
+  );
+  static const vrShowStatus = SettingKey<bool>(
+    'vrShowStatus',
+    true,
+    group: SettingGroup.player,
+  );
+  static const vrShowCenterAlignmentLine = SettingKey<bool>(
+    'vrShowCenterAlignmentLine',
+    true,
+    group: SettingGroup.player,
+  );
+  static const vrShowDebugOverlay = SettingKey<bool>(
+    'vrShowDebugOverlay',
+    false,
+    group: SettingGroup.player,
+  );
+  static const vrGamepadDeadZone = SettingKey<double>(
+    'vrGamepadDeadZone',
+    0.15,
+    group: SettingGroup.player,
+  );
+  static const vrMenuRepeatMs = SettingKey<int>(
+    'vrMenuRepeatMs',
+    180,
+    group: SettingGroup.player,
+  );
+
   static final List<SettingKey<Object?>> all = [
     hAenable,
     hardwareDecoder,
@@ -688,6 +800,28 @@ class SettingsKeys {
     playerControllerLayerDisappearTime,
     defaultVolume,
     playerMuted,
+    vrEnabled,
+    vrScreenScale,
+    vrScreenDistanceMeters,
+    vrScreenVerticalOffset,
+    vrCurvature,
+    vrViewerMode,
+    vrHeadTrackingEnabled,
+    vrHeadTrackingSensitivity,
+    vrIpdScale,
+    vrScreenFillMode,
+    vrZoomScale,
+    vrBackgroundEnabled,
+    vrBackgroundImageUri,
+    vrBackgroundBrightness,
+    vrBrightness,
+    vrHorizontalMirror,
+    vrVerticalFlip,
+    vrShowStatus,
+    vrShowCenterAlignmentLine,
+    vrShowDebugOverlay,
+    vrGamepadDeadZone,
+    vrMenuRepeatMs,
   ];
 
   static List<SettingKey<Object?>> byGroup(SettingGroup group) {
