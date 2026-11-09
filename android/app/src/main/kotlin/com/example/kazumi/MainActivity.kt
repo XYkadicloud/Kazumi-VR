@@ -39,6 +39,7 @@ import android.util.Log
 import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.widget.FrameLayout
 
 class MainActivity: AudioServiceActivity() {
@@ -154,7 +155,9 @@ class MainActivity: AudioServiceActivity() {
             isClickable = true
             visibility = View.GONE
         }
-        window.decorView.addView(
+        // Window.getDecorView() is typed as View; the actual DecorView is a FrameLayout, so the
+        // container can be added as a sibling of the Flutter content view (i.e. drawn on top).
+        (window.decorView as ViewGroup).addView(
             vrContainer,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -257,7 +260,7 @@ class MainActivity: AudioServiceActivity() {
         vrView?.release()
         vrView = null
         vrContainer?.let {
-            window.decorView.removeView(it)
+            (window.decorView as? ViewGroup)?.removeView(it)
         }
         vrContainer = null
         vrChannel?.setMethodCallHandler(null)
