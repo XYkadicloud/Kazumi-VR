@@ -442,7 +442,7 @@ class _VrSettingsPageState extends State<VrSettingsPage> {
                   ),
                   _dropdown(
                     s,
-                    icon: Icons.rotate_90_degrees_cw_rounded,
+                    icon: Icons.crop_rotate_rounded,
                     title: '预览旋转',
                     key: 'passthroughRotation',
                     description: 'AUTO 为横屏下的正立预览，其余为手动校正',
@@ -475,7 +475,7 @@ class _VrSettingsPageState extends State<VrSettingsPage> {
                   ),
                   _toggle(
                     s,
-                    icon: Icons.mirror_rounded,
+                    icon: Icons.swap_horiz_rounded,
                     title: '预览镜像',
                     key: 'passthroughMirror',
                   ),

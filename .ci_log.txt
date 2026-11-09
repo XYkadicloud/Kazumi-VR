@@ -1,0 +1,1422 @@
+﻿2026-11-09T11:30:49.8161808Z Current runner version: '2.338.2'
+2026-11-09T11:30:49.8196117Z ##[group]Runner Image Provisioner
+2026-11-09T11:30:49.8198016Z Hosted Compute Agent
+2026-11-09T11:30:49.8199128Z Version: 20261028.624
+2026-11-09T11:30:49.8200375Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-09T11:30:49.8201698Z Build Date: 2026-10-28T21:51:42Z
+2026-11-09T11:30:49.8202857Z Worker ID: {bb772428-0c53-4570-a871-172c5253862a}
+2026-11-09T11:30:49.8204288Z Region: eastus
+2026-11-09T11:30:49.8205301Z Cloud: Azure
+2026-11-09T11:30:49.8206354Z ##[endgroup]
+2026-11-09T11:30:49.8209276Z ##[group]Operating System
+2026-11-09T11:30:49.8210642Z Ubuntu
+2026-11-09T11:30:49.8211652Z 24.04.5
+2026-11-09T11:30:49.8212497Z LTS
+2026-11-09T11:30:49.8213508Z ##[endgroup]
+2026-11-09T11:30:49.8214491Z ##[group]Runner Image
+2026-11-09T11:30:49.8215662Z Image: ubuntu-24.04
+2026-11-09T11:30:49.8216827Z Version: 20261101.360.1
+2026-11-09T11:30:49.8219581Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261101.360/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-09T11:30:49.8222515Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261101.360
+2026-11-09T11:30:49.8224657Z ##[endgroup]
+2026-11-09T11:30:49.8226557Z ##[group]GITHUB_TOKEN Permissions
+2026-11-09T11:30:49.8230042Z Contents: read
+2026-11-09T11:30:49.8231086Z Metadata: read
+2026-11-09T11:30:49.8232243Z ##[endgroup]
+2026-11-09T11:30:49.8235343Z Secret source: Actions
+2026-11-09T11:30:49.8237155Z Cache mode: write
+2026-11-09T11:30:49.8239213Z Prepare workflow directory
+2026-11-09T11:30:49.8824321Z Prepare all required actions
+2026-11-09T11:30:49.8898045Z Getting action download info
+2026-11-09T11:30:50.0975741Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-09T11:30:50.4936299Z Download action repository 'actions/setup-java@v4' (SHA:cf277c60eb25467037889841efdb72551f06f6c3)
+2026-11-09T11:30:50.7289913Z Download action repository 'subosito/flutter-action@v2.16.0' (SHA:44ac965b96f18d999802d4b807e3256d5a3f9fa1)
+2026-11-09T11:30:50.8393068Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-11-09T11:30:51.0073027Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-09T11:30:51.2650767Z Getting action download info
+2026-11-09T11:30:51.3532475Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-11-09T11:30:51.5996936Z Complete job name: analyze + VR JVM tests + arm64 debug APK
+2026-11-09T11:30:51.7216527Z ##[group]Run actions/checkout@v4
+2026-11-09T11:30:51.7219094Z with:
+2026-11-09T11:30:51.7220683Z   submodules: recursive
+2026-11-09T11:30:51.7222717Z   repository: XYkadicloud/Kazumi-VR
+2026-11-09T11:30:51.7239381Z   token: ***
+2026-11-09T11:30:51.7240940Z   ssh-strict: true
+2026-11-09T11:30:51.7242608Z   ssh-user: git
+2026-11-09T11:30:51.7244292Z   persist-credentials: true
+2026-11-09T11:30:51.7246187Z   clean: true
+2026-11-09T11:30:51.7248129Z   sparse-checkout-cone-mode: true
+2026-11-09T11:30:51.7250151Z   fetch-depth: 1
+2026-11-09T11:30:51.7251757Z   fetch-tags: false
+2026-11-09T11:30:51.7253453Z   show-progress: true
+2026-11-09T11:30:51.7255144Z   lfs: false
+2026-11-09T11:30:51.7256745Z   set-safe-directory: true
+2026-11-09T11:30:51.7259035Z   allow-unsafe-pr-checkout: false
+2026-11-09T11:30:51.7261316Z env:
+2026-11-09T11:30:51.7262798Z   VR_ABIS: arm64-v8a
+2026-11-09T11:30:51.7264485Z ##[endgroup]
+2026-11-09T11:30:54.1448064Z Syncing repository: XYkadicloud/Kazumi-VR
+2026-11-09T11:30:54.1450988Z ##[group]Getting Git version info
+2026-11-09T11:30:54.1451842Z Working directory is '/home/runner/work/Kazumi-VR/Kazumi-VR'
+2026-11-09T11:30:54.1453166Z [command]/usr/bin/git version
+2026-11-09T11:30:54.2807070Z git version 2.56.0
+2026-11-09T11:30:54.2832370Z ##[endgroup]
+2026-11-09T11:30:54.2850737Z Temporarily overriding HOME='/home/runner/work/_temp/3e860cc8-50e3-4124-bdca-f57d7a8d596a' before making global git config changes
+2026-11-09T11:30:54.2852688Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-09T11:30:54.2857643Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Kazumi-VR/Kazumi-VR
+2026-11-09T11:30:54.3235896Z Deleting the contents of '/home/runner/work/Kazumi-VR/Kazumi-VR'
+2026-11-09T11:30:54.3240936Z ##[group]Initializing the repository
+2026-11-09T11:30:54.3244773Z [command]/usr/bin/git init /home/runner/work/Kazumi-VR/Kazumi-VR
+2026-11-09T11:30:54.3755312Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-09T11:30:54.3756681Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-09T11:30:54.3758067Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-09T11:30:54.3758615Z hint: call:
+2026-11-09T11:30:54.3758891Z hint:
+2026-11-09T11:30:54.3759247Z hint: 	git config --global init.defaultBranch <name>
+2026-11-09T11:30:54.3759663Z hint:
+2026-11-09T11:30:54.3760079Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-09T11:30:54.3760713Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-09T11:30:54.3761208Z hint:
+2026-11-09T11:30:54.3761480Z hint: 	git branch -m <name>
+2026-11-09T11:30:54.3761787Z hint:
+2026-11-09T11:30:54.3762212Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-09T11:30:54.3858441Z Initialized empty Git repository in /home/runner/work/Kazumi-VR/Kazumi-VR/.git/
+2026-11-09T11:30:54.3870524Z [command]/usr/bin/git remote add origin https://github.com/XYkadicloud/Kazumi-VR
+2026-11-09T11:30:54.4135128Z ##[endgroup]
+2026-11-09T11:30:54.4135699Z ##[group]Disabling automatic garbage collection
+2026-11-09T11:30:54.4140777Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-09T11:30:54.4183199Z ##[endgroup]
+2026-11-09T11:30:54.4184128Z ##[group]Setting up auth
+2026-11-09T11:30:54.4191611Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-09T11:30:54.4238396Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-09T11:30:54.6195120Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-09T11:30:54.6245056Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-09T11:30:54.6513006Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-09T11:30:54.6561757Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-09T11:30:54.6830836Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-09T11:30:54.6887140Z ##[endgroup]
+2026-11-09T11:30:54.6888268Z ##[group]Fetching the repository
+2026-11-09T11:30:54.6905223Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +3063c69de0442d50597289a99e26a657eac21576:refs/remotes/origin/main
+2026-11-09T11:30:55.3168623Z From https://github.com/XYkadicloud/Kazumi-VR
+2026-11-09T11:30:55.3169407Z  * [new ref]         3063c69de0442d50597289a99e26a657eac21576 -> origin/main
+2026-11-09T11:30:55.3179326Z ##[endgroup]
+2026-11-09T11:30:55.3179929Z ##[group]Determining the checkout info
+2026-11-09T11:30:55.3180426Z ##[endgroup]
+2026-11-09T11:30:55.3190438Z [command]/usr/bin/git sparse-checkout disable
+2026-11-09T11:30:55.3334564Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-09T11:30:55.3373037Z ##[group]Checking out the ref
+2026-11-09T11:30:55.3376732Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-09T11:30:55.4826828Z Switched to a new branch 'main'
+2026-11-09T11:30:55.4875095Z branch 'main' set up to track 'origin/main'.
+2026-11-09T11:30:55.4886023Z ##[endgroup]
+2026-11-09T11:30:55.4886661Z ##[group]Setting up auth for fetching submodules
+2026-11-09T11:30:55.4892778Z [command]/usr/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-09T11:30:55.4948852Z [command]/usr/bin/git config --global --unset-all url.https://github.com/.insteadOf
+2026-11-09T11:30:55.4983174Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+2026-11-09T11:30:55.5048406Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf org-180416938@github.com:
+2026-11-09T11:30:55.5065486Z ##[endgroup]
+2026-11-09T11:30:55.5066358Z ##[group]Fetching submodules
+2026-11-09T11:30:55.5069201Z [command]/usr/bin/git submodule sync --recursive
+2026-11-09T11:30:55.5319649Z [command]/usr/bin/git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
+2026-11-09T11:30:55.5620610Z Submodule 'fastlane/.flutter' (https://github.com/flutter/flutter.git) registered for path 'fastlane/.flutter'
+2026-11-09T11:30:55.5629469Z Submodule 'fastlane/.libmpv-android-video-build' (https://github.com/Predidit/libmpv-android-video-build.git) registered for path 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:30:55.5659648Z Cloning into '/home/runner/work/Kazumi-VR/Kazumi-VR/fastlane/.flutter'...
+2026-11-09T11:31:02.2116835Z Cloning into '/home/runner/work/Kazumi-VR/Kazumi-VR/fastlane/.libmpv-android-video-build'...
+2026-11-09T11:31:06.9308723Z From https://github.com/flutter/flutter
+2026-11-09T11:31:06.9309274Z  * branch              c197ca5199e9ee5661e865596c9c07294dfab51c -> FETCH_HEAD
+2026-11-09T11:31:08.1160879Z Submodule path 'fastlane/.flutter': checked out 'c197ca5199e9ee5661e865596c9c07294dfab51c'
+2026-11-09T11:31:08.1316298Z Submodule path 'fastlane/.libmpv-android-video-build': checked out '0443048272a511d7a990a2a3d5ca6bbaf55a869a'
+2026-11-09T11:31:08.1350704Z [command]/usr/bin/git submodule foreach --recursive git config --local gc.auto 0
+2026-11-09T11:31:08.1582962Z Entering 'fastlane/.flutter'
+2026-11-09T11:31:08.1650564Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:31:08.1701177Z ##[endgroup]
+2026-11-09T11:31:08.1701594Z ##[group]Persisting credentials for submodules
+2026-11-09T11:31:08.1708387Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+2026-11-09T11:31:08.1940083Z Entering 'fastlane/.flutter'
+2026-11-09T11:31:08.2012655Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:31:08.2074178Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-09T11:31:08.2306459Z Entering 'fastlane/.flutter'
+2026-11-09T11:31:08.2347070Z file:/home/runner/work/Kazumi-VR/Kazumi-VR/.git/modules/fastlane/.flutter/config	remote.origin.url
+2026-11-09T11:31:08.2394532Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:31:08.2435349Z file:/home/runner/work/Kazumi-VR/Kazumi-VR/.git/modules/fastlane/.libmpv-android-video-build/config	remote.origin.url
+2026-11-09T11:31:08.2481622Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+2026-11-09T11:31:08.2711550Z Entering 'fastlane/.flutter'
+2026-11-09T11:31:08.2778835Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:31:08.2832750Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'org-180416938@github.com:'
+2026-11-09T11:31:08.3070448Z Entering 'fastlane/.flutter'
+2026-11-09T11:31:08.3152244Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:31:08.3206742Z ##[endgroup]
+2026-11-09T11:31:08.3263339Z [command]/usr/bin/git log -1 --format=%H
+2026-11-09T11:31:08.3302342Z 3063c69de0442d50597289a99e26a657eac21576
+2026-11-09T11:31:08.3594877Z ##[group]Run sudo apt-get update
+2026-11-09T11:31:08.3595232Z [36;1msudo apt-get update[0m
+2026-11-09T11:31:08.3595574Z [36;1msudo apt-get install -y clang cmake ninja-build \[0m
+2026-11-09T11:31:08.3596025Z [36;1m  libgtk-3-dev libayatana-appindicator3-dev libasound2-dev[0m
+2026-11-09T11:31:08.3620405Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:31:08.3620776Z env:
+2026-11-09T11:31:08.3620993Z   VR_ABIS: arm64-v8a
+2026-11-09T11:31:08.3621222Z ##[endgroup]
+2026-11-09T11:31:08.5011897Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-11-09T11:31:08.5543070Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-11-09T11:31:08.5560467Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-11-09T11:31:08.5592826Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-11-09T11:31:08.5657820Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-11-09T11:31:08.5708041Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-11-09T11:31:08.7273043Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [743 kB]
+2026-11-09T11:31:08.7416837Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [675 kB]
+2026-11-09T11:31:08.7827756Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1425 kB]
+2026-11-09T11:31:08.7940198Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [313 kB]
+2026-11-09T11:31:08.7970968Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1711 kB]
+2026-11-09T11:31:08.8080196Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [344 kB]
+2026-11-09T11:31:08.8117711Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1839 kB]
+2026-11-09T11:31:08.8217933Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [420 kB]
+2026-11-09T11:31:08.8302146Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [50.7 kB]
+2026-11-09T11:31:08.8318766Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [14.3 kB]
+2026-11-09T11:31:08.8977881Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1157 kB]
+2026-11-09T11:31:08.9043331Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [234 kB]
+2026-11-09T11:31:08.9498694Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1228 kB]
+2026-11-09T11:31:08.9555296Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [248 kB]
+2026-11-09T11:31:08.9598382Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1721 kB]
+2026-11-09T11:31:08.9664354Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [394 kB]
+2026-11-09T11:31:08.9692680Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [45.4 kB]
+2026-11-09T11:31:08.9708949Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [12.4 kB]
+2026-11-09T11:31:14.4596303Z Fetched 13.0 MB in 1s (9479 kB/s)
+2026-11-09T11:31:15.6021262Z Reading package lists...
+2026-11-09T11:31:15.6403568Z Reading package lists...
+2026-11-09T11:31:15.8497247Z Building dependency tree...
+2026-11-09T11:31:15.8504879Z Reading state information...
+2026-11-09T11:31:15.9887503Z The following additional packages will be installed:
+2026-11-09T11:31:15.9888389Z   bzip2-doc cmake-data gir1.2-atk-1.0 gir1.2-atspi-2.0
+2026-11-09T11:31:15.9889217Z   gir1.2-ayatanaappindicator3-0.1 gir1.2-ayatanaido3-0.4
+2026-11-09T11:31:15.9890089Z   gir1.2-dbusmenu-glib-0.4 gir1.2-freedesktop gir1.2-freedesktop-dev
+2026-11-09T11:31:15.9891618Z   gir1.2-gdkpixbuf-2.0 gir1.2-glib-2.0-dev gir1.2-gtk-3.0 gir1.2-harfbuzz-0.0
+2026-11-09T11:31:15.9892816Z   gir1.2-pango-1.0 libatk-bridge2.0-dev libatk1.0-dev libatspi2.0-dev
+2026-11-09T11:31:15.9893546Z   libayatana-appindicator3-1 libayatana-ido3-0.4-0 libayatana-ido3-dev
+2026-11-09T11:31:15.9894110Z   libayatana-indicator3-7 libayatana-indicator3-dev libblkid-dev libbrotli-dev
+2026-11-09T11:31:15.9894674Z   libbz2-dev libcairo-script-interpreter2 libcairo2-dev libdatrie-dev
+2026-11-09T11:31:15.9895203Z   libdbus-1-dev libdbusmenu-glib-dev libdeflate-dev libegl-dev libegl-mesa0
+2026-11-09T11:31:15.9895747Z   libegl1 libegl1-mesa-dev libepoxy-dev libfontconfig-dev libfreetype-dev
+2026-11-09T11:31:15.9896243Z   libfribidi-dev libgdk-pixbuf-2.0-dev libgdk-pixbuf2.0-bin
+2026-11-09T11:31:15.9896735Z   libgirepository-2.0-0 libgl-dev libgles-dev libgles1 libgles2 libglib2.0-dev
+2026-11-09T11:31:15.9897517Z   libglib2.0-dev-bin libglvnd-core-dev libglvnd-dev libglx-dev
+2026-11-09T11:31:15.9898384Z   libgraphite2-dev libharfbuzz-cairo0 libharfbuzz-dev libharfbuzz-gobject0
+2026-11-09T11:31:15.9899252Z   libharfbuzz-icu0 libharfbuzz-subset0 libice-dev libjbig-dev libjpeg-dev
+2026-11-09T11:31:15.9899828Z   libjpeg-turbo8-dev libjpeg8-dev libjsoncpp25 liblerc-dev liblzma-dev
+2026-11-09T11:31:15.9900344Z   libmount-dev libopengl-dev libopengl0 libpango1.0-dev libpangoxft-1.0-0
+2026-11-09T11:31:15.9901173Z   libpixman-1-dev libpng-dev libpng-tools libpthread-stubs0-dev librhash0
+2026-11-09T11:31:15.9901851Z   libselinux1-dev libsepol-dev libsharpyuv-dev libsm-dev libthai-dev
+2026-11-09T11:31:15.9902349Z   libtiff-dev libtiffxx6 libwayland-bin libwayland-dev libwayland-server0
+2026-11-09T11:31:15.9902825Z   libwebp-dev libwebpdecoder3 libx11-dev libxau-dev libxcb-render0-dev
+2026-11-09T11:31:15.9903328Z   libxcb-shm0-dev libxcb1-dev libxcomposite-dev libxcursor-dev libxdamage-dev
+2026-11-09T11:31:15.9903848Z   libxdmcp-dev libxext-dev libxfixes-dev libxft-dev libxi-dev libxinerama-dev
+2026-11-09T11:31:15.9904356Z   libxkbcommon-dev libxrandr-dev libxrender-dev libxtst-dev pango1.0-tools
+2026-11-09T11:31:15.9904849Z   uuid-dev wayland-protocols x11proto-dev xorg-sgml-doctools xtrans-dev
+2026-11-09T11:31:15.9905224Z Suggested packages:
+2026-11-09T11:31:15.9905538Z   cmake-doc cmake-format elpa-cmake-mode libasound2-doc libcairo2-doc
+2026-11-09T11:31:15.9906023Z   libdatrie-doc freetype2-doc libglib2.0-doc libxml2-utils libgraphite2-utils
+2026-11-09T11:31:15.9906538Z   libgtk-3-doc libice-doc liblzma-doc libpango1.0-doc libsm-doc libthai-doc
+2026-11-09T11:31:15.9907011Z   libwayland-doc libx11-doc libxcb-doc libxext-doc graphicsmagick
+2026-11-09T11:31:16.0415953Z The following NEW packages will be installed:
+2026-11-09T11:31:16.0416777Z   bzip2-doc clang cmake cmake-data gir1.2-atk-1.0 gir1.2-atspi-2.0
+2026-11-09T11:31:16.0417706Z   gir1.2-ayatanaappindicator3-0.1 gir1.2-ayatanaido3-0.4
+2026-11-09T11:31:16.0418434Z   gir1.2-dbusmenu-glib-0.4 gir1.2-freedesktop gir1.2-freedesktop-dev
+2026-11-09T11:31:16.0419249Z   gir1.2-gdkpixbuf-2.0 gir1.2-glib-2.0-dev gir1.2-gtk-3.0 gir1.2-harfbuzz-0.0
+2026-11-09T11:31:16.0420050Z   gir1.2-pango-1.0 libasound2-dev libatk-bridge2.0-dev libatk1.0-dev
+2026-11-09T11:31:16.0420608Z   libatspi2.0-dev libayatana-appindicator3-1 libayatana-appindicator3-dev
+2026-11-09T11:31:16.0421402Z   libayatana-ido3-0.4-0 libayatana-ido3-dev libayatana-indicator3-7
+2026-11-09T11:31:16.0422200Z   libayatana-indicator3-dev libblkid-dev libbrotli-dev libbz2-dev
+2026-11-09T11:31:16.0422762Z   libcairo-script-interpreter2 libcairo2-dev libdatrie-dev libdbus-1-dev
+2026-11-09T11:31:16.0423322Z   libdbusmenu-glib-dev libdeflate-dev libegl-dev libegl-mesa0 libegl1
+2026-11-09T11:31:16.0423834Z   libegl1-mesa-dev libepoxy-dev libfontconfig-dev libfreetype-dev
+2026-11-09T11:31:16.0424581Z   libfribidi-dev libgdk-pixbuf-2.0-dev libgdk-pixbuf2.0-bin
+2026-11-09T11:31:16.0425264Z   libgirepository-2.0-0 libgl-dev libgles-dev libgles1 libgles2 libglib2.0-dev
+2026-11-09T11:31:16.0425811Z   libglib2.0-dev-bin libglvnd-core-dev libglvnd-dev libglx-dev
+2026-11-09T11:31:16.0426728Z   libgraphite2-dev libgtk-3-dev libharfbuzz-cairo0 libharfbuzz-dev
+2026-11-09T11:31:16.0427532Z   libharfbuzz-gobject0 libharfbuzz-icu0 libharfbuzz-subset0 libice-dev
+2026-11-09T11:31:16.0428099Z   libjbig-dev libjpeg-dev libjpeg-turbo8-dev libjpeg8-dev libjsoncpp25
+2026-11-09T11:31:16.0428604Z   liblerc-dev liblzma-dev libmount-dev libopengl-dev libopengl0
+2026-11-09T11:31:16.0429129Z   libpango1.0-dev libpangoxft-1.0-0 libpixman-1-dev libpng-dev libpng-tools
+2026-11-09T11:31:16.0429721Z   libpthread-stubs0-dev librhash0 libselinux1-dev libsepol-dev libsharpyuv-dev
+2026-11-09T11:31:16.0430310Z   libsm-dev libthai-dev libtiff-dev libtiffxx6 libwayland-bin libwayland-dev
+2026-11-09T11:31:16.0430869Z   libwayland-server0 libwebp-dev libwebpdecoder3 libx11-dev libxau-dev
+2026-11-09T11:31:16.0431389Z   libxcb-render0-dev libxcb-shm0-dev libxcb1-dev libxcomposite-dev
+2026-11-09T11:31:16.0431904Z   libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev
+2026-11-09T11:31:16.0432431Z   libxft-dev libxi-dev libxinerama-dev libxkbcommon-dev libxrandr-dev
+2026-11-09T11:31:16.0432951Z   libxrender-dev libxtst-dev ninja-build pango1.0-tools uuid-dev
+2026-11-09T11:31:16.0433428Z   wayland-protocols x11proto-dev xorg-sgml-doctools xtrans-dev
+2026-11-09T11:31:16.0653770Z 0 upgraded, 117 newly installed, 0 to remove and 27 not upgraded.
+2026-11-09T11:31:16.0654403Z Need to get 27.6 MB of archives.
+2026-11-09T11:31:16.0654833Z After this operation, 133 MB of additional disk space will be used.
+2026-11-09T11:31:16.0655260Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-11-09T11:31:16.0974309Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 bzip2-doc all 1.0.8-5.1ubuntu0.1 [499 kB]
+2026-11-09T11:31:16.1201186Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 clang amd64 1:18.0-59~exp2 [5846 B]
+2026-11-09T11:31:16.1347894Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjsoncpp25 amd64 1.9.5-6build1 [82.8 kB]
+2026-11-09T11:31:16.1501110Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 librhash0 amd64 1.4.3-3build1 [129 kB]
+2026-11-09T11:31:16.1660817Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake-data all 3.28.3-1build7 [2155 kB]
+2026-11-09T11:31:16.2101445Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake amd64 3.28.3-1build7 [11.2 MB]
+2026-11-09T11:31:16.2840609Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-atk-1.0 amd64 2.52.0-1build1 [23.1 kB]
+2026-11-09T11:31:16.2986998Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-freedesktop amd64 1.80.1-1 [49.7 kB]
+2026-11-09T11:31:16.3138553Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-atspi-2.0 amd64 2.52.0-1build1 [19.8 kB]
+2026-11-09T11:31:16.3284864Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-gdkpixbuf-2.0 amd64 2.42.10+dfsg-3ubuntu3.3 [9482 B]
+2026-11-09T11:31:16.3429005Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-gobject0 amd64 8.3.0-2build2 [34.3 kB]
+2026-11-09T11:31:16.3575127Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-harfbuzz-0.0 amd64 8.3.0-2build2 [44.5 kB]
+2026-11-09T11:31:16.3728178Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpangoxft-1.0-0 amd64 1.52.1+ds-1build1 [20.3 kB]
+2026-11-09T11:31:16.3872196Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-pango-1.0 amd64 1.52.1+ds-1build1 [34.8 kB]
+2026-11-09T11:31:16.4020668Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-gtk-3.0 amd64 3.24.41-4ubuntu1.3 [245 kB]
+2026-11-09T11:31:16.4179686Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libayatana-ido3-0.4-0 amd64 0.10.1-1build2 [56.6 kB]
+2026-11-09T11:31:16.4327511Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libayatana-indicator3-7 amd64 0.9.4-1build1 [31.7 kB]
+2026-11-09T11:31:16.4474238Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libayatana-appindicator3-1 amd64 0.5.93-1build3 [24.7 kB]
+2026-11-09T11:31:16.5062245Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-ayatanaappindicator3-0.1 amd64 0.5.93-1build3 [5838 B]
+2026-11-09T11:31:16.5206868Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-ayatanaido3-0.4 amd64 0.10.1-1build2 [6410 B]
+2026-11-09T11:31:16.5357927Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-dbusmenu-glib-0.4 amd64 18.10.20180917~bzr492+repack1-3.1ubuntu5 [7088 B]
+2026-11-09T11:31:16.5504924Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-glib-2.0-dev amd64 2.80.0-6ubuntu3.10 [848 kB]
+2026-11-09T11:31:16.5694717Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-freedesktop-dev amd64 1.80.1-1 [28.8 kB]
+2026-11-09T11:31:16.5842873Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libasound2-dev amd64 1.2.11-1ubuntu0.3 [115 kB]
+2026-11-09T11:31:16.5997703Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-dev-bin amd64 2.80.0-6ubuntu3.10 [138 kB]
+2026-11-09T11:31:16.6150532Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 uuid-dev amd64 2.39.3-9ubuntu6.6 [33.5 kB]
+2026-11-09T11:31:16.6296758Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libblkid-dev amd64 2.39.3-9ubuntu6.6 [205 kB]
+2026-11-09T11:31:16.6466113Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsepol-dev amd64 3.5-2build1 [384 kB]
+2026-11-09T11:31:16.6632325Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libselinux1-dev amd64 3.5-2ubuntu2.1 [164 kB]
+2026-11-09T11:31:16.6786619Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libmount-dev amd64 2.39.3-9ubuntu6.6 [14.9 kB]
+2026-11-09T11:31:16.6933095Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgirepository-2.0-0 amd64 2.80.0-6ubuntu3.10 [73.5 kB]
+2026-11-09T11:31:16.7083169Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-dev amd64 2.80.0-6ubuntu3.10 [1861 kB]
+2026-11-09T11:31:16.7327864Z Get:34 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libatk1.0-dev amd64 2.52.0-1build1 [100 kB]
+2026-11-09T11:31:16.7479175Z Get:35 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libdbus-1-dev amd64 1.14.10-4ubuntu4.1 [190 kB]
+2026-11-09T11:31:16.7635424Z Get:36 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xorg-sgml-doctools all 1:1.11-1.1 [10.9 kB]
+2026-11-09T11:31:16.7781230Z Get:37 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 x11proto-dev all 2023.2-1 [602 kB]
+2026-11-09T11:31:16.8381260Z Get:38 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxau-dev amd64 1:1.0.9-1build6 [9570 B]
+2026-11-09T11:31:16.8527910Z Get:39 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxdmcp-dev amd64 1:1.1.3-0ubuntu6 [26.5 kB]
+2026-11-09T11:31:16.8673869Z Get:40 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xtrans-dev all 1.4.0-1 [68.9 kB]
+2026-11-09T11:31:16.8823737Z Get:41 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpthread-stubs0-dev amd64 0.4-1build3 [4746 B]
+2026-11-09T11:31:16.8970558Z Get:42 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb1-dev amd64 1.15-1ubuntu2 [85.8 kB]
+2026-11-09T11:31:16.9125067Z Get:43 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libx11-dev amd64 2:1.8.7-1ubuntu0.1 [732 kB]
+2026-11-09T11:31:16.9312870Z Get:44 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxext-dev amd64 2:1.3.4-1build2 [83.5 kB]
+2026-11-09T11:31:16.9466200Z Get:45 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxfixes-dev amd64 1:6.0.0-2build1 [12.1 kB]
+2026-11-09T11:31:16.9612189Z Get:46 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxi-dev amd64 2:1.8.1-1build1 [194 kB]
+2026-11-09T11:31:16.9796368Z Get:47 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libxtst-dev amd64 2:1.2.3-1.1ubuntu0.1 [15.8 kB]
+2026-11-09T11:31:16.9941324Z Get:48 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libatspi2.0-dev amd64 2.52.0-1build1 [76.2 kB]
+2026-11-09T11:31:17.0090499Z Get:49 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libatk-bridge2.0-dev amd64 2.52.0-1build1 [4284 B]
+2026-11-09T11:31:17.0235496Z Get:50 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libcairo-script-interpreter2 amd64 1.18.0-3build1 [60.3 kB]
+2026-11-09T11:31:17.0383374Z Get:51 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libbrotli-dev amd64 1.1.0-2ubuntu0.1 [353 kB]
+2026-11-09T11:31:17.0549959Z Get:52 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libbz2-dev amd64 1.0.8-5.1ubuntu0.1 [33.6 kB]
+2026-11-09T11:31:17.0700465Z Get:53 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libpng-dev amd64 1.6.43-5ubuntu0.7 [265 kB]
+2026-11-09T11:31:17.0862671Z Get:54 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libfreetype-dev amd64 2.13.2+dfsg-1ubuntu0.2 [574 kB]
+2026-11-09T11:31:17.1054904Z Get:55 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libfontconfig-dev amd64 2.15.0-1.1ubuntu2 [161 kB]
+2026-11-09T11:31:17.1211679Z Get:56 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpixman-1-dev amd64 0.42.2-1build1 [296 kB]
+2026-11-09T11:31:17.1822033Z Get:57 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libice-dev amd64 2:1.0.10-1build3 [51.0 kB]
+2026-11-09T11:31:17.1970300Z Get:58 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsm-dev amd64 2:1.2.3-1build3 [17.8 kB]
+2026-11-09T11:31:17.2141554Z Get:59 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-render0-dev amd64 1.15-1ubuntu2 [19.6 kB]
+2026-11-09T11:31:17.2290528Z Get:60 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-shm0-dev amd64 1.15-1ubuntu2 [8246 B]
+2026-11-09T11:31:17.2438516Z Get:61 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxrender-dev amd64 1:0.9.10-1.1build1 [26.3 kB]
+2026-11-09T11:31:17.2589958Z Get:62 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libcairo2-dev amd64 1.18.0-3build1 [41.1 kB]
+2026-11-09T11:31:17.2740723Z Get:63 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libegl-mesa0 amd64 25.2.8-0ubuntu0.24.04.4 [117 kB]
+2026-11-09T11:31:17.2892471Z Get:64 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libegl1 amd64 1.7.0-1build1 [28.7 kB]
+2026-11-09T11:31:17.3038713Z Get:65 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libglx-dev amd64 1.7.0-1build1 [14.2 kB]
+2026-11-09T11:31:17.3187720Z Get:66 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgl-dev amd64 1.7.0-1build1 [102 kB]
+2026-11-09T11:31:17.3340067Z Get:67 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libegl-dev amd64 1.7.0-1build1 [18.2 kB]
+2026-11-09T11:31:17.3484886Z Get:68 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libglvnd-core-dev amd64 1.7.0-1build1 [13.6 kB]
+2026-11-09T11:31:17.3630526Z Get:69 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles1 amd64 1.7.0-1build1 [11.6 kB]
+2026-11-09T11:31:17.3774478Z Get:70 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles2 amd64 1.7.0-1build1 [17.1 kB]
+2026-11-09T11:31:17.3920906Z Get:71 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles-dev amd64 1.7.0-1build1 [50.5 kB]
+2026-11-09T11:31:17.4070189Z Get:72 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libopengl0 amd64 1.7.0-1build1 [32.8 kB]
+2026-11-09T11:31:17.4224523Z Get:73 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libopengl-dev amd64 1.7.0-1build1 [3454 B]
+2026-11-09T11:31:17.4368579Z Get:74 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libglvnd-dev amd64 1.7.0-1build1 [3198 B]
+2026-11-09T11:31:17.4513182Z Get:75 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libegl1-mesa-dev amd64 25.2.8-0ubuntu0.24.04.4 [26.8 kB]
+2026-11-09T11:31:17.5102568Z Get:76 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libepoxy-dev amd64 1.5.10-1build1 [132 kB]
+2026-11-09T11:31:17.5258652Z Get:77 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libfribidi-dev amd64 1.0.13-3build1 [64.8 kB]
+2026-11-09T11:31:17.5409090Z Get:78 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgdk-pixbuf2.0-bin amd64 2.42.10+dfsg-3ubuntu3.3 [13.9 kB]
+2026-11-09T11:31:17.5558135Z Get:79 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjpeg-turbo8-dev amd64 2.1.5-2ubuntu2 [295 kB]
+2026-11-09T11:31:17.5722018Z Get:80 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjpeg8-dev amd64 8c-2ubuntu11 [1484 B]
+2026-11-09T11:31:17.5866465Z Get:81 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjpeg-dev amd64 8c-2ubuntu11 [1482 B]
+2026-11-09T11:31:17.6013049Z Get:82 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjbig-dev amd64 2.1-6.1ubuntu2 [27.9 kB]
+2026-11-09T11:31:17.6158901Z Get:83 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 liblzma-dev amd64 5.6.1+really5.4.5-1ubuntu0.4 [176 kB]
+2026-11-09T11:31:17.6315339Z Get:84 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwebpdecoder3 amd64 1.3.2-0.4build3 [114 kB]
+2026-11-09T11:31:17.6469710Z Get:85 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsharpyuv-dev amd64 1.3.2-0.4build3 [16.0 kB]
+2026-11-09T11:31:17.6615410Z Get:86 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwebp-dev amd64 1.3.2-0.4build3 [367 kB]
+2026-11-09T11:31:17.6781594Z Get:87 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libtiffxx6 amd64 4.5.1+git230720-4ubuntu2.5 [5642 B]
+2026-11-09T11:31:17.6927112Z Get:88 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libdeflate-dev amd64 1.19-1build1.1 [50.9 kB]
+2026-11-09T11:31:17.7074358Z Get:89 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 liblerc-dev amd64 4.0.0+ds-4ubuntu2 [182 kB]
+2026-11-09T11:31:17.7233025Z Get:90 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libtiff-dev amd64 4.5.1+git230720-4ubuntu2.5 [338 kB]
+2026-11-09T11:31:17.7398505Z Get:91 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgdk-pixbuf-2.0-dev amd64 2.42.10+dfsg-3ubuntu3.3 [47.9 kB]
+2026-11-09T11:31:17.7546512Z Get:92 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-icu0 amd64 8.3.0-2build2 [13.3 kB]
+2026-11-09T11:31:17.7691924Z Get:93 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-subset0 amd64 8.3.0-2build2 [448 kB]
+2026-11-09T11:31:17.8302456Z Get:94 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-cairo0 amd64 8.3.0-2build2 [26.2 kB]
+2026-11-09T11:31:17.8450551Z Get:95 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgraphite2-dev amd64 1.3.14-2ubuntu0.24.04.1 [14.7 kB]
+2026-11-09T11:31:17.8596079Z Get:96 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-dev amd64 8.3.0-2build2 [142 kB]
+2026-11-09T11:31:17.8751895Z Get:97 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libdatrie-dev amd64 0.2.13-3build1 [19.4 kB]
+2026-11-09T11:31:17.8899092Z Get:98 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libthai-dev amd64 0.1.29-2build1 [26.6 kB]
+2026-11-09T11:31:17.9050922Z Get:99 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxft-dev amd64 2.3.6-1build1 [64.3 kB]
+2026-11-09T11:31:17.9345568Z Get:100 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 pango1.0-tools amd64 1.52.1+ds-1build1 [36.7 kB]
+2026-11-09T11:31:17.9688115Z Get:101 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpango1.0-dev amd64 1.52.1+ds-1build1 [147 kB]
+2026-11-09T11:31:18.0169636Z Get:102 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-server0 amd64 1.22.0-2.1build1 [33.9 kB]
+2026-11-09T11:31:18.0347804Z Get:103 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-bin amd64 1.22.0-2.1build1 [20.6 kB]
+2026-11-09T11:31:18.0579087Z Get:104 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-dev amd64 1.22.0-2.1build1 [71.3 kB]
+2026-11-09T11:31:18.0759931Z Get:105 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcomposite-dev amd64 1:0.4.5-1build3 [9374 B]
+2026-11-09T11:31:18.0909000Z Get:106 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcursor-dev amd64 1:1.2.1-1build1 [31.8 kB]
+2026-11-09T11:31:18.1059487Z Get:107 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxdamage-dev amd64 1:1.1.6-1build1 [5270 B]
+2026-11-09T11:31:18.1205729Z Get:108 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxinerama-dev amd64 2:1.1.4-3build1 [7988 B]
+2026-11-09T11:31:18.1350272Z Get:109 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxkbcommon-dev amd64 1.6.0-1build1 [56.3 kB]
+2026-11-09T11:31:18.1519318Z Get:110 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxrandr-dev amd64 2:1.5.2-2build1 [26.4 kB]
+2026-11-09T11:31:18.1671606Z Get:111 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 wayland-protocols all 1.45-1~ubuntu0.24.04.2 [114 kB]
+2026-11-09T11:31:18.1877707Z Get:112 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgtk-3-dev amd64 3.24.41-4ubuntu1.3 [1096 kB]
+2026-11-09T11:31:18.2431115Z Get:113 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libayatana-ido3-dev amd64 0.10.1-1build2 [14.2 kB]
+2026-11-09T11:31:18.2578622Z Get:114 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libayatana-indicator3-dev amd64 0.9.4-1build1 [6956 B]
+2026-11-09T11:31:18.2725677Z Get:115 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libdbusmenu-glib-dev amd64 18.10.20180917~bzr492+repack1-3.1ubuntu5 [70.6 kB]
+2026-11-09T11:31:18.2878486Z Get:116 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libayatana-appindicator3-dev amd64 0.5.93-1build3 [14.9 kB]
+2026-11-09T11:31:18.3025961Z Get:117 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libpng-tools amd64 1.6.43-5ubuntu0.7 [28.5 kB]
+2026-11-09T11:31:18.3174173Z Get:118 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 ninja-build amd64 1.11.1-2 [129 kB]
+2026-11-09T11:31:18.6734707Z Fetched 27.6 MB in 2s (12.2 MB/s)
+2026-11-09T11:31:18.7014355Z Selecting previously unselected package bzip2-doc.
+2026-11-09T11:31:18.7569224Z (Reading database ... 
+2026-11-09T11:31:18.7569672Z (Reading database ... 5%
+2026-11-09T11:31:18.7569955Z (Reading database ... 10%
+2026-11-09T11:31:18.7570355Z (Reading database ... 15%
+2026-11-09T11:31:18.7570649Z (Reading database ... 20%
+2026-11-09T11:31:18.7570940Z (Reading database ... 25%
+2026-11-09T11:31:18.7571192Z (Reading database ... 30%
+2026-11-09T11:31:18.7571468Z (Reading database ... 35%
+2026-11-09T11:31:18.7571943Z (Reading database ... 40%
+2026-11-09T11:31:18.7572385Z (Reading database ... 45%
+2026-11-09T11:31:18.7572835Z (Reading database ... 50%
+2026-11-09T11:31:18.8170054Z (Reading database ... 55%
+2026-11-09T11:31:19.1338203Z (Reading database ... 60%
+2026-11-09T11:31:19.4394898Z (Reading database ... 65%
+2026-11-09T11:31:19.7213539Z (Reading database ... 70%
+2026-11-09T11:31:19.9655261Z (Reading database ... 75%
+2026-11-09T11:31:20.4636015Z (Reading database ... 80%
+2026-11-09T11:31:21.0562627Z (Reading database ... 85%
+2026-11-09T11:31:21.7000653Z (Reading database ... 90%
+2026-11-09T11:31:22.3408039Z (Reading database ... 95%
+2026-11-09T11:31:22.3408562Z (Reading database ... 100%
+2026-11-09T11:31:22.3409204Z (Reading database ... 215960 files and directories currently installed.)
+2026-11-09T11:31:22.3453121Z Preparing to unpack .../000-bzip2-doc_1.0.8-5.1ubuntu0.1_all.deb ...
+2026-11-09T11:31:22.3479022Z Unpacking bzip2-doc (1.0.8-5.1ubuntu0.1) ...
+2026-11-09T11:31:22.3919557Z Selecting previously unselected package clang.
+2026-11-09T11:31:22.4059050Z Preparing to unpack .../001-clang_1%3a18.0-59~exp2_amd64.deb ...
+2026-11-09T11:31:22.4067452Z Unpacking clang (1:18.0-59~exp2) ...
+2026-11-09T11:31:22.4402458Z Selecting previously unselected package libjsoncpp25:amd64.
+2026-11-09T11:31:22.4542504Z Preparing to unpack .../002-libjsoncpp25_1.9.5-6build1_amd64.deb ...
+2026-11-09T11:31:22.4560237Z Unpacking libjsoncpp25:amd64 (1.9.5-6build1) ...
+2026-11-09T11:31:22.4808001Z Selecting previously unselected package librhash0:amd64.
+2026-11-09T11:31:22.4949697Z Preparing to unpack .../003-librhash0_1.4.3-3build1_amd64.deb ...
+2026-11-09T11:31:22.4959646Z Unpacking librhash0:amd64 (1.4.3-3build1) ...
+2026-11-09T11:31:22.5209193Z Selecting previously unselected package cmake-data.
+2026-11-09T11:31:22.5350426Z Preparing to unpack .../004-cmake-data_3.28.3-1build7_all.deb ...
+2026-11-09T11:31:22.5432166Z Unpacking cmake-data (3.28.3-1build7) ...
+2026-11-09T11:31:23.0803354Z Selecting previously unselected package cmake.
+2026-11-09T11:31:23.0959672Z Preparing to unpack .../005-cmake_3.28.3-1build7_amd64.deb ...
+2026-11-09T11:31:23.0966432Z Unpacking cmake (3.28.3-1build7) ...
+2026-11-09T11:31:23.2622772Z Selecting previously unselected package gir1.2-atk-1.0:amd64.
+2026-11-09T11:31:23.2767084Z Preparing to unpack .../006-gir1.2-atk-1.0_2.52.0-1build1_amd64.deb ...
+2026-11-09T11:31:23.2774054Z Unpacking gir1.2-atk-1.0:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:23.2993902Z Selecting previously unselected package gir1.2-freedesktop:amd64.
+2026-11-09T11:31:23.3139159Z Preparing to unpack .../007-gir1.2-freedesktop_1.80.1-1_amd64.deb ...
+2026-11-09T11:31:23.3146562Z Unpacking gir1.2-freedesktop:amd64 (1.80.1-1) ...
+2026-11-09T11:31:23.3377682Z Selecting previously unselected package gir1.2-atspi-2.0:amd64.
+2026-11-09T11:31:23.3519971Z Preparing to unpack .../008-gir1.2-atspi-2.0_2.52.0-1build1_amd64.deb ...
+2026-11-09T11:31:23.3527191Z Unpacking gir1.2-atspi-2.0:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:23.3739973Z Selecting previously unselected package gir1.2-gdkpixbuf-2.0:amd64.
+2026-11-09T11:31:23.3882086Z Preparing to unpack .../009-gir1.2-gdkpixbuf-2.0_2.42.10+dfsg-3ubuntu3.3_amd64.deb ...
+2026-11-09T11:31:23.3889206Z Unpacking gir1.2-gdkpixbuf-2.0:amd64 (2.42.10+dfsg-3ubuntu3.3) ...
+2026-11-09T11:31:23.4109305Z Selecting previously unselected package libharfbuzz-gobject0:amd64.
+2026-11-09T11:31:23.4249801Z Preparing to unpack .../010-libharfbuzz-gobject0_8.3.0-2build2_amd64.deb ...
+2026-11-09T11:31:23.4259333Z Unpacking libharfbuzz-gobject0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:23.4478262Z Selecting previously unselected package gir1.2-harfbuzz-0.0:amd64.
+2026-11-09T11:31:23.4617759Z Preparing to unpack .../011-gir1.2-harfbuzz-0.0_8.3.0-2build2_amd64.deb ...
+2026-11-09T11:31:23.4626553Z Unpacking gir1.2-harfbuzz-0.0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:23.4865808Z Selecting previously unselected package libpangoxft-1.0-0:amd64.
+2026-11-09T11:31:23.5008378Z Preparing to unpack .../012-libpangoxft-1.0-0_1.52.1+ds-1build1_amd64.deb ...
+2026-11-09T11:31:23.5016523Z Unpacking libpangoxft-1.0-0:amd64 (1.52.1+ds-1build1) ...
+2026-11-09T11:31:23.5278241Z Selecting previously unselected package gir1.2-pango-1.0:amd64.
+2026-11-09T11:31:23.5418937Z Preparing to unpack .../013-gir1.2-pango-1.0_1.52.1+ds-1build1_amd64.deb ...
+2026-11-09T11:31:23.5427562Z Unpacking gir1.2-pango-1.0:amd64 (1.52.1+ds-1build1) ...
+2026-11-09T11:31:23.5652887Z Selecting previously unselected package gir1.2-gtk-3.0:amd64.
+2026-11-09T11:31:23.5795939Z Preparing to unpack .../014-gir1.2-gtk-3.0_3.24.41-4ubuntu1.3_amd64.deb ...
+2026-11-09T11:31:23.5805099Z Unpacking gir1.2-gtk-3.0:amd64 (3.24.41-4ubuntu1.3) ...
+2026-11-09T11:31:23.6071601Z Selecting previously unselected package libayatana-ido3-0.4-0:amd64.
+2026-11-09T11:31:23.6212856Z Preparing to unpack .../015-libayatana-ido3-0.4-0_0.10.1-1build2_amd64.deb ...
+2026-11-09T11:31:23.6221725Z Unpacking libayatana-ido3-0.4-0:amd64 (0.10.1-1build2) ...
+2026-11-09T11:31:23.6457886Z Selecting previously unselected package libayatana-indicator3-7:amd64.
+2026-11-09T11:31:23.6601262Z Preparing to unpack .../016-libayatana-indicator3-7_0.9.4-1build1_amd64.deb ...
+2026-11-09T11:31:23.6608866Z Unpacking libayatana-indicator3-7:amd64 (0.9.4-1build1) ...
+2026-11-09T11:31:23.6846291Z Selecting previously unselected package libayatana-appindicator3-1.
+2026-11-09T11:31:23.6989035Z Preparing to unpack .../017-libayatana-appindicator3-1_0.5.93-1build3_amd64.deb ...
+2026-11-09T11:31:23.6997764Z Unpacking libayatana-appindicator3-1 (0.5.93-1build3) ...
+2026-11-09T11:31:23.7216058Z Selecting previously unselected package gir1.2-ayatanaappindicator3-0.1.
+2026-11-09T11:31:23.7360238Z Preparing to unpack .../018-gir1.2-ayatanaappindicator3-0.1_0.5.93-1build3_amd64.deb ...
+2026-11-09T11:31:23.7368332Z Unpacking gir1.2-ayatanaappindicator3-0.1 (0.5.93-1build3) ...
+2026-11-09T11:31:23.7594946Z Selecting previously unselected package gir1.2-ayatanaido3-0.4:amd64.
+2026-11-09T11:31:23.7737766Z Preparing to unpack .../019-gir1.2-ayatanaido3-0.4_0.10.1-1build2_amd64.deb ...
+2026-11-09T11:31:23.7747469Z Unpacking gir1.2-ayatanaido3-0.4:amd64 (0.10.1-1build2) ...
+2026-11-09T11:31:23.7960727Z Selecting previously unselected package gir1.2-dbusmenu-glib-0.4:amd64.
+2026-11-09T11:31:23.8103449Z Preparing to unpack .../020-gir1.2-dbusmenu-glib-0.4_18.10.20180917~bzr492+repack1-3.1ubuntu5_amd64.deb ...
+2026-11-09T11:31:23.8111898Z Unpacking gir1.2-dbusmenu-glib-0.4:amd64 (18.10.20180917~bzr492+repack1-3.1ubuntu5) ...
+2026-11-09T11:31:23.8331963Z Selecting previously unselected package gir1.2-glib-2.0-dev:amd64.
+2026-11-09T11:31:23.8474467Z Preparing to unpack .../021-gir1.2-glib-2.0-dev_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-11-09T11:31:23.8481775Z Unpacking gir1.2-glib-2.0-dev:amd64 (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:23.9014810Z Selecting previously unselected package gir1.2-freedesktop-dev:amd64.
+2026-11-09T11:31:23.9163080Z Preparing to unpack .../022-gir1.2-freedesktop-dev_1.80.1-1_amd64.deb ...
+2026-11-09T11:31:23.9212856Z Unpacking gir1.2-freedesktop-dev:amd64 (1.80.1-1) ...
+2026-11-09T11:31:23.9454403Z Selecting previously unselected package libasound2-dev:amd64.
+2026-11-09T11:31:23.9596161Z Preparing to unpack .../023-libasound2-dev_1.2.11-1ubuntu0.3_amd64.deb ...
+2026-11-09T11:31:23.9633060Z Unpacking libasound2-dev:amd64 (1.2.11-1ubuntu0.3) ...
+2026-11-09T11:31:24.0021194Z Selecting previously unselected package libglib2.0-dev-bin.
+2026-11-09T11:31:24.0165792Z Preparing to unpack .../024-libglib2.0-dev-bin_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-11-09T11:31:24.0174001Z Unpacking libglib2.0-dev-bin (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:24.0562035Z Selecting previously unselected package uuid-dev:amd64.
+2026-11-09T11:31:24.0707860Z Preparing to unpack .../025-uuid-dev_2.39.3-9ubuntu6.6_amd64.deb ...
+2026-11-09T11:31:24.0715674Z Unpacking uuid-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-09T11:31:24.0989401Z Selecting previously unselected package libblkid-dev:amd64.
+2026-11-09T11:31:24.1132873Z Preparing to unpack .../026-libblkid-dev_2.39.3-9ubuntu6.6_amd64.deb ...
+2026-11-09T11:31:24.1139821Z Unpacking libblkid-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-09T11:31:24.1411879Z Selecting previously unselected package libsepol-dev:amd64.
+2026-11-09T11:31:24.1554598Z Preparing to unpack .../027-libsepol-dev_3.5-2build1_amd64.deb ...
+2026-11-09T11:31:24.1562415Z Unpacking libsepol-dev:amd64 (3.5-2build1) ...
+2026-11-09T11:31:24.1899626Z Selecting previously unselected package libselinux1-dev:amd64.
+2026-11-09T11:31:24.2043463Z Preparing to unpack .../028-libselinux1-dev_3.5-2ubuntu2.1_amd64.deb ...
+2026-11-09T11:31:24.2051156Z Unpacking libselinux1-dev:amd64 (3.5-2ubuntu2.1) ...
+2026-11-09T11:31:24.2509516Z Selecting previously unselected package libmount-dev:amd64.
+2026-11-09T11:31:24.2652824Z Preparing to unpack .../029-libmount-dev_2.39.3-9ubuntu6.6_amd64.deb ...
+2026-11-09T11:31:24.2660517Z Unpacking libmount-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-09T11:31:24.2891531Z Selecting previously unselected package libgirepository-2.0-0:amd64.
+2026-11-09T11:31:24.3033812Z Preparing to unpack .../030-libgirepository-2.0-0_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-11-09T11:31:24.3042795Z Unpacking libgirepository-2.0-0:amd64 (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:24.3268720Z Selecting previously unselected package libglib2.0-dev:amd64.
+2026-11-09T11:31:24.3409976Z Preparing to unpack .../031-libglib2.0-dev_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-11-09T11:31:24.3417558Z Unpacking libglib2.0-dev:amd64 (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:24.4390167Z Selecting previously unselected package libatk1.0-dev:amd64.
+2026-11-09T11:31:24.4535278Z Preparing to unpack .../032-libatk1.0-dev_2.52.0-1build1_amd64.deb ...
+2026-11-09T11:31:24.4544981Z Unpacking libatk1.0-dev:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:24.4879649Z Selecting previously unselected package libdbus-1-dev:amd64.
+2026-11-09T11:31:24.5026385Z Preparing to unpack .../033-libdbus-1-dev_1.14.10-4ubuntu4.1_amd64.deb ...
+2026-11-09T11:31:24.5035217Z Unpacking libdbus-1-dev:amd64 (1.14.10-4ubuntu4.1) ...
+2026-11-09T11:31:24.5401069Z Selecting previously unselected package xorg-sgml-doctools.
+2026-11-09T11:31:24.5547938Z Preparing to unpack .../034-xorg-sgml-doctools_1%3a1.11-1.1_all.deb ...
+2026-11-09T11:31:24.5556176Z Unpacking xorg-sgml-doctools (1:1.11-1.1) ...
+2026-11-09T11:31:24.5880178Z Selecting previously unselected package x11proto-dev.
+2026-11-09T11:31:24.6027511Z Preparing to unpack .../035-x11proto-dev_2023.2-1_all.deb ...
+2026-11-09T11:31:24.6035983Z Unpacking x11proto-dev (2023.2-1) ...
+2026-11-09T11:31:24.6615620Z Selecting previously unselected package libxau-dev:amd64.
+2026-11-09T11:31:24.6761964Z Preparing to unpack .../036-libxau-dev_1%3a1.0.9-1build6_amd64.deb ...
+2026-11-09T11:31:24.6771601Z Unpacking libxau-dev:amd64 (1:1.0.9-1build6) ...
+2026-11-09T11:31:24.7265334Z Selecting previously unselected package libxdmcp-dev:amd64.
+2026-11-09T11:31:24.7411101Z Preparing to unpack .../037-libxdmcp-dev_1%3a1.1.3-0ubuntu6_amd64.deb ...
+2026-11-09T11:31:24.7419412Z Unpacking libxdmcp-dev:amd64 (1:1.1.3-0ubuntu6) ...
+2026-11-09T11:31:24.7642410Z Selecting previously unselected package xtrans-dev.
+2026-11-09T11:31:24.7788146Z Preparing to unpack .../038-xtrans-dev_1.4.0-1_all.deb ...
+2026-11-09T11:31:24.7795801Z Unpacking xtrans-dev (1.4.0-1) ...
+2026-11-09T11:31:24.8067448Z Selecting previously unselected package libpthread-stubs0-dev:amd64.
+2026-11-09T11:31:24.8213422Z Preparing to unpack .../039-libpthread-stubs0-dev_0.4-1build3_amd64.deb ...
+2026-11-09T11:31:24.8221394Z Unpacking libpthread-stubs0-dev:amd64 (0.4-1build3) ...
+2026-11-09T11:31:24.8438601Z Selecting previously unselected package libxcb1-dev:amd64.
+2026-11-09T11:31:24.8582671Z Preparing to unpack .../040-libxcb1-dev_1.15-1ubuntu2_amd64.deb ...
+2026-11-09T11:31:24.8589813Z Unpacking libxcb1-dev:amd64 (1.15-1ubuntu2) ...
+2026-11-09T11:31:24.8838888Z Selecting previously unselected package libx11-dev:amd64.
+2026-11-09T11:31:24.8982685Z Preparing to unpack .../041-libx11-dev_2%3a1.8.7-1ubuntu0.1_amd64.deb ...
+2026-11-09T11:31:24.8990770Z Unpacking libx11-dev:amd64 (2:1.8.7-1ubuntu0.1) ...
+2026-11-09T11:31:24.9318771Z Selecting previously unselected package libxext-dev:amd64.
+2026-11-09T11:31:24.9464262Z Preparing to unpack .../042-libxext-dev_2%3a1.3.4-1build2_amd64.deb ...
+2026-11-09T11:31:24.9471391Z Unpacking libxext-dev:amd64 (2:1.3.4-1build2) ...
+2026-11-09T11:31:24.9783633Z Selecting previously unselected package libxfixes-dev:amd64.
+2026-11-09T11:31:24.9930931Z Preparing to unpack .../043-libxfixes-dev_1%3a6.0.0-2build1_amd64.deb ...
+2026-11-09T11:31:24.9938227Z Unpacking libxfixes-dev:amd64 (1:6.0.0-2build1) ...
+2026-11-09T11:31:25.0172012Z Selecting previously unselected package libxi-dev:amd64.
+2026-11-09T11:31:25.0317618Z Preparing to unpack .../044-libxi-dev_2%3a1.8.1-1build1_amd64.deb ...
+2026-11-09T11:31:25.0325258Z Unpacking libxi-dev:amd64 (2:1.8.1-1build1) ...
+2026-11-09T11:31:25.0661564Z Selecting previously unselected package libxtst-dev:amd64.
+2026-11-09T11:31:25.0809519Z Preparing to unpack .../045-libxtst-dev_2%3a1.2.3-1.1ubuntu0.1_amd64.deb ...
+2026-11-09T11:31:25.0817097Z Unpacking libxtst-dev:amd64 (2:1.2.3-1.1ubuntu0.1) ...
+2026-11-09T11:31:25.1055103Z Selecting previously unselected package libatspi2.0-dev:amd64.
+2026-11-09T11:31:25.1201712Z Preparing to unpack .../046-libatspi2.0-dev_2.52.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.1208859Z Unpacking libatspi2.0-dev:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:25.1498117Z Selecting previously unselected package libatk-bridge2.0-dev:amd64.
+2026-11-09T11:31:25.1643611Z Preparing to unpack .../047-libatk-bridge2.0-dev_2.52.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.1650971Z Unpacking libatk-bridge2.0-dev:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:25.1876346Z Selecting previously unselected package libcairo-script-interpreter2:amd64.
+2026-11-09T11:31:25.2022362Z Preparing to unpack .../048-libcairo-script-interpreter2_1.18.0-3build1_amd64.deb ...
+2026-11-09T11:31:25.2029383Z Unpacking libcairo-script-interpreter2:amd64 (1.18.0-3build1) ...
+2026-11-09T11:31:25.2255676Z Selecting previously unselected package libbrotli-dev:amd64.
+2026-11-09T11:31:25.2399982Z Preparing to unpack .../049-libbrotli-dev_1.1.0-2ubuntu0.1_amd64.deb ...
+2026-11-09T11:31:25.2406458Z Unpacking libbrotli-dev:amd64 (1.1.0-2ubuntu0.1) ...
+2026-11-09T11:31:25.2677884Z Selecting previously unselected package libbz2-dev:amd64.
+2026-11-09T11:31:25.2822351Z Preparing to unpack .../050-libbz2-dev_1.0.8-5.1ubuntu0.1_amd64.deb ...
+2026-11-09T11:31:25.2829403Z Unpacking libbz2-dev:amd64 (1.0.8-5.1ubuntu0.1) ...
+2026-11-09T11:31:25.3058494Z Selecting previously unselected package libpng-dev:amd64.
+2026-11-09T11:31:25.3204553Z Preparing to unpack .../051-libpng-dev_1.6.43-5ubuntu0.7_amd64.deb ...
+2026-11-09T11:31:25.3211824Z Unpacking libpng-dev:amd64 (1.6.43-5ubuntu0.7) ...
+2026-11-09T11:31:25.3545597Z Selecting previously unselected package libfreetype-dev:amd64.
+2026-11-09T11:31:25.3691383Z Preparing to unpack .../052-libfreetype-dev_2.13.2+dfsg-1ubuntu0.2_amd64.deb ...
+2026-11-09T11:31:25.3698317Z Unpacking libfreetype-dev:amd64 (2.13.2+dfsg-1ubuntu0.2) ...
+2026-11-09T11:31:25.4071062Z Selecting previously unselected package libfontconfig-dev:amd64.
+2026-11-09T11:31:25.4215202Z Preparing to unpack .../053-libfontconfig-dev_2.15.0-1.1ubuntu2_amd64.deb ...
+2026-11-09T11:31:25.4221814Z Unpacking libfontconfig-dev:amd64 (2.15.0-1.1ubuntu2) ...
+2026-11-09T11:31:25.4473670Z Selecting previously unselected package libpixman-1-dev:amd64.
+2026-11-09T11:31:25.4618718Z Preparing to unpack .../054-libpixman-1-dev_0.42.2-1build1_amd64.deb ...
+2026-11-09T11:31:25.4635823Z Unpacking libpixman-1-dev:amd64 (0.42.2-1build1) ...
+2026-11-09T11:31:25.4898286Z Selecting previously unselected package libice-dev:amd64.
+2026-11-09T11:31:25.5045418Z Preparing to unpack .../055-libice-dev_2%3a1.0.10-1build3_amd64.deb ...
+2026-11-09T11:31:25.5051835Z Unpacking libice-dev:amd64 (2:1.0.10-1build3) ...
+2026-11-09T11:31:25.5290143Z Selecting previously unselected package libsm-dev:amd64.
+2026-11-09T11:31:25.5436083Z Preparing to unpack .../056-libsm-dev_2%3a1.2.3-1build3_amd64.deb ...
+2026-11-09T11:31:25.5442834Z Unpacking libsm-dev:amd64 (2:1.2.3-1build3) ...
+2026-11-09T11:31:25.5670398Z Selecting previously unselected package libxcb-render0-dev:amd64.
+2026-11-09T11:31:25.5816282Z Preparing to unpack .../057-libxcb-render0-dev_1.15-1ubuntu2_amd64.deb ...
+2026-11-09T11:31:25.5823845Z Unpacking libxcb-render0-dev:amd64 (1.15-1ubuntu2) ...
+2026-11-09T11:31:25.6045546Z Selecting previously unselected package libxcb-shm0-dev:amd64.
+2026-11-09T11:31:25.6191331Z Preparing to unpack .../058-libxcb-shm0-dev_1.15-1ubuntu2_amd64.deb ...
+2026-11-09T11:31:25.6198248Z Unpacking libxcb-shm0-dev:amd64 (1.15-1ubuntu2) ...
+2026-11-09T11:31:25.6417120Z Selecting previously unselected package libxrender-dev:amd64.
+2026-11-09T11:31:25.6561739Z Preparing to unpack .../059-libxrender-dev_1%3a0.9.10-1.1build1_amd64.deb ...
+2026-11-09T11:31:25.6569273Z Unpacking libxrender-dev:amd64 (1:0.9.10-1.1build1) ...
+2026-11-09T11:31:25.6794887Z Selecting previously unselected package libcairo2-dev:amd64.
+2026-11-09T11:31:25.6938099Z Preparing to unpack .../060-libcairo2-dev_1.18.0-3build1_amd64.deb ...
+2026-11-09T11:31:25.6945232Z Unpacking libcairo2-dev:amd64 (1.18.0-3build1) ...
+2026-11-09T11:31:25.7208938Z Selecting previously unselected package libegl-mesa0:amd64.
+2026-11-09T11:31:25.7352932Z Preparing to unpack .../061-libegl-mesa0_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-11-09T11:31:25.7360102Z Unpacking libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-11-09T11:31:25.7605996Z Selecting previously unselected package libegl1:amd64.
+2026-11-09T11:31:25.7750039Z Preparing to unpack .../062-libegl1_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.7758265Z Unpacking libegl1:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:25.7982212Z Selecting previously unselected package libglx-dev:amd64.
+2026-11-09T11:31:25.8125476Z Preparing to unpack .../063-libglx-dev_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.8131673Z Unpacking libglx-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:25.8354489Z Selecting previously unselected package libgl-dev:amd64.
+2026-11-09T11:31:25.8498233Z Preparing to unpack .../064-libgl-dev_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.8504995Z Unpacking libgl-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:25.8770804Z Selecting previously unselected package libegl-dev:amd64.
+2026-11-09T11:31:25.8915174Z Preparing to unpack .../065-libegl-dev_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.8922052Z Unpacking libegl-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:25.9143923Z Selecting previously unselected package libglvnd-core-dev:amd64.
+2026-11-09T11:31:25.9287531Z Preparing to unpack .../066-libglvnd-core-dev_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.9293672Z Unpacking libglvnd-core-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:25.9524766Z Selecting previously unselected package libgles1:amd64.
+2026-11-09T11:31:25.9670532Z Preparing to unpack .../067-libgles1_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:25.9677207Z Unpacking libgles1:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:25.9915902Z Selecting previously unselected package libgles2:amd64.
+2026-11-09T11:31:26.0061643Z Preparing to unpack .../068-libgles2_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:26.0068125Z Unpacking libgles2:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:26.0294837Z Selecting previously unselected package libgles-dev:amd64.
+2026-11-09T11:31:26.0439523Z Preparing to unpack .../069-libgles-dev_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:26.0446174Z Unpacking libgles-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:26.0734157Z Selecting previously unselected package libopengl0:amd64.
+2026-11-09T11:31:26.0880440Z Preparing to unpack .../070-libopengl0_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:26.0887170Z Unpacking libopengl0:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:26.1114219Z Selecting previously unselected package libopengl-dev:amd64.
+2026-11-09T11:31:26.1261036Z Preparing to unpack .../071-libopengl-dev_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:26.1269875Z Unpacking libopengl-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:26.1487548Z Selecting previously unselected package libglvnd-dev:amd64.
+2026-11-09T11:31:26.1633159Z Preparing to unpack .../072-libglvnd-dev_1.7.0-1build1_amd64.deb ...
+2026-11-09T11:31:26.1641076Z Unpacking libglvnd-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:26.1860481Z Selecting previously unselected package libegl1-mesa-dev:amd64.
+2026-11-09T11:31:26.2006417Z Preparing to unpack .../073-libegl1-mesa-dev_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-11-09T11:31:26.2013229Z Unpacking libegl1-mesa-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-11-09T11:31:26.2235776Z Selecting previously unselected package libepoxy-dev:amd64.
+2026-11-09T11:31:26.2383177Z Preparing to unpack .../074-libepoxy-dev_1.5.10-1build1_amd64.deb ...
+2026-11-09T11:31:26.2390826Z Unpacking libepoxy-dev:amd64 (1.5.10-1build1) ...
+2026-11-09T11:31:26.2678283Z Selecting previously unselected package libfribidi-dev:amd64.
+2026-11-09T11:31:26.2826117Z Preparing to unpack .../075-libfribidi-dev_1.0.13-3build1_amd64.deb ...
+2026-11-09T11:31:26.2835885Z Unpacking libfribidi-dev:amd64 (1.0.13-3build1) ...
+2026-11-09T11:31:26.3158518Z Selecting previously unselected package libgdk-pixbuf2.0-bin.
+2026-11-09T11:31:26.3307420Z Preparing to unpack .../076-libgdk-pixbuf2.0-bin_2.42.10+dfsg-3ubuntu3.3_amd64.deb ...
+2026-11-09T11:31:26.3313633Z Unpacking libgdk-pixbuf2.0-bin (2.42.10+dfsg-3ubuntu3.3) ...
+2026-11-09T11:31:26.3558407Z Selecting previously unselected package libjpeg-turbo8-dev:amd64.
+2026-11-09T11:31:26.3703233Z Preparing to unpack .../077-libjpeg-turbo8-dev_2.1.5-2ubuntu2_amd64.deb ...
+2026-11-09T11:31:26.3710365Z Unpacking libjpeg-turbo8-dev:amd64 (2.1.5-2ubuntu2) ...
+2026-11-09T11:31:26.4030845Z Selecting previously unselected package libjpeg8-dev:amd64.
+2026-11-09T11:31:26.4175200Z Preparing to unpack .../078-libjpeg8-dev_8c-2ubuntu11_amd64.deb ...
+2026-11-09T11:31:26.4182831Z Unpacking libjpeg8-dev:amd64 (8c-2ubuntu11) ...
+2026-11-09T11:31:26.4392178Z Selecting previously unselected package libjpeg-dev:amd64.
+2026-11-09T11:31:26.4536258Z Preparing to unpack .../079-libjpeg-dev_8c-2ubuntu11_amd64.deb ...
+2026-11-09T11:31:26.4543105Z Unpacking libjpeg-dev:amd64 (8c-2ubuntu11) ...
+2026-11-09T11:31:26.4751790Z Selecting previously unselected package libjbig-dev:amd64.
+2026-11-09T11:31:26.4897537Z Preparing to unpack .../080-libjbig-dev_2.1-6.1ubuntu2_amd64.deb ...
+2026-11-09T11:31:26.4903977Z Unpacking libjbig-dev:amd64 (2.1-6.1ubuntu2) ...
+2026-11-09T11:31:26.5391825Z Selecting previously unselected package liblzma-dev:amd64.
+2026-11-09T11:31:26.5539269Z Preparing to unpack .../081-liblzma-dev_5.6.1+really5.4.5-1ubuntu0.4_amd64.deb ...
+2026-11-09T11:31:26.5549056Z Unpacking liblzma-dev:amd64 (5.6.1+really5.4.5-1ubuntu0.4) ...
+2026-11-09T11:31:26.5901785Z Selecting previously unselected package libwebpdecoder3:amd64.
+2026-11-09T11:31:26.6048662Z Preparing to unpack .../082-libwebpdecoder3_1.3.2-0.4build3_amd64.deb ...
+2026-11-09T11:31:26.6055488Z Unpacking libwebpdecoder3:amd64 (1.3.2-0.4build3) ...
+2026-11-09T11:31:26.6285858Z Selecting previously unselected package libsharpyuv-dev:amd64.
+2026-11-09T11:31:26.6430366Z Preparing to unpack .../083-libsharpyuv-dev_1.3.2-0.4build3_amd64.deb ...
+2026-11-09T11:31:26.6439189Z Unpacking libsharpyuv-dev:amd64 (1.3.2-0.4build3) ...
+2026-11-09T11:31:26.6686614Z Selecting previously unselected package libwebp-dev:amd64.
+2026-11-09T11:31:26.6833495Z Preparing to unpack .../084-libwebp-dev_1.3.2-0.4build3_amd64.deb ...
+2026-11-09T11:31:26.6841614Z Unpacking libwebp-dev:amd64 (1.3.2-0.4build3) ...
+2026-11-09T11:31:26.7163581Z Selecting previously unselected package libtiffxx6:amd64.
+2026-11-09T11:31:26.7307110Z Preparing to unpack .../085-libtiffxx6_4.5.1+git230720-4ubuntu2.5_amd64.deb ...
+2026-11-09T11:31:26.7314032Z Unpacking libtiffxx6:amd64 (4.5.1+git230720-4ubuntu2.5) ...
+2026-11-09T11:31:26.7521431Z Selecting previously unselected package libdeflate-dev:amd64.
+2026-11-09T11:31:26.7666111Z Preparing to unpack .../086-libdeflate-dev_1.19-1build1.1_amd64.deb ...
+2026-11-09T11:31:26.7672458Z Unpacking libdeflate-dev:amd64 (1.19-1build1.1) ...
+2026-11-09T11:31:26.7899763Z Selecting previously unselected package liblerc-dev:amd64.
+2026-11-09T11:31:26.8041713Z Preparing to unpack .../087-liblerc-dev_4.0.0+ds-4ubuntu2_amd64.deb ...
+2026-11-09T11:31:26.8049110Z Unpacking liblerc-dev:amd64 (4.0.0+ds-4ubuntu2) ...
+2026-11-09T11:31:26.8302598Z Selecting previously unselected package libtiff-dev:amd64.
+2026-11-09T11:31:26.8449786Z Preparing to unpack .../088-libtiff-dev_4.5.1+git230720-4ubuntu2.5_amd64.deb ...
+2026-11-09T11:31:26.8459173Z Unpacking libtiff-dev:amd64 (4.5.1+git230720-4ubuntu2.5) ...
+2026-11-09T11:31:26.8829267Z Selecting previously unselected package libgdk-pixbuf-2.0-dev:amd64.
+2026-11-09T11:31:26.8977669Z Preparing to unpack .../089-libgdk-pixbuf-2.0-dev_2.42.10+dfsg-3ubuntu3.3_amd64.deb ...
+2026-11-09T11:31:26.8985458Z Unpacking libgdk-pixbuf-2.0-dev:amd64 (2.42.10+dfsg-3ubuntu3.3) ...
+2026-11-09T11:31:26.9249921Z Selecting previously unselected package libharfbuzz-icu0:amd64.
+2026-11-09T11:31:26.9401224Z Preparing to unpack .../090-libharfbuzz-icu0_8.3.0-2build2_amd64.deb ...
+2026-11-09T11:31:26.9408774Z Unpacking libharfbuzz-icu0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:26.9648443Z Selecting previously unselected package libharfbuzz-subset0:amd64.
+2026-11-09T11:31:26.9793805Z Preparing to unpack .../091-libharfbuzz-subset0_8.3.0-2build2_amd64.deb ...
+2026-11-09T11:31:26.9801269Z Unpacking libharfbuzz-subset0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:27.0163366Z Selecting previously unselected package libharfbuzz-cairo0:amd64.
+2026-11-09T11:31:27.0321086Z Preparing to unpack .../092-libharfbuzz-cairo0_8.3.0-2build2_amd64.deb ...
+2026-11-09T11:31:27.0329052Z Unpacking libharfbuzz-cairo0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:27.0592034Z Selecting previously unselected package libgraphite2-dev:amd64.
+2026-11-09T11:31:27.0739530Z Preparing to unpack .../093-libgraphite2-dev_1.3.14-2ubuntu0.24.04.1_amd64.deb ...
+2026-11-09T11:31:27.0746263Z Unpacking libgraphite2-dev:amd64 (1.3.14-2ubuntu0.24.04.1) ...
+2026-11-09T11:31:27.1014019Z Selecting previously unselected package libharfbuzz-dev:amd64.
+2026-11-09T11:31:27.1158222Z Preparing to unpack .../094-libharfbuzz-dev_8.3.0-2build2_amd64.deb ...
+2026-11-09T11:31:27.1165616Z Unpacking libharfbuzz-dev:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:27.1606967Z Selecting previously unselected package libdatrie-dev:amd64.
+2026-11-09T11:31:27.1755851Z Preparing to unpack .../095-libdatrie-dev_0.2.13-3build1_amd64.deb ...
+2026-11-09T11:31:27.1762251Z Unpacking libdatrie-dev:amd64 (0.2.13-3build1) ...
+2026-11-09T11:31:27.1990686Z Selecting previously unselected package libthai-dev:amd64.
+2026-11-09T11:31:27.2138300Z Preparing to unpack .../096-libthai-dev_0.1.29-2build1_amd64.deb ...
+2026-11-09T11:31:27.2146208Z Unpacking libthai-dev:amd64 (0.1.29-2build1) ...
+2026-11-09T11:31:27.2398243Z Selecting previously unselected package libxft-dev:amd64.
+2026-11-09T11:31:27.2545499Z Preparing to unpack .../097-libxft-dev_2.3.6-1build1_amd64.deb ...
+2026-11-09T11:31:27.2554880Z Unpacking libxft-dev:amd64 (2.3.6-1build1) ...
+2026-11-09T11:31:27.2846137Z Selecting previously unselected package pango1.0-tools.
+2026-11-09T11:31:27.2991528Z Preparing to unpack .../098-pango1.0-tools_1.52.1+ds-1build1_amd64.deb ...
+2026-11-09T11:31:27.2997617Z Unpacking pango1.0-tools (1.52.1+ds-1build1) ...
+2026-11-09T11:31:27.3226751Z Selecting previously unselected package libpango1.0-dev:amd64.
+2026-11-09T11:31:27.3377683Z Preparing to unpack .../099-libpango1.0-dev_1.52.1+ds-1build1_amd64.deb ...
+2026-11-09T11:31:27.3384528Z Unpacking libpango1.0-dev:amd64 (1.52.1+ds-1build1) ...
+2026-11-09T11:31:27.3713549Z Selecting previously unselected package libwayland-server0:amd64.
+2026-11-09T11:31:27.3855448Z Preparing to unpack .../100-libwayland-server0_1.22.0-2.1build1_amd64.deb ...
+2026-11-09T11:31:27.3863636Z Unpacking libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-11-09T11:31:27.4078393Z Selecting previously unselected package libwayland-bin.
+2026-11-09T11:31:27.4220952Z Preparing to unpack .../101-libwayland-bin_1.22.0-2.1build1_amd64.deb ...
+2026-11-09T11:31:27.4227865Z Unpacking libwayland-bin (1.22.0-2.1build1) ...
+2026-11-09T11:31:27.4448932Z Selecting previously unselected package libwayland-dev:amd64.
+2026-11-09T11:31:27.4590372Z Preparing to unpack .../102-libwayland-dev_1.22.0-2.1build1_amd64.deb ...
+2026-11-09T11:31:27.4599176Z Unpacking libwayland-dev:amd64 (1.22.0-2.1build1) ...
+2026-11-09T11:31:27.4855164Z Selecting previously unselected package libxcomposite-dev:amd64.
+2026-11-09T11:31:27.4997747Z Preparing to unpack .../103-libxcomposite-dev_1%3a0.4.5-1build3_amd64.deb ...
+2026-11-09T11:31:27.5005028Z Unpacking libxcomposite-dev:amd64 (1:0.4.5-1build3) ...
+2026-11-09T11:31:27.5231401Z Selecting previously unselected package libxcursor-dev:amd64.
+2026-11-09T11:31:27.5372156Z Preparing to unpack .../104-libxcursor-dev_1%3a1.2.1-1build1_amd64.deb ...
+2026-11-09T11:31:27.5380783Z Unpacking libxcursor-dev:amd64 (1:1.2.1-1build1) ...
+2026-11-09T11:31:27.5649632Z Selecting previously unselected package libxdamage-dev:amd64.
+2026-11-09T11:31:27.5792373Z Preparing to unpack .../105-libxdamage-dev_1%3a1.1.6-1build1_amd64.deb ...
+2026-11-09T11:31:27.5799155Z Unpacking libxdamage-dev:amd64 (1:1.1.6-1build1) ...
+2026-11-09T11:31:27.6014742Z Selecting previously unselected package libxinerama-dev:amd64.
+2026-11-09T11:31:27.6156227Z Preparing to unpack .../106-libxinerama-dev_2%3a1.1.4-3build1_amd64.deb ...
+2026-11-09T11:31:27.6162555Z Unpacking libxinerama-dev:amd64 (2:1.1.4-3build1) ...
+2026-11-09T11:31:27.6382153Z Selecting previously unselected package libxkbcommon-dev:amd64.
+2026-11-09T11:31:27.6523935Z Preparing to unpack .../107-libxkbcommon-dev_1.6.0-1build1_amd64.deb ...
+2026-11-09T11:31:27.6532506Z Unpacking libxkbcommon-dev:amd64 (1.6.0-1build1) ...
+2026-11-09T11:31:27.6775094Z Selecting previously unselected package libxrandr-dev:amd64.
+2026-11-09T11:31:27.6916896Z Preparing to unpack .../108-libxrandr-dev_2%3a1.5.2-2build1_amd64.deb ...
+2026-11-09T11:31:27.6922916Z Unpacking libxrandr-dev:amd64 (2:1.5.2-2build1) ...
+2026-11-09T11:31:27.7161919Z Selecting previously unselected package wayland-protocols.
+2026-11-09T11:31:27.7304215Z Preparing to unpack .../109-wayland-protocols_1.45-1~ubuntu0.24.04.2_all.deb ...
+2026-11-09T11:31:27.7313064Z Unpacking wayland-protocols (1.45-1~ubuntu0.24.04.2) ...
+2026-11-09T11:31:27.7689951Z Selecting previously unselected package libgtk-3-dev:amd64.
+2026-11-09T11:31:27.7833654Z Preparing to unpack .../110-libgtk-3-dev_3.24.41-4ubuntu1.3_amd64.deb ...
+2026-11-09T11:31:27.7840271Z Unpacking libgtk-3-dev:amd64 (3.24.41-4ubuntu1.3) ...
+2026-11-09T11:31:27.9053015Z Selecting previously unselected package libayatana-ido3-dev.
+2026-11-09T11:31:27.9200112Z Preparing to unpack .../111-libayatana-ido3-dev_0.10.1-1build2_amd64.deb ...
+2026-11-09T11:31:27.9208046Z Unpacking libayatana-ido3-dev (0.10.1-1build2) ...
+2026-11-09T11:31:27.9446653Z Selecting previously unselected package libayatana-indicator3-dev.
+2026-11-09T11:31:27.9591699Z Preparing to unpack .../112-libayatana-indicator3-dev_0.9.4-1build1_amd64.deb ...
+2026-11-09T11:31:27.9598754Z Unpacking libayatana-indicator3-dev (0.9.4-1build1) ...
+2026-11-09T11:31:27.9828179Z Selecting previously unselected package libdbusmenu-glib-dev:amd64.
+2026-11-09T11:31:27.9972363Z Preparing to unpack .../113-libdbusmenu-glib-dev_18.10.20180917~bzr492+repack1-3.1ubuntu5_amd64.deb ...
+2026-11-09T11:31:27.9979219Z Unpacking libdbusmenu-glib-dev:amd64 (18.10.20180917~bzr492+repack1-3.1ubuntu5) ...
+2026-11-09T11:31:28.0222919Z Selecting previously unselected package libayatana-appindicator3-dev.
+2026-11-09T11:31:28.0379561Z Preparing to unpack .../114-libayatana-appindicator3-dev_0.5.93-1build3_amd64.deb ...
+2026-11-09T11:31:28.0401984Z Unpacking libayatana-appindicator3-dev (0.5.93-1build3) ...
+2026-11-09T11:31:28.0649657Z Selecting previously unselected package libpng-tools.
+2026-11-09T11:31:28.0798280Z Preparing to unpack .../115-libpng-tools_1.6.43-5ubuntu0.7_amd64.deb ...
+2026-11-09T11:31:28.0804978Z Unpacking libpng-tools (1.6.43-5ubuntu0.7) ...
+2026-11-09T11:31:28.1032882Z Selecting previously unselected package ninja-build.
+2026-11-09T11:31:28.1180090Z Preparing to unpack .../116-ninja-build_1.11.1-2_amd64.deb ...
+2026-11-09T11:31:28.1187909Z Unpacking ninja-build (1.11.1-2) ...
+2026-11-09T11:31:28.1786265Z Setting up libcairo-script-interpreter2:amd64 (1.18.0-3build1) ...
+2026-11-09T11:31:28.1813844Z Setting up libglib2.0-dev-bin (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:28.3386709Z Setting up bzip2-doc (1.0.8-5.1ubuntu0.1) ...
+2026-11-09T11:31:28.3403531Z Setting up libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-11-09T11:31:28.3423591Z Setting up libjpeg-turbo8-dev:amd64 (2.1.5-2ubuntu2) ...
+2026-11-09T11:31:28.3442095Z Setting up gir1.2-freedesktop:amd64 (1.80.1-1) ...
+2026-11-09T11:31:28.3461420Z Setting up libharfbuzz-icu0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:28.3478422Z Setting up libpixman-1-dev:amd64 (0.42.2-1build1) ...
+2026-11-09T11:31:28.3497807Z Setting up libpangoxft-1.0-0:amd64 (1.52.1+ds-1build1) ...
+2026-11-09T11:31:28.3518528Z Setting up gir1.2-dbusmenu-glib-0.4:amd64 (18.10.20180917~bzr492+repack1-3.1ubuntu5) ...
+2026-11-09T11:31:28.3537849Z Setting up libglvnd-core-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:28.3554701Z Setting up gir1.2-gdkpixbuf-2.0:amd64 (2.42.10+dfsg-3ubuntu3.3) ...
+2026-11-09T11:31:28.3579676Z Setting up libpng-tools (1.6.43-5ubuntu0.7) ...
+2026-11-09T11:31:28.3595816Z Setting up libgirepository-2.0-0:amd64 (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:28.3614559Z Setting up gir1.2-atk-1.0:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:28.3631170Z Setting up libfribidi-dev:amd64 (1.0.13-3build1) ...
+2026-11-09T11:31:28.3652361Z Setting up libxkbcommon-dev:amd64 (1.6.0-1build1) ...
+2026-11-09T11:31:28.3667135Z Setting up libpng-dev:amd64 (1.6.43-5ubuntu0.7) ...
+2026-11-09T11:31:28.3689173Z Setting up pango1.0-tools (1.52.1+ds-1build1) ...
+2026-11-09T11:31:28.3709412Z Setting up libjbig-dev:amd64 (2.1-6.1ubuntu2) ...
+2026-11-09T11:31:28.3727630Z Setting up libwebpdecoder3:amd64 (1.3.2-0.4build3) ...
+2026-11-09T11:31:28.3744229Z Setting up libharfbuzz-gobject0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:28.3761562Z Setting up gir1.2-atspi-2.0:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:28.3782943Z Setting up libayatana-ido3-0.4-0:amd64 (0.10.1-1build2) ...
+2026-11-09T11:31:28.3801264Z Setting up gir1.2-harfbuzz-0.0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:28.3821124Z Setting up libpthread-stubs0-dev:amd64 (0.4-1build3) ...
+2026-11-09T11:31:28.3842045Z Setting up libopengl0:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:28.3861424Z Setting up ninja-build (1.11.1-2) ...
+2026-11-09T11:31:28.3878832Z Setting up xtrans-dev (1.4.0-1) ...
+2026-11-09T11:31:28.3896463Z Setting up libwayland-bin (1.22.0-2.1build1) ...
+2026-11-09T11:31:28.3916291Z Setting up libgraphite2-dev:amd64 (1.3.14-2ubuntu0.24.04.1) ...
+2026-11-09T11:31:28.3934001Z Setting up gir1.2-pango-1.0:amd64 (1.52.1+ds-1build1) ...
+2026-11-09T11:31:28.3953209Z Setting up libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-11-09T11:31:28.3971976Z Setting up libgles2:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:28.3992109Z Setting up libharfbuzz-cairo0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:28.4010185Z Setting up libdbus-1-dev:amd64 (1.14.10-4ubuntu4.1) ...
+2026-11-09T11:31:28.5786339Z Setting up uuid-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-09T11:31:28.5811432Z Setting up clang (1:18.0-59~exp2) ...
+2026-11-09T11:31:28.6020831Z Setting up libgles1:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:28.6040725Z Setting up libjsoncpp25:amd64 (1.9.5-6build1) ...
+2026-11-09T11:31:28.6059834Z Setting up libsepol-dev:amd64 (3.5-2build1) ...
+2026-11-09T11:31:28.6078449Z Setting up liblerc-dev:amd64 (4.0.0+ds-4ubuntu2) ...
+2026-11-09T11:31:28.6095959Z Setting up libdbusmenu-glib-dev:amd64 (18.10.20180917~bzr492+repack1-3.1ubuntu5) ...
+2026-11-09T11:31:28.6112019Z Setting up liblzma-dev:amd64 (5.6.1+really5.4.5-1ubuntu0.4) ...
+2026-11-09T11:31:28.6130474Z Setting up gir1.2-ayatanaido3-0.4:amd64 (0.10.1-1build2) ...
+2026-11-09T11:31:28.6149656Z Setting up wayland-protocols (1.45-1~ubuntu0.24.04.2) ...
+2026-11-09T11:31:28.6166442Z Setting up libdatrie-dev:amd64 (0.2.13-3build1) ...
+2026-11-09T11:31:28.6184870Z Setting up gir1.2-glib-2.0-dev:amd64 (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:28.6201490Z Setting up libgdk-pixbuf2.0-bin (2.42.10+dfsg-3ubuntu3.3) ...
+2026-11-09T11:31:28.6222759Z Setting up librhash0:amd64 (1.4.3-3build1) ...
+2026-11-09T11:31:28.6241441Z Setting up libegl1:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:28.6259243Z Setting up libharfbuzz-subset0:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:28.6278204Z Setting up xorg-sgml-doctools (1:1.11-1.1) ...
+2026-11-09T11:31:28.6296076Z Setting up cmake-data (3.28.3-1build7) ...
+2026-11-09T11:31:28.6361058Z Setting up libopengl-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:28.6384725Z Setting up libjpeg8-dev:amd64 (8c-2ubuntu11) ...
+2026-11-09T11:31:28.6406435Z Setting up libasound2-dev:amd64 (1.2.11-1ubuntu0.3) ...
+2026-11-09T11:31:28.6425622Z Setting up libsharpyuv-dev:amd64 (1.3.2-0.4build3) ...
+2026-11-09T11:31:28.6444199Z Setting up libayatana-indicator3-7:amd64 (0.9.4-1build1) ...
+2026-11-09T11:31:28.6463601Z Setting up libtiffxx6:amd64 (4.5.1+git230720-4ubuntu2.5) ...
+2026-11-09T11:31:28.6484206Z Setting up libdeflate-dev:amd64 (1.19-1build1.1) ...
+2026-11-09T11:31:28.6500689Z Setting up libbrotli-dev:amd64 (1.1.0-2ubuntu0.1) ...
+2026-11-09T11:31:28.6519446Z Setting up libbz2-dev:amd64 (1.0.8-5.1ubuntu0.1) ...
+2026-11-09T11:31:28.6541763Z Setting up libblkid-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-09T11:31:28.6560395Z Setting up libselinux1-dev:amd64 (3.5-2ubuntu2.1) ...
+2026-11-09T11:31:28.6580077Z Setting up gir1.2-gtk-3.0:amd64 (3.24.41-4ubuntu1.3) ...
+2026-11-09T11:31:28.6596273Z Setting up libjpeg-dev:amd64 (8c-2ubuntu11) ...
+2026-11-09T11:31:28.6612409Z Setting up libwayland-dev:amd64 (1.22.0-2.1build1) ...
+2026-11-09T11:31:28.6632052Z Setting up libfreetype-dev:amd64 (2.13.2+dfsg-1ubuntu0.2) ...
+2026-11-09T11:31:28.6649394Z Setting up libwebp-dev:amd64 (1.3.2-0.4build3) ...
+2026-11-09T11:31:28.6666957Z Setting up libtiff-dev:amd64 (4.5.1+git230720-4ubuntu2.5) ...
+2026-11-09T11:31:28.6685638Z Setting up libayatana-appindicator3-1 (0.5.93-1build3) ...
+2026-11-09T11:31:28.6704548Z Setting up gir1.2-freedesktop-dev:amd64 (1.80.1-1) ...
+2026-11-09T11:31:28.6723215Z Setting up libthai-dev:amd64 (0.1.29-2build1) ...
+2026-11-09T11:31:28.6742354Z Setting up cmake (3.28.3-1build7) ...
+2026-11-09T11:31:28.6759185Z Setting up gir1.2-ayatanaappindicator3-0.1 (0.5.93-1build3) ...
+2026-11-09T11:31:28.6775233Z Setting up libmount-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-09T11:31:28.6797678Z Setting up libfontconfig-dev:amd64 (2.15.0-1.1ubuntu2) ...
+2026-11-09T11:31:28.6814120Z Setting up libglib2.0-dev:amd64 (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:28.7300865Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-11-09T11:31:28.8380272Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-11-09T11:31:28.8401275Z Not building database; man-db/auto-update is not 'true'.
+2026-11-09T11:31:28.8431817Z Processing triggers for libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.10) ...
+2026-11-09T11:31:28.8741336Z Processing triggers for sgml-base (1.31) ...
+2026-11-09T11:31:28.9027760Z Processing triggers for install-info (7.1-3build2) ...
+2026-11-09T11:31:29.1991143Z Setting up libatk1.0-dev:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:29.2287205Z Setting up x11proto-dev (2023.2-1) ...
+2026-11-09T11:31:29.2313152Z Setting up libgdk-pixbuf-2.0-dev:amd64 (2.42.10+dfsg-3ubuntu3.3) ...
+2026-11-09T11:31:29.2353478Z Setting up libharfbuzz-dev:amd64 (8.3.0-2build2) ...
+2026-11-09T11:31:29.2403922Z Setting up libxau-dev:amd64 (1:1.0.9-1build6) ...
+2026-11-09T11:31:29.2428049Z Setting up libice-dev:amd64 (2:1.0.10-1build3) ...
+2026-11-09T11:31:29.2450251Z Setting up libsm-dev:amd64 (2:1.2.3-1build3) ...
+2026-11-09T11:31:29.2503617Z Setting up libxdmcp-dev:amd64 (1:1.1.3-0ubuntu6) ...
+2026-11-09T11:31:29.2606821Z Setting up libxcb1-dev:amd64 (1.15-1ubuntu2) ...
+2026-11-09T11:31:29.2647661Z Setting up libx11-dev:amd64 (2:1.8.7-1ubuntu0.1) ...
+2026-11-09T11:31:29.2681906Z Setting up libxfixes-dev:amd64 (1:6.0.0-2build1) ...
+2026-11-09T11:31:29.2703333Z Setting up libxcb-shm0-dev:amd64 (1.15-1ubuntu2) ...
+2026-11-09T11:31:29.2745649Z Setting up libxcb-render0-dev:amd64 (1.15-1ubuntu2) ...
+2026-11-09T11:31:29.2763687Z Setting up libxext-dev:amd64 (2:1.3.4-1build2) ...
+2026-11-09T11:31:29.2786671Z Setting up libglx-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:29.2813455Z Setting up libxi-dev:amd64 (2:1.8.1-1build1) ...
+2026-11-09T11:31:29.2830772Z Setting up libxrender-dev:amd64 (1:0.9.10-1.1build1) ...
+2026-11-09T11:31:29.2856133Z Setting up libgl-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:29.2875004Z Setting up libxft-dev:amd64 (2.3.6-1build1) ...
+2026-11-09T11:31:29.2897485Z Setting up libxtst-dev:amd64 (2:1.2.3-1.1ubuntu0.1) ...
+2026-11-09T11:31:29.2919456Z Setting up libxdamage-dev:amd64 (1:1.1.6-1build1) ...
+2026-11-09T11:31:29.2945064Z Setting up libatspi2.0-dev:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:29.2992031Z Setting up libegl-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:29.3015760Z Setting up libxcomposite-dev:amd64 (1:0.4.5-1build3) ...
+2026-11-09T11:31:29.3038457Z Setting up libxcursor-dev:amd64 (1:1.2.1-1build1) ...
+2026-11-09T11:31:29.3071156Z Setting up libepoxy-dev:amd64 (1.5.10-1build1) ...
+2026-11-09T11:31:29.3103121Z Setting up libatk-bridge2.0-dev:amd64 (2.52.0-1build1) ...
+2026-11-09T11:31:29.3137174Z Setting up libxrandr-dev:amd64 (2:1.5.2-2build1) ...
+2026-11-09T11:31:29.3163596Z Setting up libxinerama-dev:amd64 (2:1.1.4-3build1) ...
+2026-11-09T11:31:29.3189953Z Setting up libcairo2-dev:amd64 (1.18.0-3build1) ...
+2026-11-09T11:31:29.3212195Z Setting up libgles-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:29.3275004Z Setting up libglvnd-dev:amd64 (1.7.0-1build1) ...
+2026-11-09T11:31:29.3313465Z Setting up libpango1.0-dev:amd64 (1.52.1+ds-1build1) ...
+2026-11-09T11:31:29.3336302Z Setting up libegl1-mesa-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-11-09T11:31:29.3366156Z Setting up libgtk-3-dev:amd64 (3.24.41-4ubuntu1.3) ...
+2026-11-09T11:31:29.3411574Z Setting up libayatana-ido3-dev (0.10.1-1build2) ...
+2026-11-09T11:31:29.3440871Z Setting up libayatana-indicator3-dev (0.9.4-1build1) ...
+2026-11-09T11:31:29.3469684Z Setting up libayatana-appindicator3-dev (0.5.93-1build3) ...
+2026-11-09T11:31:30.4209976Z 
+2026-11-09T11:31:30.4210525Z Running kernel seems to be up-to-date.
+2026-11-09T11:31:30.4210938Z 
+2026-11-09T11:31:30.4211131Z No services need to be restarted.
+2026-11-09T11:31:30.4211409Z 
+2026-11-09T11:31:30.4211540Z No containers need to be restarted.
+2026-11-09T11:31:30.4211787Z 
+2026-11-09T11:31:30.4211941Z No user sessions are running outdated binaries.
+2026-11-09T11:31:30.4212233Z 
+2026-11-09T11:31:30.4212495Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-11-09T11:31:31.3563034Z ##[group]Run actions/setup-java@v4
+2026-11-09T11:31:31.3563326Z with:
+2026-11-09T11:31:31.3563535Z   distribution: temurin
+2026-11-09T11:31:31.3563759Z   java-version: 17
+2026-11-09T11:31:31.3563977Z   java-package: jdk
+2026-11-09T11:31:31.3564205Z   check-latest: false
+2026-11-09T11:31:31.3564434Z   server-id: github
+2026-11-09T11:31:31.3564656Z   server-username: GITHUB_ACTOR
+2026-11-09T11:31:31.3564924Z   server-password: GITHUB_TOKEN
+2026-11-09T11:31:31.3565182Z   overwrite-settings: true
+2026-11-09T11:31:31.3565416Z   job-status: success
+2026-11-09T11:31:31.3568027Z   token: ***
+2026-11-09T11:31:31.3568245Z env:
+2026-11-09T11:31:31.3568440Z   VR_ABIS: arm64-v8a
+2026-11-09T11:31:31.3568663Z ##[endgroup]
+2026-11-09T11:31:31.5574953Z ##[warning]setup-java v4 is deprecated and will no longer receive updates. Please migrate to actions/setup-java@v5.
+2026-11-09T11:31:31.5583760Z ##[group]Installed distributions
+2026-11-09T11:31:31.5848904Z Resolved Java 17.0.21+9 from tool-cache
+2026-11-09T11:31:31.5849349Z Setting Java 17.0.21+9 as the default
+2026-11-09T11:31:31.5859614Z (node:4222) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-09T11:31:31.5860572Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-09T11:31:31.5863033Z Creating toolchains.xml for JDK version 17 from temurin
+2026-11-09T11:31:31.5938271Z Writing to /home/runner/.m2/toolchains.xml
+2026-11-09T11:31:31.5938743Z 
+2026-11-09T11:31:31.5939039Z Java configuration:
+2026-11-09T11:31:31.5939515Z   Distribution: temurin
+2026-11-09T11:31:31.5939966Z   Version: 17.0.21+9
+2026-11-09T11:31:31.5940563Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:31.5941081Z 
+2026-11-09T11:31:31.5941565Z ##[endgroup]
+2026-11-09T11:31:31.5956626Z Creating settings.xml with server-id: github
+2026-11-09T11:31:31.6002694Z Writing to /home/runner/.m2/settings.xml
+2026-11-09T11:31:31.6307611Z ##[group]Run subosito/flutter-action@v2.16.0
+2026-11-09T11:31:31.6308140Z with:
+2026-11-09T11:31:31.6308464Z   channel: stable
+2026-11-09T11:31:31.6308840Z   flutter-version-file: pubspec.yaml
+2026-11-09T11:31:31.6309286Z   architecture: X64
+2026-11-09T11:31:31.6309626Z   cache: false
+2026-11-09T11:31:31.6309967Z   pub-cache-path: default
+2026-11-09T11:31:31.6310350Z   dry-run: false
+2026-11-09T11:31:31.6310670Z env:
+2026-11-09T11:31:31.6310975Z   VR_ABIS: arm64-v8a
+2026-11-09T11:31:31.6311501Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:31.6312314Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:31.6312944Z ##[endgroup]
+2026-11-09T11:31:31.6392989Z ##[start-action display=Make setup script executable;id=flutter-action.__run]
+2026-11-09T11:31:31.6421831Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+2026-11-09T11:31:31.6422235Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+2026-11-09T11:31:31.6444762Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:31:31.6445119Z env:
+2026-11-09T11:31:31.6445315Z   VR_ABIS: arm64-v8a
+2026-11-09T11:31:31.6445652Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:31.6446150Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:31.6446531Z ##[endgroup]
+2026-11-09T11:31:31.6515621Z ##[end-action id=flutter-action.__run;outcome=success;conclusion=success;duration_ms=12]
+2026-11-09T11:31:31.6518595Z ##[start-action display=Set action inputs;id=flutter-action.flutter-action]
+2026-11-09T11:31:31.6555818Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+2026-11-09T11:31:31.6556192Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+2026-11-09T11:31:31.6556490Z [36;1m  -n '' \[0m
+2026-11-09T11:31:31.6556745Z [36;1m  -f 'pubspec.yaml' \[0m
+2026-11-09T11:31:31.6557000Z [36;1m  -a 'X64' \[0m
+2026-11-09T11:31:31.6557216Z [36;1m  -k '' \[0m
+2026-11-09T11:31:31.6558062Z [36;1m  -c '' \[0m
+2026-11-09T11:31:31.6558277Z [36;1m  -l '' \[0m
+2026-11-09T11:31:31.6558488Z [36;1m  -d 'default' \[0m
+2026-11-09T11:31:31.6558722Z [36;1m  stable[0m
+2026-11-09T11:31:31.6576690Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:31:31.6577043Z env:
+2026-11-09T11:31:31.6577537Z   VR_ABIS: arm64-v8a
+2026-11-09T11:31:31.6577939Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:31.6578453Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:31.6578841Z ##[endgroup]
+2026-11-09T11:31:32.3571966Z ##[end-action id=flutter-action.flutter-action;outcome=success;conclusion=success;duration_ms=705]
+2026-11-09T11:31:32.3576814Z ##[start-action display=Cache Flutter;id=flutter-action.__actions_cache]
+2026-11-09T11:31:32.3583259Z ##[end-action id=flutter-action.__actions_cache;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-09T11:31:32.3585373Z ##[start-action display=Cache pub dependencies;id=flutter-action.__actions_cache_2]
+2026-11-09T11:31:32.3589508Z ##[end-action id=flutter-action.__actions_cache_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-09T11:31:32.3591359Z ##[start-action display=Run setup script;id=flutter-action.__run_2]
+2026-11-09T11:31:32.3614766Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+2026-11-09T11:31:32.3615105Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+2026-11-09T11:31:32.3615391Z [36;1m  -n '3.47.9' \[0m
+2026-11-09T11:31:32.3615624Z [36;1m  -a 'x64' \[0m
+2026-11-09T11:31:32.3615927Z [36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.47.9-x64' \[0m
+2026-11-09T11:31:32.3616293Z [36;1m  stable[0m
+2026-11-09T11:31:32.3636299Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:31:32.3636652Z env:
+2026-11-09T11:31:32.3636848Z   VR_ABIS: arm64-v8a
+2026-11-09T11:31:32.3637202Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:32.3638223Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:31:32.3638637Z ##[endgroup]
+2026-11-09T11:31:32.5007508Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-11-09T11:31:32.5008655Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-11-09T11:31:32.5009699Z 
+2026-11-09T11:31:32.5695731Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-11-09T11:31:33.5685838Z   0 1509M    0 31554    0     0   446k      0  0:57:38 --:--:--  0:57:38  446k
+2026-11-09T11:31:34.5684456Z  16 1509M   16  241M    0     0   226M      0  0:00:06  0:00:01  0:00:05  226M
+2026-11-09T11:31:35.5685235Z  29 1509M   29  439M    0     0   212M      0  0:00:07  0:00:02  0:00:05  212M
+2026-11-09T11:31:36.5688798Z  40 1509M   40  605M    0     0   197M      0  0:00:07  0:00:03  0:00:04  197M
+2026-11-09T11:31:37.5683667Z  52 1509M   52  790M    0     0   194M      0  0:00:07  0:00:04  0:00:03  194M
+2026-11-09T11:31:38.5684656Z  64 1509M   64  980M    0     0   193M      0  0:00:07  0:00:05  0:00:02  196M
+2026-11-09T11:31:39.5688331Z  75 1509M   75 1146M    0     0   189M      0  0:00:07  0:00:06  0:00:01  180M
+2026-11-09T11:31:40.5689740Z  86 1509M   86 1310M    0     0   185M      0  0:00:08  0:00:07  0:00:01  174M
+2026-11-09T11:31:40.6132221Z  99 1509M   99 1498M    0     0   185M      0  0:00:08  0:00:08 --:--:--  178M
+2026-11-09T11:31:40.6133003Z 100 1509M  100 1509M    0     0   186M      0  0:00:08  0:00:08 --:--:--  177M
+2026-11-09T11:32:31.4359199Z ##[end-action id=flutter-action.__run_2;outcome=success;conclusion=success;duration_ms=59076]
+2026-11-09T11:32:31.4474935Z ##[group]Run set -euo pipefail
+2026-11-09T11:32:31.4475268Z [36;1mset -euo pipefail[0m
+2026-11-09T11:32:31.4475550Z [36;1mSDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"[0m
+2026-11-09T11:32:31.4476074Z [36;1mSDKMGR="$(find "$SDK/cmdline-tools" -maxdepth 3 -name sdkmanager -type f 2>/dev/null | head -1)"[0m
+2026-11-09T11:32:31.4476628Z [36;1myes | "$SDKMGR" --licenses >/dev/null 2>&1 || true[0m
+2026-11-09T11:32:31.4477657Z [36;1m"$SDKMGR" --install "platforms;android-35" "platforms;android-36" "build-tools;35.0.0" "build-tools;36.0.0" "ndk;28.2.13676358" "cmake;3.31.6"[0m
+2026-11-09T11:32:31.4498627Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:32:31.4498968Z env:
+2026-11-09T11:32:31.4499162Z   VR_ABIS: arm64-v8a
+2026-11-09T11:32:31.4499492Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:31.4499978Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:31.4500480Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.9-x64
+2026-11-09T11:32:31.4500840Z   PUB_CACHE: /home/runner/.pub-cache
+2026-11-09T11:32:31.4501097Z ##[endgroup]
+2026-11-09T11:32:38.5473097Z yes: standard output: Broken pipe
+2026-11-09T11:32:39.3232955Z Loading package information...                                                  
+2026-11-09T11:32:39.4329774Z Loading local repository...                                                     
+2026-11-09T11:32:39.4333313Z [                                       ] 3% Loading local repository...        
+2026-11-09T11:32:39.4426147Z [                                       ] 3% Fetch remote repository...         
+2026-11-09T11:32:39.7408324Z [=                                      ] 3% Fetch remote repository...         
+2026-11-09T11:32:39.7898931Z [=                                      ] 4% Fetch remote repository...         
+2026-11-09T11:32:39.8172069Z [=                                      ] 5% Fetch remote repository...         
+2026-11-09T11:32:39.8526245Z [==                                     ] 5% Fetch remote repository...         
+2026-11-09T11:32:39.9294713Z [==                                     ] 6% Fetch remote repository...         
+2026-11-09T11:32:40.0138677Z [==                                     ] 7% Fetch remote repository...         
+2026-11-09T11:32:40.0168053Z [==                                     ] 7% Computing updates...               
+2026-11-09T11:32:40.0258081Z [===                                    ] 8% Computing updates...               
+2026-11-09T11:32:40.0404415Z [===                                    ] 10% Computing updates...              
+2026-11-09T11:32:40.4038768Z [===                                    ] 10% Installing CMake 3.31.6           
+2026-11-09T11:32:40.4403616Z [===                                    ] 10% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.4958249Z [====                                   ] 10% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.5411219Z [====                                   ] 11% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.5748338Z [====                                   ] 12% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.6064932Z [=====                                  ] 13% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.6248958Z [=====                                  ] 14% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.6348702Z [=====                                  ] 15% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.6436588Z [======                                 ] 15% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.6635876Z [======                                 ] 16% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.6890094Z [======                                 ] 17% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.7129279Z [=======                                ] 18% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.7359114Z [=======                                ] 19% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.7460942Z [=======                                ] 20% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.7575627Z [========                               ] 20% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.7655275Z [========                               ] 21% Downloading cmake-3.31.6-linux.zip
+2026-11-09T11:32:40.9758212Z [========                               ] 21% Unzipping...                      
+2026-11-09T11:32:40.9952885Z [========                               ] 21% Unzipping... bin/cmake            
+2026-11-09T11:32:41.0557088Z [========                               ] 22% Unzipping... bin/cmake            
+2026-11-09T11:32:41.1107029Z [=========                              ] 23% Unzipping... bin/cmake            
+2026-11-09T11:32:41.1630661Z [=========                              ] 24% Unzipping... bin/cmake            
+2026-11-09T11:32:41.1682287Z [=========                              ] 24% Unzipping... bin/cpack            
+2026-11-09T11:32:41.1935677Z [=========                              ] 25% Unzipping... bin/cpack            
+2026-11-09T11:32:41.2206589Z [==========                             ] 25% Unzipping... bin/cpack            
+2026-11-09T11:32:41.2709983Z [==========                             ] 26% Unzipping... bin/cpack            
+2026-11-09T11:32:41.3108860Z [==========                             ] 27% Unzipping... bin/cpack            
+2026-11-09T11:32:41.3197872Z [===========                            ] 28% Unzipping... bin/cpack            
+2026-11-09T11:32:41.3619721Z [===========                            ] 28% Unzipping... bin/ctest            
+2026-11-09T11:32:41.4021518Z [===========                            ] 29% Unzipping... bin/ctest            
+2026-11-09T11:32:41.4193947Z [===========                            ] 30% Unzipping... bin/ctest            
+2026-11-09T11:32:41.4352737Z [============                           ] 30% Unzipping... bin/ctest            
+2026-11-09T11:32:41.4537623Z [============                           ] 31% Unzipping... bin/ctest            
+2026-11-09T11:32:41.4544008Z [============                           ] 31% Unzipping... doc/openssl-openssl-3
+2026-11-09T11:32:41.4556093Z [============                           ] 31% Unzipping... doc/cmake-3.31/Copyri
+2026-11-09T11:32:41.4557163Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmlibl
+2026-11-09T11:32:41.4558193Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmlibr
+2026-11-09T11:32:41.4559343Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmzstd
+2026-11-09T11:32:41.4562367Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmcurl
+2026-11-09T11:32:41.4570038Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmzlib
+2026-11-09T11:32:41.4588063Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmnght
+2026-11-09T11:32:41.4608385Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmcppd
+2026-11-09T11:32:41.4609387Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmliba
+2026-11-09T11:32:41.4610343Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmsys/
+2026-11-09T11:32:41.4611691Z [============                           ] 31% Unzipping... doc/cmake-3.31/cmlibu
+2026-11-09T11:32:41.4612653Z [============                           ] 31% Unzipping... share/emacs/site-lisp
+2026-11-09T11:32:41.4613393Z [============                           ] 31% Unzipping... share/vim/vimfiles/sy
+2026-11-09T11:32:41.4614491Z [============                           ] 31% Unzipping... share/vim/vimfiles/in
+2026-11-09T11:32:41.4621097Z [============                           ] 31% Unzipping... share/aclocal/cmake.m
+2026-11-09T11:32:41.4627190Z [============                           ] 31% Unzipping... share/bash-completion
+2026-11-09T11:32:41.6733404Z [============                           ] 31% Unzipping... share/cmake-3.31/Modu
+2026-11-09T11:32:41.7639291Z [============                           ] 32% Unzipping... share/cmake-3.31/Modu
+2026-11-09T11:32:41.7748661Z [============                           ] 32% Unzipping... share/cmake-3.31/Temp
+2026-11-09T11:32:42.1259362Z [============                           ] 32% Unzipping... share/cmake-3.31/Help
+2026-11-09T11:32:42.1261103Z [============                           ] 32% Unzipping... share/cmake-3.31/incl
+2026-11-09T11:32:42.1262953Z [============                           ] 32% Unzipping... source.properties    
+2026-11-09T11:32:42.1344990Z [============                           ] 32% Unzipping... bin/ninja            
+2026-11-09T11:32:42.1347548Z [============                           ] 32% Unzipping... doc/ninja/LICENSE    
+2026-11-09T11:32:42.1352846Z [============                           ] 32% Unzipping... share/cmake-3.31/Modu
+2026-11-09T11:32:42.1468275Z [=============                          ] 33% Unzipping... share/cmake-3.31/Modu
+2026-11-09T11:32:42.4660245Z [=====================                  ] 55% Unzipping... share/cmake-3.31/Modu
+2026-11-09T11:32:42.4965366Z [=====================                  ] 55% Installing NDK (Side by side) 28.2
+2026-11-09T11:32:42.5253973Z [=====================                  ] 55% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:42.6095384Z [======================                 ] 55% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:42.7680032Z [======================                 ] 56% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:42.8859498Z [======================                 ] 57% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.0029389Z [=======================                ] 58% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.1066963Z [=======================                ] 59% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.1722757Z [=======================                ] 60% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.2268885Z [========================               ] 60% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.3439030Z [========================               ] 61% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.4656470Z [========================               ] 62% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.5842662Z [=========================              ] 63% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.7006127Z [=========================              ] 64% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.7529613Z [=========================              ] 65% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.8173504Z [==========================             ] 65% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:43.8942030Z [==========================             ] 66% Downloading android-ndk-r28c-linux
+2026-11-09T11:32:44.1739291Z [==========================             ] 66% Unzipping... share/cmake-3.31/Modu
+2026-11-09T11:32:44.1758614Z [==========================             ] 66% Unzipping... android-ndk-r28c/    
+2026-11-09T11:32:44.1778646Z [==========================             ] 66% Unzipping... android-ndk-r28c/READ
+2026-11-09T11:32:44.1779536Z [==========================             ] 66% Unzipping... android-ndk-r28c/meta
+2026-11-09T11:32:44.2918670Z [==========================             ] 66% Unzipping... android-ndk-r28c/shad
+2026-11-09T11:32:44.2919558Z [==========================             ] 66% Unzipping... android-ndk-r28c/ndk-
+2026-11-09T11:32:44.2928108Z [==========================             ] 66% Unzipping... android-ndk-r28c/wrap
+2026-11-09T11:32:44.2928931Z [==========================             ] 66% Unzipping... android-ndk-r28c/ndk-
+2026-11-09T11:32:44.4016758Z [==========================             ] 66% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:45.2918812Z [==========================             ] 67% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:46.1252658Z [===========================            ] 68% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:47.0017658Z [===========================            ] 69% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:47.4014251Z [===========================            ] 70% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:47.8755783Z [============================           ] 70% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:48.9436797Z [============================           ] 71% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:50.0503581Z [============================           ] 72% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:51.2079031Z [=============================          ] 73% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:52.0558621Z [=============================          ] 74% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:52.4525320Z [=============================          ] 75% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:52.8742271Z [==============================         ] 75% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:53.6794075Z [==============================         ] 76% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:54.1276999Z [==============================         ] 77% Unzipping... android-ndk-r28c/tool
+2026-11-09T11:32:54.1393207Z [==============================         ] 77% Unzipping... android-ndk-r28c/buil
+2026-11-09T11:32:54.3614896Z [==============================         ] 77% Unzipping... android-ndk-r28c/sour
+2026-11-09T11:32:54.3635503Z [==============================         ] 77% Unzipping... android-ndk-r28c/NOTI
+2026-11-09T11:32:54.3637662Z [==============================         ] 77% Unzipping... android-ndk-r28c/ndk-
+2026-11-09T11:32:54.3650959Z [==============================         ] 77% Unzipping... android-ndk-r28c/NOTI
+2026-11-09T11:32:54.3689995Z [==============================         ] 77% Unzipping... android-ndk-r28c/pyth
+2026-11-09T11:32:54.4091439Z [==============================         ] 77% Unzipping... android-ndk-r28c/preb
+2026-11-09T11:32:54.4094228Z [==============================         ] 77% Unzipping... android-ndk-r28c/ndk-
+2026-11-09T11:32:54.4096145Z [==============================         ] 77% Unzipping... android-ndk-r28c/sour
+2026-11-09T11:32:54.6197748Z [==============================         ] 77% Unzipping... android-ndk-r28c/simp
+2026-11-09T11:32:54.6199513Z [==============================         ] 77% Unzipping... android-ndk-r28c/CHAN
+2026-11-09T11:32:54.7532059Z [==============================         ] 78% Unzipping... android-ndk-r28c/CHAN
+2026-11-09T11:32:54.7532799Z [=======================================] 100% Unzipping... android-ndk-r28c/CHA
+2026-11-09T11:32:54.7585105Z 
+2026-11-09T11:32:54.7907120Z ##[group]Run actions/download-artifact@v4
+2026-11-09T11:32:54.7907785Z with:
+2026-11-09T11:32:54.7908003Z   name: cardboard-sdk-aar
+2026-11-09T11:32:54.7908253Z   path: android/app/libs
+2026-11-09T11:32:54.7908501Z   merge-multiple: false
+2026-11-09T11:32:54.7908749Z   repository: XYkadicloud/Kazumi-VR
+2026-11-09T11:32:54.7909010Z   run-id: 42609390115
+2026-11-09T11:32:54.7909227Z env:
+2026-11-09T11:32:54.7909416Z   VR_ABIS: arm64-v8a
+2026-11-09T11:32:54.7909750Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:54.7910246Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:54.7910908Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.9-x64
+2026-11-09T11:32:54.7911282Z   PUB_CACHE: /home/runner/.pub-cache
+2026-11-09T11:32:54.7911547Z ##[endgroup]
+2026-11-09T11:32:54.9502520Z Downloading single artifact
+2026-11-09T11:32:54.9857172Z (node:4560) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-09T11:32:54.9858345Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-09T11:32:55.1026806Z Preparing to download the following artifacts:
+2026-11-09T11:32:55.1028304Z - cardboard-sdk-aar (ID: 13670295752, Size: 385660, Expected Digest: sha256:c42b6e0bca5d09be2c39f400ddc77d3233c594e57765df562b788a9f7ef65b53)
+2026-11-09T11:32:55.2962689Z Redirecting to blob download url: https://productionresultssa30.blob.core.windows.net/actions-results/9a4f5540-276c-8a42-8d00-8ab041990899/workflow-job-run-1b2f64f2-2869-53e7-aeff-70300b96923c/artifacts/1df2a74b7b57d4e5740a542256614ff47d049e123c5fc3394d8b020478452cdc.zip
+2026-11-09T11:32:55.2964579Z Starting download of artifact to: /home/runner/work/Kazumi-VR/Kazumi-VR/android/app/libs
+2026-11-09T11:32:55.3815215Z (node:4560) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-11-09T11:32:55.4159424Z SHA256 digest of downloaded artifact is c42b6e0bca5d09be2c39f400ddc77d3233c594e57765df562b788a9f7ef65b53
+2026-11-09T11:32:55.4160496Z Artifact download completed successfully.
+2026-11-09T11:32:55.4160906Z Total of 1 artifact(s) downloaded
+2026-11-09T11:32:55.4165136Z Download artifact has finished successfully
+2026-11-09T11:32:55.4554862Z ##[group]Run set -euo pipefail
+2026-11-09T11:32:55.4555189Z [36;1mset -euo pipefail[0m
+2026-11-09T11:32:55.4555596Z [36;1mmv -v android/app/libs/sdk-debug.aar android/app/libs/cardboard-sdk.aar[0m
+2026-11-09T11:32:55.4556040Z [36;1mls -la android/app/libs[0m
+2026-11-09T11:32:55.4575954Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:32:55.4576333Z env:
+2026-11-09T11:32:55.4576541Z   VR_ABIS: arm64-v8a
+2026-11-09T11:32:55.4576883Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:55.4577680Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:55.4578185Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.9-x64
+2026-11-09T11:32:55.4578556Z   PUB_CACHE: /home/runner/.pub-cache
+2026-11-09T11:32:55.4578827Z ##[endgroup]
+2026-11-09T11:32:55.4633914Z renamed 'android/app/libs/sdk-debug.aar' -> 'android/app/libs/cardboard-sdk.aar'
+2026-11-09T11:32:55.4649015Z total 388
+2026-11-09T11:32:55.4649471Z drwxr-xr-x 2 runner runner   4096 Nov  9 11:32 .
+2026-11-09T11:32:55.4650084Z drwxr-xr-x 4 runner runner   4096 Nov  9 11:32 ..
+2026-11-09T11:32:55.4650535Z -rw-r--r-- 1 runner runner 388070 Nov  9 11:32 cardboard-sdk.aar
+2026-11-09T11:32:55.4679748Z ##[group]Run flutter pub get
+2026-11-09T11:32:55.4680066Z [36;1mflutter pub get[0m
+2026-11-09T11:32:55.4698464Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:32:55.4698823Z env:
+2026-11-09T11:32:55.4699029Z   VR_ABIS: arm64-v8a
+2026-11-09T11:32:55.4699374Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:55.4699896Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:32:55.4700370Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.9-x64
+2026-11-09T11:32:55.4700735Z   PUB_CACHE: /home/runner/.pub-cache
+2026-11-09T11:32:55.4701008Z ##[endgroup]
+2026-11-09T11:32:59.2580740Z Resolving dependencies...
+2026-11-09T11:33:02.3973911Z Downloading packages...
+2026-11-09T11:33:15.8656714Z   _fe_analyzer_shared 96.0.0 (111.0.0 available)
+2026-11-09T11:33:15.8657631Z   analyzer 10.2.0 (14.7.0 available)
+2026-11-09T11:33:15.8658144Z   archive 4.0.9 (4.6.0 available)
+2026-11-09T11:33:15.8658722Z   audio_service 0.18.18 (0.18.19 available)
+2026-11-09T11:33:15.8659623Z   audio_session 0.2.3 (0.2.4 available)
+2026-11-09T11:33:15.8660127Z   build 4.0.6 (5.0.0 available)
+2026-11-09T11:33:15.8660592Z   build_config 1.3.0 (1.4.0 available)
+2026-11-09T11:33:15.8661099Z   build_daemon 4.1.1 (4.1.7 available)
+2026-11-09T11:33:15.8661591Z   build_runner 2.15.0 (2.17.1 available)
+2026-11-09T11:33:15.8662079Z   built_collection 5.1.1 (6.0.0 available)
+2026-11-09T11:33:15.8662550Z   built_value 8.12.6 (8.13.0 available)
+2026-11-09T11:33:15.8663041Z   cached_network_image 3.4.1 (4.0.6 available)
+2026-11-09T11:33:15.8663693Z   cached_network_image_platform_interface 4.1.1 (5.0.3 available)
+2026-11-09T11:33:15.8664370Z   cached_network_image_web 1.3.1 (2.0.4 available)
+2026-11-09T11:33:15.8664908Z   canvas_danmaku 0.3.3 (0.3.4 available)
+2026-11-09T11:33:15.8665388Z   cli_util 0.4.2 (0.6.0 available)
+2026-11-09T11:33:15.8665819Z   clock 1.1.2 (1.1.3 available)
+2026-11-09T11:33:15.8666258Z   code_assets 2.1.0 (2.2.0 available)
+2026-11-09T11:33:15.8666746Z   connectivity_plus 6.1.5 (7.3.2 available)
+2026-11-09T11:33:15.8667462Z   cross_file 0.3.5+2 (0.4.0 available)
+2026-11-09T11:33:15.8667931Z   crypto 3.0.7 (3.0.8 available)
+2026-11-09T11:33:15.8668382Z   cupertino_icons 1.0.9 (2.0.0 available)
+2026-11-09T11:33:15.8668861Z   dart_style 3.1.7 (3.1.14 available)
+2026-11-09T11:33:15.8669329Z   dbus 0.7.12 (0.8.0 available)
+2026-11-09T11:33:15.8669744Z   dio 5.11.0 (5.11.1 available)
+2026-11-09T11:33:15.8670172Z   dio_web_adapter 2.1.2 (2.2.2 available)
+2026-11-09T11:33:15.8670640Z   dlna_dart 0.1.1 (0.1.2 available)
+2026-11-09T11:33:15.8671104Z   dynamic_color 1.9.0 (2.1.0 available)
+2026-11-09T11:33:15.8671563Z   equatable 2.0.8 (3.0.0 available)
+2026-11-09T11:33:15.8672002Z   file_picker 10.3.10 (13.3.2 available)
+2026-11-09T11:33:15.8672486Z   file_selector_linux 0.9.4 (0.9.4+1 available)
+2026-11-09T11:33:15.8673016Z   file_selector_macos 0.9.5 (0.9.5+2 available)
+2026-11-09T11:33:15.8673547Z   file_selector_windows 0.9.3+5 (0.9.3+6 available)
+2026-11-09T11:33:15.8674066Z   fl_chart 1.2.0 (1.3.0 available)
+2026-11-09T11:33:15.8674542Z   flutter_cache_manager 3.4.1 (3.5.0 available)
+2026-11-09T11:33:15.8675072Z   flutter_displaymode 0.6.0 (0.7.0 available)
+2026-11-09T11:33:15.8675631Z   flutter_foreground_task 9.2.2 (11.0.3 available)
+2026-11-09T11:33:15.8676183Z   flutter_mobx 2.3.0 (2.4.0 available)
+2026-11-09T11:33:15.8676654Z   flutter_modular 7.1.0 (7.1.1 available)
+2026-11-09T11:33:15.8677168Z   flutter_native_splash 2.4.7 (2.4.8 available)
+2026-11-09T11:33:15.8678208Z   flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+2026-11-09T11:33:15.8678803Z   flutter_svg 2.3.0 (2.3.2 available)
+2026-11-09T11:33:15.8679327Z   flutter_volume_controller 2.0.1 (2.0.2 available)
+2026-11-09T11:33:15.8679859Z   get_it 9.2.1 (9.3.0 available)
+2026-11-09T11:33:15.8680283Z   glob 2.1.3 (2.2.0 available)
+2026-11-09T11:33:15.8680707Z   hive_ce 2.19.3 (2.23.2 available)
+2026-11-09T11:33:15.8681531Z   hive_ce_flutter 2.3.4 (2.5.0 available)
+2026-11-09T11:33:15.8682069Z   hive_ce_generator 1.11.1 (1.12.1 available)
+2026-11-09T11:33:15.8682580Z   html 0.15.6 (0.15.7 available)
+2026-11-09T11:33:15.8683025Z   http_multi_server 3.2.2 (3.2.3 available)
+2026-11-09T11:33:15.8683492Z   image 4.8.0 (4.12.0 available)
+2026-11-09T11:33:15.8683937Z   image_picker 1.2.2 (1.2.4 available)
+2026-11-09T11:33:15.8684479Z   image_picker_android 0.8.13+17 (0.8.13+25 available)
+2026-11-09T11:33:15.8685059Z   image_picker_ios 0.8.13+6 (0.8.13+15 available)
+2026-11-09T11:33:15.8685709Z   image_picker_platform_interface 2.11.1 (2.11.2 available)
+2026-11-09T11:33:15.8686287Z   io 1.0.5 (1.1.0 available)
+2026-11-09T11:33:15.8686714Z   iregexp 0.2.0 (0.2.1 available)
+2026-11-09T11:33:15.8687179Z   isolate_channel 0.6.1 (0.6.2 available)
+2026-11-09T11:33:15.8687927Z   jni 1.0.0 (1.1.2 available)
+2026-11-09T11:33:15.8688372Z   jni_flutter 1.0.1 (1.0.4+1 available)
+2026-11-09T11:33:15.8688844Z   logger 2.7.0 (2.8.0 available)
+2026-11-09T11:33:15.8689344Z   logging_appenders 1.4.0+1 (2.0.0+1 available)
+2026-11-09T11:33:15.8690119Z   macos_secure_bookmarks 0.2.1 (0.3.0 available)
+2026-11-09T11:33:15.8690710Z   material_color_utilities 0.13.0 (0.13.1 available)
+2026-11-09T11:33:15.8691404Z ! media_kit_video 1.2.5 from path vendor/media_kit_video (overridden)
+2026-11-09T11:33:15.8692057Z   mime 2.0.0 (2.1.0 available)
+2026-11-09T11:33:15.8692492Z   mobx 2.6.0 (2.7.0 available)
+2026-11-09T11:33:15.8692930Z   mobx_codegen 2.7.7 (2.8.0 available)
+2026-11-09T11:33:15.8693404Z   msix 3.16.13 (3.18.0 available)
+2026-11-09T11:33:15.8693883Z   native_toolchain_c 0.19.5 (0.19.6 available)
+2026-11-09T11:33:15.8694392Z   nm 0.5.0 (0.6.0 available)
+2026-11-09T11:33:15.8694820Z   objective_c 9.6.0 (9.6.3 available)
+2026-11-09T11:33:15.8695284Z   octo_image 2.1.0 (2.1.4 available)
+2026-11-09T11:33:15.8695747Z   open_filex 4.7.0 (5.0.0 available)
+2026-11-09T11:33:15.8696218Z   os_detect 2.0.3 (2.0.4 available)
+2026-11-09T11:33:15.8696691Z   package_config 2.2.0 (3.0.0 available)
+2026-11-09T11:33:15.8697379Z   package_info_plus 8.3.1 (10.2.2 available)
+2026-11-09T11:33:15.8698018Z   package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+2026-11-09T11:33:15.8698640Z   path_provider 2.1.5 (2.1.6 available)
+2026-11-09T11:33:15.8713870Z   path_provider_linux 2.2.1 (2.2.2 available)
+2026-11-09T11:33:15.8714562Z   path_provider_platform_interface 2.1.2 (2.1.3 available)
+2026-11-09T11:33:15.8715165Z   petitparser 7.0.2 (7.1.0 available)
+2026-11-09T11:33:15.8715634Z   platform 3.1.6 (3.2.0 available)
+2026-11-09T11:33:15.8716073Z   pool 1.5.2 (1.5.3 available)
+2026-11-09T11:33:15.8716486Z   posix 6.5.0 (6.5.4 available)
+2026-11-09T11:33:15.8716924Z   pub_semver 2.2.0 (2.2.1 available)
+2026-11-09T11:33:15.8717667Z   pubspec_parse 1.5.0 (1.7.0 available)
+2026-11-09T11:33:15.8718168Z   safe_local_storage 2.0.3 (2.0.7 available)
+2026-11-09T11:33:15.8718662Z   saver_gallery 4.1.1 (5.1.0 available)
+2026-11-09T11:33:15.8719176Z   screen_brightness_android 2.1.4 (2.1.6 available)
+2026-11-09T11:33:15.8719738Z   screen_brightness_ios 2.1.3 (2.1.4 available)
+2026-11-09T11:33:15.8720286Z   screen_brightness_ohos 2.1.3 (2.1.4 available)
+2026-11-09T11:33:15.8720902Z   screen_brightness_platform_interface 2.1.1 (2.1.2 available)
+2026-11-09T11:33:15.8721538Z   screen_retriever 0.2.0 (0.3.1 available)
+2026-11-09T11:33:15.8722060Z   screen_retriever_linux 0.2.0 (0.2.2 available)
+2026-11-09T11:33:15.8722466Z   screen_retriever_macos 0.2.0 (0.2.2 available)
+2026-11-09T11:33:15.8723006Z   screen_retriever_platform_interface 0.2.0 (0.2.2 available)
+2026-11-09T11:33:15.8723780Z   screen_retriever_windows 0.2.0 (0.2.2 available)
+2026-11-09T11:33:15.8724367Z   scrollview_observer 1.26.3 (1.27.3 available)
+2026-11-09T11:33:15.8724928Z   shared_preferences 2.5.5 (2.5.6 available)
+2026-11-09T11:33:15.8725506Z   shared_preferences_android 2.4.23 (2.5.4 available)
+2026-11-09T11:33:15.8726147Z   shared_preferences_foundation 2.5.6 (2.6.1 available)
+2026-11-09T11:33:15.8726705Z   shelf 1.4.2 (1.4.3 available)
+2026-11-09T11:33:15.8727668Z   skeletonizer 2.1.3 (3.0.0 available)
+2026-11-09T11:33:15.8728225Z   source_gen 4.2.3 (4.3.1 available)
+2026-11-09T11:33:15.8728727Z   source_helper 1.3.12 (1.4.0 available)
+2026-11-09T11:33:15.8729225Z   sqflite 2.4.2+1 (2.4.5 available)
+2026-11-09T11:33:15.8729708Z   sqflite_android 2.4.2+3 (2.4.5 available)
+2026-11-09T11:33:15.8730219Z   sqflite_common 2.5.8 (2.5.15 available)
+2026-11-09T11:33:15.8730716Z   sqflite_darwin 2.4.2 (2.4.5 available)
+2026-11-09T11:33:15.8731256Z   sqflite_platform_interface 2.4.0 (2.4.3 available)
+2026-11-09T11:33:15.8731823Z   stack_trace 1.12.1 (1.12.2 available)
+2026-11-09T11:33:15.8732316Z   stream_transform 2.1.1 (2.1.2 available)
+2026-11-09T11:33:15.8732819Z   synchronized 3.4.0+1 (3.6.1 available)
+2026-11-09T11:33:15.8733304Z   test_api 0.7.12 (0.7.15 available)
+2026-11-09T11:33:15.8733775Z   tray_manager 0.5.2 (0.8.3 available)
+2026-11-09T11:33:15.8734253Z   upgrader 12.5.0 (13.7.0 available)
+2026-11-09T11:33:15.8734726Z   url_launcher 6.3.2 (6.3.3 available)
+2026-11-09T11:33:15.8735235Z   url_launcher_android 6.3.29 (6.3.33 available)
+2026-11-09T11:33:15.8736013Z   url_launcher_ios 6.4.1 (6.4.2 available)
+2026-11-09T11:33:15.8736521Z   url_launcher_linux 3.2.2 (3.2.3 available)
+2026-11-09T11:33:15.8737020Z   url_launcher_macos 3.2.5 (3.2.6 available)
+2026-11-09T11:33:15.8737760Z   url_launcher_windows 3.1.5 (3.1.6 available)
+2026-11-09T11:33:15.8738280Z   uuid 4.5.3 (4.6.0 available)
+2026-11-09T11:33:15.8738735Z   vector_graphics 1.2.2 (1.2.6 available)
+2026-11-09T11:33:15.8739291Z   vector_graphics_compiler 1.2.3 (1.3.4 available)
+2026-11-09T11:33:15.8739839Z   vector_math 2.4.2 (2.4.4 available)
+2026-11-09T11:33:15.8740326Z   vm_service 15.2.0 (15.4.0 available)
+2026-11-09T11:33:15.8740802Z   wakelock_plus 1.3.3 (1.8.2 available)
+2026-11-09T11:33:15.8741376Z   wakelock_plus_platform_interface 1.5.1 (1.7.0 available)
+2026-11-09T11:33:15.8741949Z   web 1.1.1 (1.1.2 available)
+2026-11-09T11:33:15.8742390Z   win32 5.15.0 (6.4.0 available)
+2026-11-09T11:33:15.8742855Z   window_manager 0.5.1 (0.6.0 available)
+2026-11-09T11:33:15.8743339Z   xml 6.6.1 (7.1.0 available)
+2026-11-09T11:33:15.8743767Z   yaml 3.1.3 (3.1.4 available)
+2026-11-09T11:33:15.8744224Z Got dependencies!
+2026-11-09T11:33:15.8744825Z 134 packages have newer versions incompatible with dependency constraints.
+2026-11-09T11:33:15.8745582Z Try `flutter pub outdated` for more information.
+2026-11-09T11:33:16.4515393Z ##[group]Run set -euo pipefail
+2026-11-09T11:33:16.4515747Z [36;1mset -euo pipefail[0m
+2026-11-09T11:33:16.4516045Z [36;1mCACHE="${PUB_CACHE:-$HOME/.pub-cache}"[0m
+2026-11-09T11:33:16.4516352Z [36;1mpatched=0[0m
+2026-11-09T11:33:16.4516668Z [36;1mfor f in "$CACHE"/hosted/pub.dev/jni-*/src/CMakeLists.txt; do[0m
+2026-11-09T11:33:16.4517052Z [36;1m  if [ -f "$f" ]; then[0m
+2026-11-09T11:33:16.4517764Z [36;1m    sed -i -e 's/-Wl,/-Wl,--build-id=none,/' "$f"[0m
+2026-11-09T11:33:16.4518116Z [36;1m    echo "patched $f"[0m
+2026-11-09T11:33:16.4518390Z [36;1m    patched=$((patched + 1))[0m
+2026-11-09T11:33:16.4518666Z [36;1m  fi[0m
+2026-11-09T11:33:16.4518884Z [36;1mdone[0m
+2026-11-09T11:33:16.4519107Z [36;1mecho "patched files: $patched"[0m
+2026-11-09T11:33:16.4539692Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:33:16.4540048Z env:
+2026-11-09T11:33:16.4540250Z   VR_ABIS: arm64-v8a
+2026-11-09T11:33:16.4540645Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:33:16.4541150Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:33:16.4541615Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.9-x64
+2026-11-09T11:33:16.4541977Z   PUB_CACHE: /home/runner/.pub-cache
+2026-11-09T11:33:16.4542257Z ##[endgroup]
+2026-11-09T11:33:16.4604124Z patched /home/runner/.pub-cache/hosted/pub.dev/jni-1.0.0/src/CMakeLists.txt
+2026-11-09T11:33:16.4604835Z patched files: 1
+2026-11-09T11:33:16.4682547Z ##[group]Run flutter analyze --no-fatal-infos --fatal-warnings
+2026-11-09T11:33:16.4683086Z [36;1mflutter analyze --no-fatal-infos --fatal-warnings[0m
+2026-11-09T11:33:16.4702017Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-09T11:33:16.4702377Z env:
+2026-11-09T11:33:16.4702589Z   VR_ABIS: arm64-v8a
+2026-11-09T11:33:16.4702942Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:33:16.4703444Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:33:16.4703912Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.9-x64
+2026-11-09T11:33:16.4704277Z   PUB_CACHE: /home/runner/.pub-cache
+2026-11-09T11:33:16.4704548Z ##[endgroup]
+2026-11-09T11:33:38.3070406Z Analyzing Kazumi-VR...                                          
+2026-11-09T11:33:38.3075717Z 
+2026-11-09T11:33:38.3093929Z    info • Unnecessary use of multiple underscores. Try using '_' • lib/pages/info/info_comments_view.dart:103:43 • unnecessary_underscores
+2026-11-09T11:33:38.3095694Z    info • Unnecessary use of multiple underscores. Try using '_' • lib/pages/info/info_comments_view.dart:141:38 • unnecessary_underscores
+2026-11-09T11:33:38.3106174Z    info • Unnecessary use of multiple underscores. Try using '_' • lib/pages/player/danmaku_source_sheet.dart:57:39 • unnecessary_underscores
+2026-11-09T11:33:38.3108241Z    info • Unnecessary use of multiple underscores. Try using '_' • lib/pages/player/danmaku_source_sheet.dart:477:35 • unnecessary_underscores
+2026-11-09T11:33:38.3110122Z    info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/pages/player/syncplay_sheet.dart:144:19 • use_null_aware_elements
+2026-11-09T11:33:38.3112061Z    info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/pages/search/image_search_page.dart:384:9 • use_null_aware_elements
+2026-11-09T11:33:38.3115171Z   error • The getter 'mirror_rounded' isn't defined for the type 'Icons'. Try importing the library that defines 'mirror_rounded', correcting the name to the name of an existing getter, or defining a getter or field named 'mirror_rounded' • lib/pages/settings/vr_settings_page.dart:478:33 • undefined_getter
+2026-11-09T11:33:38.3118111Z    info • Unnecessary use of multiple underscores. Try using '_' • lib/pages/timeline/timeline_page.dart:69:37 • unnecessary_underscores
+2026-11-09T11:33:38.3120017Z    info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/pages/video/video_controller.dart:248:7 • use_null_aware_elements
+2026-11-09T11:33:38.3121840Z    info • Don't invoke 'print' in production code. Try using a logging framework • lib/services/logging/logger.dart:116:7 • avoid_print
+2026-11-09T11:33:38.3123514Z    info • Don't invoke 'print' in production code. Try using a logging framework • lib/services/logging/logger.dart:143:9 • avoid_print
+2026-11-09T11:33:38.3125218Z    info • Don't invoke 'print' in production code. Try using a logging framework • lib/services/logging/logger.dart:250:5 • avoid_print
+2026-11-09T11:33:38.3127056Z    info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/services/plugin/rule_engine.dart:317:7 • use_null_aware_elements
+2026-11-09T11:33:38.3129366Z    info • Unnecessary use of multiple underscores. Try using '_' • lib/utils/async_single_flight.dart:17:38 • unnecessary_underscores
+2026-11-09T11:33:38.3131177Z    info • Don't invoke 'print' in production code. Try using a logging framework • lib/webview/video/impl/video_webview_android_impl.dart:35:11 • avoid_print
+2026-11-09T11:33:38.3133037Z    info • Don't invoke 'print' in production code. Try using a logging framework • lib/webview/video/impl/video_webview_impl.dart:33:11 • avoid_print
+2026-11-09T11:33:38.3134758Z    info • Unnecessary use of multiple underscores. Try using '_' • test/plugin_import_parser_test.dart:212:28 • unnecessary_underscores
+2026-11-09T11:33:38.3136749Z    info • Unnecessary use of multiple underscores. Try using '_' • test/plugin_import_parser_test.dart:212:32 • unnecessary_underscores
+2026-11-09T11:33:38.3137786Z 
+2026-11-09T11:33:38.3180268Z 18 issues found. (ran in 20.7s)
+2026-11-09T11:33:38.3253488Z ##[error]Process completed with exit code 1.
+2026-11-09T11:33:38.3354949Z ##[group]Run actions/upload-artifact@v4
+2026-11-09T11:33:38.3355429Z with:
+2026-11-09T11:33:38.3355775Z   name: vr-unit-test-report
+2026-11-09T11:33:38.3356621Z   path: android/app/build/reports/tests/testDebugUnitTest/
+android/app/build/test-results/testDebugUnitTest/
+
+2026-11-09T11:33:38.3357764Z   if-no-files-found: ignore
+2026-11-09T11:33:38.3358179Z   compression-level: 6
+2026-11-09T11:33:38.3358560Z   overwrite: false
+2026-11-09T11:33:38.3358937Z   include-hidden-files: false
+2026-11-09T11:33:38.3359346Z env:
+2026-11-09T11:33:38.3359658Z   VR_ABIS: arm64-v8a
+2026-11-09T11:33:38.3360203Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:33:38.3361051Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-09T11:33:38.3361910Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.9-x64
+2026-11-09T11:33:38.3362736Z   PUB_CACHE: /home/runner/.pub-cache
+2026-11-09T11:33:38.3363180Z ##[endgroup]
+2026-11-09T11:33:38.5074854Z (node:5207) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-09T11:33:38.5075741Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-09T11:33:38.5116134Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-09T11:33:38.5119826Z The least common ancestor is /home/runner/work/Kazumi-VR/Kazumi-VR/android/app/build. This will be the root directory of the artifact
+2026-11-09T11:33:38.5120989Z No files were found with the provided path: android/app/build/reports/tests/testDebugUnitTest/
+2026-11-09T11:33:38.5121961Z android/app/build/test-results/testDebugUnitTest/. No artifacts will be uploaded.
+2026-11-09T11:33:38.5420788Z Post job cleanup.
+2026-11-09T11:33:38.5529174Z Post job cleanup.
+2026-11-09T11:33:38.6893385Z (node:5219) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-09T11:33:38.6894235Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-09T11:33:38.7118710Z Post job cleanup.
+2026-11-09T11:33:38.8029089Z [command]/usr/bin/git version
+2026-11-09T11:33:38.8074226Z git version 2.56.0
+2026-11-09T11:33:38.8146084Z Temporarily overriding HOME='/home/runner/work/_temp/b88cfc40-294e-448d-bca5-18e002f02f32' before making global git config changes
+2026-11-09T11:33:38.8147746Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-09T11:33:38.8153005Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Kazumi-VR/Kazumi-VR
+2026-11-09T11:33:38.8209100Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-09T11:33:38.8249681Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-09T11:33:38.8518078Z Entering 'fastlane/.flutter'
+2026-11-09T11:33:38.8613776Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:33:38.8688162Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-09T11:33:38.8732097Z http.https://github.com/.extraheader
+2026-11-09T11:33:38.8735542Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-09T11:33:38.8783363Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-09T11:33:38.9133523Z Entering 'fastlane/.flutter'
+2026-11-09T11:33:38.9168432Z http.https://github.com/.extraheader
+2026-11-09T11:33:38.9241117Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:33:38.9266798Z http.https://github.com/.extraheader
+2026-11-09T11:33:38.9323252Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-09T11:33:38.9375361Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-09T11:33:38.9627840Z Entering 'fastlane/.flutter'
+2026-11-09T11:33:38.9646846Z file:/home/runner/work/Kazumi-VR/Kazumi-VR/.git/modules/fastlane/.flutter/config	remote.origin.url
+2026-11-09T11:33:38.9692538Z Entering 'fastlane/.libmpv-android-video-build'
+2026-11-09T11:33:38.9712069Z file:/home/runner/work/Kazumi-VR/Kazumi-VR/.git/modules/fastlane/.libmpv-android-video-build/config	remote.origin.url
+2026-11-09T11:33:38.9749034Z [command]/usr/bin/git config --file /home/runner/work/Kazumi-VR/Kazumi-VR/.git/modules/fastlane/.flutter/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-09T11:33:38.9793095Z [command]/usr/bin/git config --file /home/runner/work/Kazumi-VR/Kazumi-VR/.git/modules/fastlane/.libmpv-android-video-build/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-09T11:33:38.9981050Z Cleaning up orphan processes
+2026-11-09T11:33:39.0329689Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/setup-java@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
