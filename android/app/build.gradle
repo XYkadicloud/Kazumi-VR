@@ -67,9 +67,10 @@ flutter {
 }
 
 dependencies {
-    // VR mode is rendered in Flutter. The native side only uses Android
-    // framework APIs (SensorManager / KeyEvent / MotionEvent), so no extra
-    // Gradle dependencies are required here.
+    // VR mode uses Cardboard SDK for true stereo rendering + distortion.
+    implementation project(':cardboard-sdk')
+    // VrSession uses StateFlow / MutableStateFlow (kotlinx.coroutines.flow).
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 }
 
 // F-droid splits APKs by ABI, and requires different versionCode for each ABI.

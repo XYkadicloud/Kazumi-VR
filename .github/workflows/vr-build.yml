@@ -1,7 +1,8 @@
 name: vr-build
 
-# Single source of truth for verification: everything is compiled on GitHub.
-# The local workstation intentionally has no Flutter SDK / Android SDK / JDK 17.
+# Two-stage CI:
+#   1. cardboard-aar – build the Cardboard SDK AAR from third_party source.
+#   2. app           – download the AAR, run flutter analyze + build debug APK.
 on:
   push:
     branches: [ main, vr-dev ]
@@ -10,13 +11,48 @@ on:
 permissions:
   contents: read
 
+env:
+  OPENNOW_ABIS: arm64-v8a
+
 jobs:
-  android-debug-apk:
-    name: analyze + build Android debug APK
-    runs-on: ubuntu-latest
+  cardboard-aar:
+    name: build-cardboard-sdk-aar
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+
+      - name: Build Cardboard SDK AAR
+        shell: bash
+        run: |
+          cd third_party/cardboard
+          chmod +x gradlew
+          ./gradlew --no-daemon --no-configuration-cache :sdk:assembleDebug
+
+      - name: Upload AAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cardboard-sdk-aar
+          path: third_party/cardboard/sdk/build/outputs/aar/sdk-debug.aar
+          if-no-files-found: error
+
+  app:
+    name: analyze + build Android debug APK
+    needs: cardboard-aar
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install Linux native build tools
         shell: bash
@@ -37,6 +73,19 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
+
+      - name: Download Cardboard SDK AAR
+        uses: actions/download-artifact@v4
+        with:
+          name: cardboard-sdk-aar
+          path: third_party/cardboard/sdk/build/outputs/aar
+
+      - name: Place AAR into app/libs
+        shell: bash
+        run: |
+          mkdir -p android/app/libs
+          mv -v third_party/cardboard/sdk/build/outputs/aar/sdk-debug.aar \
+              android/app/libs/cardboard-sdk.aar
 
       - name: Flutter pub get
         shell: bash
@@ -68,6 +117,18 @@ jobs:
           mkdir -p out
           cp -v build/app/outputs/flutter-apk/*.apk out/
           ls -la out
+
+      - name: Verify JNI .so inside APK
+        shell: bash
+        run: |
+          apk=$(ls build/app/outputs/flutter-apk/*.apk | head -1)
+          echo "Checking APK: $apk"
+          unzip -l "$apk" | grep -E 'lib/arm64-v8a/lib.*\.so' || true
+          if unzip -l "$apk" | grep -q "libcardboard_sdk_jni.so"; then
+            echo "OK: libcardboard_sdk_jni.so found"
+          else
+            echo "WARN: libcardboard_sdk_jni.so NOT found in APK"
+          fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

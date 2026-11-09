@@ -24,3 +24,5 @@ plugins {
 }
 
 include ":app"
+include ":cardboard-sdk"
+project(":cardboard-sdk").projectDir = file("${rootProject.projectDir}/../third_party/cardboard/sdk")

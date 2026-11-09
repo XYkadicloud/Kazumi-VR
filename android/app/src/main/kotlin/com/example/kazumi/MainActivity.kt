@@ -19,6 +19,7 @@ import android.app.PictureInPictureParams
 import android.graphics.drawable.Icon
 import android.util.Rational
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
@@ -29,17 +30,20 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import com.ryanheise.audioservice.AudioService
 import com.ryanheise.audioservice.AudioServiceActivity
-import com.example.kazumi.vr.VrNativeBridge
+import com.example.kazumi.vr.VrSession
+import com.example.kazumi.vr.VrTheaterView
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.widget.FrameLayout
 
 class MainActivity: AudioServiceActivity() {
     private val CHANNEL = "com.predidit.kazumi/intent"
     private val STORAGE_CHANNEL = "com.predidit.kazumi/storage"
     private val PIP_CHANNEL = "com.predidit.kazumi/pip"
+    private val VR_CHANNEL = "com.predidit.kazumi/vr"
     private var intentChannel: MethodChannel? = null
     private var pipChannel: MethodChannel? = null
-    private var vrBridge: VrNativeBridge? = null
+    private var vrChannel: MethodChannel? = null
     private var downloadDirectoryChannel: MethodChannel? = null
     private var downloadDirectoryHandler: DownloadDirectoryHandler? = null
 
@@ -55,6 +59,11 @@ class MainActivity: AudioServiceActivity() {
     private var systemBarsHidden = false
     private var originalWindowBackground: Drawable? = null
     private var windowBackgroundOverridden = false
+
+    // VR state
+    private var vrView: VrTheaterView? = null
+    private var vrContainer: FrameLayout? = null
+    private var vrEnabled = false
 
     private val actionPipPlayPause = "com.predidit.kazumi.pip.PLAY_PAUSE"
     private val actionPipForward = "com.predidit.kazumi.pip.FORWARD"
@@ -77,35 +86,193 @@ class MainActivity: AudioServiceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerPipActionReceiverIfNeeded()
+
+        // Initialize VR session singleton
+        VrSession.attach(this)
+
+        // Wire up callbacks that VrSession needs to talk back to MainActivity
+        VrSession.onScanQr = { scanCardboardViewerQr() }
+        VrSession.onRecenter = { vrView?.recenter() }
+        VrSession.onVrMenuClosed = { /* input ownership already with game */ }
+        VrSession.requestCameraPermission = { requestCameraPermission() }
+
+        // Set up VR method channel for Flutter ↔ native communication
+        setupVrChannel()
+
+        // Create VR container (fullscreen overlay for CardboardView)
+        createVrContainer()
+    }
+
+    private fun setupVrChannel() {
+        vrChannel = MethodChannel(flutterEngine?.dartExecutor?.binaryMessenger ?: return, VR_CHANNEL)
+        vrChannel?.setMethodCallHandler { call, result ->
+            when (call.method) {
+                "setVrActive" -> {
+                    val active = call.argument<Boolean>("active") ?: false
+                    setVrActive(active)
+                    result.success(null)
+                }
+                "isVrActive" -> {
+                    result.success(vrEnabled)
+                }
+                "updateSettings" -> {
+                    val settings = call.argument<Map<String, Any>>("settings")
+                    if (settings != null) {
+                        val converted = convertSettingsMap(settings)
+                        VrSession.updateSettings(converted)
+                        vrView?.applySettings(converted)
+                    }
+                    result.success(null)
+                }
+                "recenter" -> {
+                    VrSession.recenter()
+                    result.success(null)
+                }
+                else -> result.notImplemented()
+            }
+        }
+    }
+
+    private fun convertSettingsMap(map: Map<String, Any>): com.example.kazumi.vr.VrSettings {
+        // Convert Flutter settings map to VrSettings data class
+        // Using defaults for anything not present
+        val s = com.example.kazumi.vr.VrSettings.DEFAULT
+        return s.copy(
+            screenScale = (map["screenScale"] as? Double)?.toFloat() ?: s.screenScale,
+            screenDistanceMeters = (map["screenDistanceMeters"] as? Double)?.toFloat() ?: s.screenDistanceMeters,
+            brightness = (map["brightness"] as? Double)?.toFloat() ?: s.brightness,
+            curvature = (map["curvature"] as? Double)?.toFloat() ?: s.curvature,
+            viewerMode = try {
+                com.example.kazumi.vr.VrViewerMode.valueOf(map["viewerMode"] as? String ?: "CARDBOARD")
+            } catch (e: Exception) {
+                com.example.kazumi.vr.VrViewerMode.CARDBOARD
+            },
+            passthroughEnabled = map["passthroughEnabled"] as? Boolean ?: s.passthroughEnabled,
+        )
+    }
+
+    private fun createVrContainer() {
+        vrContainer = FrameLayout(this).apply {
+            id = View.generateViewId()
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+            visibility = View.GONE
+        }
+        window.decorView.addView(vrContainer, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        ))
+    }
+
+    private fun setVrActive(enabled: Boolean) {
+        if (vrEnabled == enabled) return
+        vrEnabled = enabled
+        VrSession.setEnabled(enabled)
+
+        val container = vrContainer ?: return
+        val view = vrView
+
+        if (enabled) {
+            // Show VR view
+            if (view == null) {
+                vrView = VrTheaterView(this).also { v ->
+                    container.addView(v, FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                    ))
+                }
+            }
+            container.visibility = View.VISIBLE
+            // Hide system bars for immersive VR
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            WindowInsetsControllerCompat(window, container).let { controller ->
+                controller.hide(WindowInsetsCompat.Type.systemBars())
+                controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_HIDE
+            }
+            // Keep screen on
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            vrView?.start()
+            // Notify Flutter
+            vrChannel?.invokeMethod("onVrStateChanged", mapOf("enabled" to true))
+        } else {
+            vrView?.stop()
+            container.visibility = View.GONE
+            // Restore system bars
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            applySystemBarsState()
+            vrChannel?.invokeMethod("onVrStateChanged", mapOf("enabled" to false))
+        }
+    }
+
+    private fun scanCardboardViewerQr() {
+        // Launch QR scanner activity (simplified - would need proper QR Activity setup)
+        // For now, just log; real implementation needs a QR scan Activity
+        android.util.Log.d("MainActivity", "QR scan requested - implement QR Activity here")
+    }
+
+    private fun requestCameraPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 1001)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1001) {
+            val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            // Update passthrough setting based on permission result
+            if (!granted) {
+                val current = VrSession.settings.value
+                VrSession.updateSettings(current.copy(passthroughEnabled = false))
+            }
+        }
+        downloadDirectoryHandler?.onRequestPermissionsResult(requestCode)
     }
 
     override fun onDestroy() {
-        vrBridge?.dispose()
-        vrBridge = null
+        setVrActive(false)
+        vrView?.release()
+        vrView = null
+        vrContainer?.let {
+            window.decorView.removeView(it)
+        }
+        vrContainer = null
+        vrChannel?.setMethodCallHandler(null)
+        vrChannel = null
+        VrSession.requestCameraPermission = null
+        VrSession.onRecenter = null
+        VrSession.onScanQr = null
+        VrSession.onVrMenuClosed = null
         downloadDirectoryChannel?.setMethodCallHandler(null)
         downloadDirectoryChannel = null
         downloadDirectoryHandler?.dispose()
         downloadDirectoryHandler = null
         unregisterPipActionReceiverIfNeeded()
-        // audio_service stays bound for the whole activity lifetime, so its
-        // own stopSelf() never destroys a service started for playback.
         stopService(Intent(this, AudioService::class.java))
         super.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
-        vrBridge?.onHostResume()
+        vrView?.start()
     }
 
     override fun onPause() {
-        vrBridge?.onHostPause()
+        vrView?.stop()
         super.onPause()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
+        if (hasFocus && !vrEnabled) {
             applySystemBarsState()
         }
     }
@@ -144,7 +311,7 @@ class MainActivity: AudioServiceActivity() {
                 result.success(sdkVersion)
             } else if (call.method == "setSystemBarsHidden") {
                 systemBarsHidden = call.arguments as? Boolean ?: false
-                applySystemBarsState()
+                if (!vrEnabled) applySystemBarsState()
                 result.success(null)
             } else {
                 result.notImplemented()
@@ -195,9 +362,6 @@ class MainActivity: AudioServiceActivity() {
             }
         }
 
-        // Thin VR bridge: sensor pose + raw gamepad events (no Cardboard SDK / Compose / GL).
-        vrBridge = VrNativeBridge(this, flutterEngine)
-
     }
 
     private fun openWithMime(url: String, mimeType: String) {
@@ -213,22 +377,13 @@ class MainActivity: AudioServiceActivity() {
         downloadDirectoryHandler?.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        downloadDirectoryHandler?.onRequestPermissionsResult(requestCode)
-    }
-
     private fun getAndroidSdkVersion(): Int {
         return Build.VERSION.SDK_INT
     }
 
     // System bars belong to the full size window; replayed on leaving PiP.
     private fun applySystemBarsState() {
-        if (inPipMode) {
+        if (inPipMode || vrEnabled) {
             return
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -351,8 +506,6 @@ class MainActivity: AudioServiceActivity() {
         buildPipSourceRectHint()?.let { builder.setSourceRectHint(it) }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder.setAutoEnterEnabled(autoEnterPipOnHomeGesture && pipInPlayerPage)
-            // The crossfade alternative is driven by a window snapshot, which
-            // holds no video surface and fades through an empty window.
             builder.setSeamlessResizeEnabled(true)
         }
         if (actions.isNotEmpty()) {
@@ -479,12 +632,26 @@ class MainActivity: AudioServiceActivity() {
 
     // ---- VR input forwarding ---------------------------------------------------------
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (vrBridge?.onKeyEvent(event) == true) return true
+        // VR session owns input when enabled
+        if (VrSession.enabled.value && VrSession.onKeyEvent(event)) {
+            return true
+        }
         return super.dispatchKeyEvent(event)
     }
 
     override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
-        if (vrBridge?.onGenericMotionEvent(event) == true) return true
+        if (VrSession.enabled.value) {
+            // Handle triggers separately
+            val l2 = event.getAxisValue(com.example.kazumi.vr.VrKeys.AXIS_LTRIGGER)
+            val r2 = event.getAxisValue(com.example.kazumi.vr.VrKeys.AXIS_RTRIGGER)
+            VrSession.onTriggerEvent(l2, r2)
+            // Also handle menu navigation
+            if (VrSession.menuOpen.value || VrSession.enabled.value) {
+                if (VrSession.onMotionEvent(event)) {
+                    return true
+                }
+            }
+        }
         return super.dispatchGenericMotionEvent(event)
     }
 }
